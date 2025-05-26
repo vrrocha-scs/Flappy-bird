@@ -1,5 +1,0 @@
- -lallegro
- g++ main.cpp–o main–lallegro
-
-
-comandos para executar
