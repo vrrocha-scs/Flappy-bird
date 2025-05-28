@@ -10,7 +10,7 @@
 //tamanho da tela
 const int SCREEN_W = 800;
 const int SCREEN_H = 600;
-const float FPS = 60;
+const float FPS = 120;
 
 int main()
 {
@@ -42,7 +42,6 @@ int main()
     al_start_timer(timer);
 
     //objetos do jogo
-    Personagem character(SCREEN_W/2, SCREEN_H/2,"assets/images/character_placeholder.png");
     Obstaculo Cano1(600, 0, 1.2, 30, 150);
     Obstaculo Cano2(600, 320, 1.2, 30, SCREEN_H - 320);
 
@@ -54,7 +53,6 @@ int main()
     //WHILE PRINCIPAL
     while(playing){
 
-        al_flip_display();
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue,&ev);
         //---RENDER---
@@ -65,11 +63,7 @@ int main()
             }
             //Descreve comportamento do personagem a cada segundo
             character->onTick();
-            al_flip_display();
             
-            character.set_velocityY(character.get_velocityY()+0.05);
-            character.move_character();
-            character.render_object();  
             Cano1.desenhar_canos();
             Cano1.mover_obstaculos();
             Cano2.desenhar_canos();
