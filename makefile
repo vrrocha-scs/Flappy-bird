@@ -22,7 +22,7 @@ $(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/main.cpp ${LIBS} -lallegro_main -lallegro_primitives -lallegro_image -lallegro -o $(OBJ_DIR)/main.o
 
 main: $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o 
-	${CC} ${CFLAGS} $(OBJS) ${LIBS} -lallegro_main -lallegro_primitives -lallegro_image -lallegro -o bin/main.exe
+	${CC} ${CFLAGS} $(OBJS) ${LIBS} -lallegro_main -lallegro_primitives -lallegro_image -lallegro -o bin/main.exe 
 
 clean: 
 	rm -f main ${OBJ_DIR}/*.o 

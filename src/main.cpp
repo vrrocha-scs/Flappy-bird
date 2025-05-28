@@ -1,17 +1,17 @@
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_image.h>
 
-#include "../include/personagem.hpp"
-
-int main(){
-
-    ALLEGRO_DISPLAY* display = NULL;
-    
+int main()
+{
+    //inicializando as bibliotecas
     al_init();
+    al_init_font_addon();
     al_init_primitives_addon();
-    al_init_image_addon();
 
-    display = al_create_display(600,400);
+    //inicializando a tela e decidindo a sua posição
+    ALLEGRO_DISPLAY * display = al_create_display(640,480);
+    al_set_window_position(display, 200, 200);
 
+    return 0;
 }
