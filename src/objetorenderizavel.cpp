@@ -19,6 +19,10 @@ float ObjetoRenderizavel::get_posY(){
     return posY;
 }
 
+ALLEGRO_BITMAP* ObjetoRenderizavel::get_bitmap(){
+    return object_bitmap;
+}
+
 void ObjetoRenderizavel::set_posX(float x){
     posX = x;
 }
@@ -26,3 +30,4 @@ void ObjetoRenderizavel::set_posX(float x){
 void ObjetoRenderizavel::set_posY(float y){
     posY = y;
 }
+

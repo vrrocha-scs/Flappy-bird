@@ -2,6 +2,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
 #include <iostream>
+#include <vector>
 
 #include "../include/personagem.hpp"
 #include "../include/obstaculo.hpp"
@@ -28,7 +29,8 @@ int main()
 
 
     event_queue = al_create_event_queue();
-    display = al_create_display(640,480);
+    display = al_create_display(SCREEN_W,SCREEN_H);
+    al_set_window_position(display,200,200);
     al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
     al_flip_display();
     timer = al_create_timer(1.0/FPS);
@@ -40,26 +42,28 @@ int main()
     al_start_timer(timer);
 
     //objetos do jogo
-    Personagem character(300,300,"assets/images/character_placeholder.png");
-    
+    Personagem* character = new Personagem(SCREEN_W/2 + 20,SCREEN_H/2,"assets/images/character_placeholder.png");
+    vector<ObjetoRenderizavel*> objects_to_render;
+    objects_to_render.push_back(character);
+
     //WHILE PRINCIPAL
-    /*To do: Adicionar queue de eventos com:
-        -Evento do timer
-        -Evento de clicar
-    */    
     while(playing){
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue,&ev);
+        //---RENDER---
         if(ev.type == ALLEGRO_EVENT_TIMER){
-            //Evento de renderização (precisa ser executado todo frame)
-            al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
-            character.set_velocityY(character.get_velocityY()+0.05);
-            character.move_character();
-            character.render_object();
+            
+            for(auto i : objects_to_render){
+                i->render_object();
+            }
+            //Descreve comportamento do personagem a cada segundo
+            character->onTick();
             al_flip_display();
+            al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
         }
-        else if (ev.type == ALLEGRO_KEY_UP){
-            character.set_velocityY(-5);
+        //---CONTROLES---
+        else if (ev.keyboard.keycode == ALLEGRO_KEY_UP){
+            character->set_velocityY(-3.5);
         }
         else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             playing = false;
@@ -68,5 +72,6 @@ int main()
 
     //fecha a janela
     al_destroy_display(display);
+    al_destroy_event_queue(event_queue);
     return 0;
 }

@@ -14,9 +14,10 @@ class ObjetoRenderizavel{
         ObjetoRenderizavel(float x,float y,string image_path);
         float get_posX();
         float get_posY();
+        ALLEGRO_BITMAP* get_bitmap();
         void set_posX(float x);
         void set_posY(float y);
-        void render_object();
+        virtual void render_object();
 };
 
 #endif
