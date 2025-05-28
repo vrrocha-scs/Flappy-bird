@@ -16,6 +16,7 @@ int main()
     //inicializando as bibliotecas
     al_init();
     al_init_primitives_addon();
+    al_install_keyboard();
     al_init_image_addon();
 
     //inicializando as structs padrão
@@ -34,7 +35,8 @@ int main()
 
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
-
+    al_register_event_source(event_queue, al_get_keyboard_event_source());
+    
     al_start_timer(timer);
 
     //objetos do jogo
@@ -55,6 +57,9 @@ int main()
             character.move_character();
             character.render_object();
             al_flip_display();
+        }
+        else if (ev.type == ALLEGRO_KEY_UP){
+            character.set_velocityY(-5);
         }
         else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             playing = false;
