@@ -42,12 +42,19 @@ int main()
     al_start_timer(timer);
 
     //objetos do jogo
+    Personagem character(SCREEN_W/2, SCREEN_H/2,"assets/images/character_placeholder.png");
+    Obstaculo Cano1(600, 0, 1.2, 30, 150);
+    Obstaculo Cano2(600, 320, 1.2, 30, SCREEN_H - 320);
+
+    
     Personagem* character = new Personagem(SCREEN_W/2 + 20,SCREEN_H/2,"assets/images/character_placeholder.png");
     vector<ObjetoRenderizavel*> objects_to_render;
     objects_to_render.push_back(character);
 
     //WHILE PRINCIPAL
     while(playing){
+
+        al_flip_display();
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue,&ev);
         //---RENDER---
@@ -58,6 +65,15 @@ int main()
             }
             //Descreve comportamento do personagem a cada segundo
             character->onTick();
+            al_flip_display();
+            
+            character.set_velocityY(character.get_velocityY()+0.05);
+            character.move_character();
+            character.render_object();  
+            Cano1.desenhar_canos();
+            Cano1.mover_obstaculos();
+            Cano2.desenhar_canos();
+            Cano2.mover_obstaculos();
             al_flip_display();
             al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
         }
