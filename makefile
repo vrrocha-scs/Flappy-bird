@@ -15,17 +15,17 @@ $(OBJ_DIR)/obstaculo.o : $(INCLUDE_DIR)/obstaculo.hpp $(SRC_DIR)/obstaculo.cpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/obstaculo.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/obstaculo.o
 
 $(OBJ_DIR)/objetorenderizavel.o : $(INCLUDE_DIR)/objetorenderizavel.hpp $(SRC_DIR)/objetorenderizavel.cpp
-	${CC} ${CFLAGS} -c $(SRC_DIR)/objetorenderizavel.cpp ${LIBS} -lallegro_main -lallegro -I$(INCLUDE_DIR) -o $(OBJ_DIR)/objetorenderizavel.o
+	${CC} ${CFLAGS} -c $(SRC_DIR)/objetorenderizavel.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/objetorenderizavel.o
 
 $(OBJ_DIR)/personagem.o : $(INCLUDE_DIR)/personagem.hpp $(INCLUDE_DIR)/objetorenderizavel.hpp $(SRC_DIR)/personagem.cpp $(OBJ_DIR)/objetorenderizavel.o
 	${CC} ${CFLAGS} -c $(SRC_DIR)/personagem.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/personagem.o
 
 #ADICIONAR nova_classe.hpp DEPENDENTES AQUI
 $(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp $(INCLUDE_DIR)/obstaculo.hpp
-	${CC} ${CFLAGS} -c $(SRC_DIR)/main.cpp ${LIBS} -lallegro_main -lallegro_primitives -lallegro_image -lallegro -o $(OBJ_DIR)/main.o
+	${CC} ${CFLAGS} -c $(SRC_DIR)/main.cpp ${LIBS} -o $(OBJ_DIR)/main.o
 
 main: $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/obstaculo.o
-	${CC} ${CFLAGS} $(OBJS) ${LIBS} -lallegro_main -lallegro_primitives -lallegro_image -lallegro -o bin/main.exe 
+	${CC} ${CFLAGS} $(OBJS) $(pkg-config --libs --cflags allegro-5 allegro_main-5 allegro_audio-5 allegro_image-5 allegro_primitives-5) -lallegro_main -lallegro_primitives -lallegro_image -lallegro -o bin/main.exe 
 
 clean: 
 	rm -f main ${OBJ_DIR}/*.o 

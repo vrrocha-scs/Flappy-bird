@@ -10,3 +10,19 @@ ObjetoRenderizavel::ObjetoRenderizavel(float x,float y,string image_path){
 void ObjetoRenderizavel::render_object(){
     al_draw_bitmap(object_bitmap,posX,posY,0);
 }
+
+float ObjetoRenderizavel::get_posX(){
+    return posX;
+}
+
+float ObjetoRenderizavel::get_posY(){
+    return posY;
+}
+
+void ObjetoRenderizavel::set_posX(float x){
+    posX = x;
+}
+
+void ObjetoRenderizavel::set_posY(float y){
+    posY = y;
+}
