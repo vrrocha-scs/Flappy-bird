@@ -1,5 +1,8 @@
+#include "..\include\obstaculo.hpp"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
+
+using namespace std;
 
 //tamanho da tela
 const int SCREEN_W = 800;
@@ -20,7 +23,8 @@ int main()
     al_set_window_position(display, 200, 200);
 
     //desenha retangulo
-    al_draw_filled_rectangle(0, 0, 250, 500, corteste);
+    Obstaculo Cano(0, 0, 5, 250, 500);
+    Cano.desenhar_canos();
     al_flip_display();
 
     //espera por 5 segundos

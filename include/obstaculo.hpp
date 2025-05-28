@@ -9,6 +9,7 @@ class Obstaculo{
     float _posicaoX, _posicaoY;
     float _velocidadeX;
     float _larguraObs, _alturaObs;
+    ALLEGRO_COLOR cor;
 
     public:
     Obstaculo();
@@ -28,6 +29,10 @@ class Obstaculo{
 
     float get_alturaObs();
     void set_alturaObs(float);
+
+    void mover_obstaculos();
+    void desenhar_canos();
+    
 };
 
 #endif

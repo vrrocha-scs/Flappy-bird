@@ -1,6 +1,7 @@
 #include "obstaculo.hpp"
 #include "objetorenderizavel.hpp"
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
 
 Obstaculo::Obstaculo() : Obstaculo::Obstaculo(0, 0, 0, 0, 0) {};
 Obstaculo::Obstaculo(float posicaoX, float posicaoY, float velocidade, float largura, float altura)
@@ -10,6 +11,7 @@ Obstaculo::Obstaculo(float posicaoX, float posicaoY, float velocidade, float lar
     _velocidadeX = velocidade;
     _larguraObs = largura;
     _alturaObs = altura;
+    cor = al_map_rgb(100, 150, 100);
 }
 
     float Obstaculo::get_posicaoX()
@@ -59,6 +61,17 @@ Obstaculo::Obstaculo(float posicaoX, float posicaoY, float velocidade, float lar
     void Obstaculo::set_alturaObs(float a)
     {
         this->_alturaObs = a;
+        return;
+    }
+
+    void Obstaculo::mover_obstaculos()
+    {
+        _posicaoX -= _velocidadeX;
+        return;
+    }
+    void Obstaculo::desenhar_canos()
+    {
+        al_draw_filled_rectangle(_posicaoX, _posicaoY, _posicaoX + _larguraObs, _posicaoY + _alturaObs, cor);
         return;
     }
 
