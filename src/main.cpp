@@ -28,7 +28,10 @@ int main()
 
 
     event_queue = al_create_event_queue();
-    display = al_create_display(640,480);
+    display = al_create_display(SCREEN_W, SCREEN_H);
+    al_set_new_window_position(200, 200);
+
+
     al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
     al_flip_display();
     timer = al_create_timer(1.0/FPS);
@@ -40,7 +43,10 @@ int main()
     al_start_timer(timer);
 
     //objetos do jogo
-    Personagem character(300,300,"assets/images/character_placeholder.png");
+    Personagem character(SCREEN_W/2, SCREEN_H/2,"assets/images/character_placeholder.png");
+    Obstaculo Cano1(600, 0, 1.2, 30, 150);
+    Obstaculo Cano2(600, 320, 1.2, 30, SCREEN_H - 320);
+
     
     //WHILE PRINCIPAL
     /*To do: Adicionar queue de eventos com:
@@ -48,6 +54,8 @@ int main()
         -Evento de clicar
     */    
     while(playing){
+
+        al_flip_display();
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue,&ev);
         if(ev.type == ALLEGRO_EVENT_TIMER){
@@ -55,7 +63,11 @@ int main()
             al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
             character.set_velocityY(character.get_velocityY()+0.05);
             character.move_character();
-            character.render_object();
+            character.render_object();  
+            Cano1.desenhar_canos();
+            Cano1.mover_obstaculos();
+            Cano2.desenhar_canos();
+            Cano2.mover_obstaculos();
             al_flip_display();
         }
         else if (ev.type == ALLEGRO_KEY_UP){

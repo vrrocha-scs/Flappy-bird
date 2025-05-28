@@ -11,7 +11,8 @@ Obstaculo::Obstaculo(float posicaoX, float posicaoY, float velocidade, float lar
     _velocidadeX = velocidade;
     _larguraObs = largura;
     _alturaObs = altura;
-    cor = al_map_rgb(100, 150, 100);
+    const float distmin = 130;
+    cor = al_map_rgb(0, 255, 0);
 }
 
     float Obstaculo::get_posicaoX()
@@ -71,7 +72,10 @@ Obstaculo::Obstaculo(float posicaoX, float posicaoY, float velocidade, float lar
     }
     void Obstaculo::desenhar_canos()
     {
-        al_draw_filled_rectangle(_posicaoX, _posicaoY, _posicaoX + _larguraObs, _posicaoY + _alturaObs, cor);
+        float posX2, posY2;
+        posX2 = _posicaoX + _larguraObs;
+        posY2 = _posicaoY + _alturaObs;
+        al_draw_filled_rectangle(_posicaoX, _posicaoY, posX2, posY2, cor);
         return;
     }
 
