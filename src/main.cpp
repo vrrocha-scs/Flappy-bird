@@ -3,7 +3,9 @@
 #include <allegro5/allegro_image.h>
 #include <iostream>
 
-#include "../include/personagem.hpp"
+#include <../include/personagem.hpp>
+#include <../include/obstaculo.hpp>
+
 //tamanho da tela
 const int SCREEN_W = 800;
 const int SCREEN_H = 600;
