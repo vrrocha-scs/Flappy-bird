@@ -15,9 +15,12 @@ cadastro* cadastro::verificar_dados(std::string possivel_nome){
        cadastro* novo_player = new cadastro(nome_dados, aux_vitorias, aux_derrotas, aux_score);
        return novo_player;
       }
-      cadastro* novo_player = new cadastro(nome_dados, aux_vitorias, aux_derrotas, aux_score);
+    }
+    cadastro* novo_player = new cadastro(possivel_nome, aux_vitorias, aux_derrotas, aux_score);
       return novo_player;
     }
+    else{
+      std::cout<<"erro ao abrir arquivo"<<std::endl;
     }
     }
 
