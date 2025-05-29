@@ -10,6 +10,8 @@ all: main
 
 #$(OBJ_DIR)/nova_classe.o : $(INCLUDE_DIR)/nova_classe.hpp $(SRC_DIR)/nova_classe.cpp $(INCLUDE_DIR)/classe_dependente.hpp (se houver)
 #	${CC} ${CFLAGS} -c $(SRC_DIR)/nova_classe.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/nova_classe.o
+(OBJ_DIR)/cadastro.o : $(INCLUDE_DIR)/cadastro.hpp $(SRC_DIR)/cadastro.cpp 
+	${CC} ${CFLAGS} -c $(SRC_DIR)/cadastro.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/cadastro.o
 
 $(OBJ_DIR)/obstaculo.o : $(INCLUDE_DIR)/obstaculo.hpp $(SRC_DIR)/obstaculo.cpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/obstaculo.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/obstaculo.o
@@ -21,7 +23,7 @@ $(OBJ_DIR)/personagem.o : $(INCLUDE_DIR)/personagem.hpp $(INCLUDE_DIR)/objetoren
 	${CC} ${CFLAGS} -c $(SRC_DIR)/personagem.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/personagem.o
 
 #ADICIONAR nova_classe.hpp DEPENDENTES AQUI
-$(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp $(INCLUDE_DIR)/obstaculo.hpp
+$(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp $(INCLUDE_DIR)/obstaculo.hpp $(INCLUDE_DIR)/cadastro.hpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/main.cpp ${LIBS} -o $(OBJ_DIR)/main.o
 
 main: $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/obstaculo.o
