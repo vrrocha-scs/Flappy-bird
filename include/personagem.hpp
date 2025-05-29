@@ -19,7 +19,7 @@ class Personagem : public ObjetoRenderizavel{
         void gain_score(int x);
         void set_velocityX(float x);
         void set_velocityY(float y);
-        void onTick();
+        void on_tick() override;
         //void render_object() override;
 };
 

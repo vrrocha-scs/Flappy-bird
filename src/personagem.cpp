@@ -32,11 +32,12 @@ float Personagem::get_velocityY(){
     return velocityY;
 }
 
-void Personagem::onTick(){
+void Personagem::on_tick(){
         set_velocityY(get_velocityY()+0.15);
         move_character();
 }
 
+//TODO: Personagem rotaciona em funcao de sua velocidade vertical
 // void Personagem::render_object(){
 //     al_draw_rotated_bitmap(get_bitmap(),get_posX(),get_posY(),get_posX(),get_posY(),velocityY*(0.1),0);
 // }
