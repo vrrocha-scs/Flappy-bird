@@ -11,6 +11,7 @@
 const int SCREEN_W = 800;
 const int SCREEN_H = 600;
 const float FPS = 120;
+
 double ultimo_spawn = 0;
 
 int main()
@@ -26,7 +27,7 @@ int main()
     ALLEGRO_EVENT_QUEUE * event_queue = NULL;
     //ALLEGRO_EVENT_QUEUE * spawner_queue = NULL;
     ALLEGRO_TIMER * timer = NULL;
-    ALLEGRO_TIMER * spawner = NULL;
+    //ALLEGRO_TIMER * spawner = NULL;
 
     bool playing = true;
 
@@ -45,8 +46,6 @@ int main()
     al_start_timer(timer);
 
     //objetos do jogo
-    Obstaculo* canocima = new Obstaculo(600, 0, 1.2, 30, 150);
-    Obstaculo* canobaixo = new Obstaculo(600, 320, 1.2, 30, SCREEN_H - 320);
     vector<Obstaculo*> canos;
     
     Personagem* character = new Personagem(SCREEN_W/2 -250,SCREEN_H/2,"assets/images/character_placeholder.png");
@@ -69,15 +68,14 @@ int main()
             }
             for (auto c : canos)
             {
-                c->desenhar_canos();
-                c->mover_obstaculos();
+                c->onTick();
             }
 
             if (tempo_atual - ultimo_spawn >= 3)
             {
                 ultimo_spawn = tempo_atual;
-                canos.push_back(new Obstaculo(600, 0, 1.2, 30, 150));
-                canos.push_back(new Obstaculo(600, 320, 1.2, 30, SCREEN_H - 320));
+                canos.push_back(new Obstaculo(SCREEN_W, 0, "teste", 1.2, 30, 150));
+                canos.push_back(new Obstaculo(SCREEN_W, 320, "assets/images/canobaixo.png", 1.2, 30, SCREEN_H - 320));
             }
 
             al_flip_display();
