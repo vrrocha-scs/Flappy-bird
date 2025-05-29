@@ -61,11 +61,11 @@ int main()
         //---RENDER---
         if(ev.type == ALLEGRO_EVENT_TIMER){
             
+            //Renderiza e chama o comportamento dos objetos a cada segundo
             for(auto i : objects_to_render){
                 i->render_object();
+                i->on_tick();
             }
-            //Descreve comportamento do personagem a cada segundo
-            character->onTick();
 
             for (auto c : canos)
             {
