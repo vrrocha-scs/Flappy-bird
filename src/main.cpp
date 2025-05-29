@@ -49,7 +49,7 @@ int main()
     Obstaculo* canobaixo = new Obstaculo(600, 320, 1.2, 30, SCREEN_H - 320);
     vector<Obstaculo*> canos;
     
-    Personagem* character = new Personagem(SCREEN_W/2 + 20,SCREEN_H/2,"assets/images/character_placeholder.png");
+    Personagem* character = new Personagem(SCREEN_W/2 -250,SCREEN_H/2,"assets/images/character_placeholder.png");
     vector<ObjetoRenderizavel*> objects_to_render;
     objects_to_render.push_back(character);
 
@@ -67,7 +67,6 @@ int main()
                 i->render_object();
                 i->on_tick();
             }
-
             for (auto c : canos)
             {
                 c->desenhar_canos();

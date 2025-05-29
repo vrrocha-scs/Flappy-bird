@@ -3,13 +3,14 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro.h>
 #include "objetorenderizavel.hpp"
+#include "hitbox.hpp"
 
 class Personagem : public ObjetoRenderizavel{
     private:
         float velocityX;
         float velocityY;
         int score;
-    
+        Hitbox hitbox;
     public:
         Personagem(float x, float y,string image_path);
         void move_character();
