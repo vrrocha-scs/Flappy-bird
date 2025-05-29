@@ -3,37 +3,12 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 
-Obstaculo::Obstaculo() : Obstaculo::Obstaculo(0, 0, 0, 0, 0) {};
-Obstaculo::Obstaculo(float posicaoX, float posicaoY, float velocidade, float largura, float altura)
+Obstaculo::Obstaculo(float posX, float posY, string image_path, float velocidade, float largura, float altura) : 
+ObjetoRenderizavel(posX, posY, image_path), _velocidadeX(velocidade), _larguraObs(largura), _alturaObs(altura)
 {
-    _posicaoX = posicaoX;
-    _posicaoY = posicaoY;
-    _velocidadeX = velocidade;
-    _larguraObs = largura;
-    _alturaObs = altura;
     const float distmin = 130;
     cor = al_map_rgb(0, 255, 0);
 }
-
-    float Obstaculo::get_posicaoX()
-    {
-        return this->_posicaoX;
-    }
-    void Obstaculo::set_posicaoX(float a)
-    {
-        this->_posicaoX = a;
-        return;
-    }
-
-    float Obstaculo::get_posicaoY()
-    {
-        return this->_posicaoY;
-    }
-    void Obstaculo::set_posicaoY(float a)
-    {
-        this->_posicaoY = a;
-        return; 
-    }
 
     float Obstaculo::get_velocidadeX()
     {
@@ -67,16 +42,22 @@ Obstaculo::Obstaculo(float posicaoX, float posicaoY, float velocidade, float lar
 
     void Obstaculo::mover_obstaculos()
     {
-        _posicaoX -= _velocidadeX;
+        this->set_posX(this->get_posX() - this->get_velocidadeX());
         return;
     }
     void Obstaculo::desenhar_canos()
     {
         float posX2, posY2;
-        posX2 = _posicaoX + _larguraObs;
-        posY2 = _posicaoY + _alturaObs;
-        al_draw_filled_rectangle(_posicaoX, _posicaoY, posX2, posY2, cor);
+        posX2 = get_posX() + get_larguraObs();
+        posY2 = get_posY() + get_alturaObs();
+        al_draw_filled_rectangle(get_posX(), get_posY(), posX2, posY2, cor);
         return;
+    }
+
+    void Obstaculo::onTick()
+    {
+        this->desenhar_canos();
+        this->mover_obstaculos();
     }
 
 
