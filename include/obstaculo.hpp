@@ -9,6 +9,7 @@ class Obstaculo{
     float _posicaoX, _posicaoY;
     float _velocidadeX;
     float _larguraObs, _alturaObs;
+    float distmin;
     ALLEGRO_COLOR cor;
 
     public:
