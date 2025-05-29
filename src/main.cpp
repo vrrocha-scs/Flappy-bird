@@ -74,7 +74,7 @@ int main()
             if (tempo_atual - ultimo_spawn >= 3)
             {
                 ultimo_spawn = tempo_atual;
-                canos.push_back(new Obstaculo(SCREEN_W, 0, "teste", 1.2, 30, 150));
+                canos.push_back(new Obstaculo(SCREEN_W, 0, "assets/images/canobaixo.png", 1.2, 30, 150));
                 canos.push_back(new Obstaculo(SCREEN_W, 320, "assets/images/canobaixo.png", 1.2, 30, SCREEN_H - 320));
             }
 
