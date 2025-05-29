@@ -11,6 +11,7 @@ class Obstaculo{
     float _larguraObs, _alturaObs;
     float distmin;
     ALLEGRO_COLOR cor;
+    
 
     public:
     Obstaculo();
