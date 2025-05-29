@@ -1,12 +1,13 @@
 #include "obstaculo.hpp"
 #include "objetorenderizavel.hpp"
+#include "randomizador.hpp"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 
 Obstaculo::Obstaculo(float posX, float posY, string image_path, float velocidade, float largura, float altura) : 
 ObjetoRenderizavel(posX, posY, image_path), _velocidadeX(velocidade), _larguraObs(largura), _alturaObs(altura)
 {
-    const float distmin = 130;
+    const float distmin = 170;
     cor = al_map_rgb(0, 255, 0);
 }
 
@@ -47,14 +48,17 @@ ObjetoRenderizavel(posX, posY, image_path), _velocidadeX(velocidade), _larguraOb
     }
     void Obstaculo::desenhar_canos()
     {
+        //Aleatorizando onde o buraco spawna
         float posX2, posY2;
         posX2 = get_posX() + get_larguraObs();
         posY2 = get_posY() + get_alturaObs();
-        al_draw_filled_rectangle(get_posX(), get_posY(), posX2, posY2, cor);
+
+        //al_draw_filled_rectangle(get_posX(), get_posY(), posX2, posY2, cor);
+        render_object();
         return;
     }
 
-    void Obstaculo::onTick()
+    void Obstaculo::on_tick()
     {
         this->desenhar_canos();
         this->mover_obstaculos();

@@ -19,16 +19,13 @@ class Obstaculo  : public ObjetoRenderizavel{
 
     float get_velocidadeX();
     void set_velocidadeX(float);
-
     float get_larguraObs();
     void set_larguraObs(float);
-
     float get_alturaObs();
     void set_alturaObs(float);
-
     void mover_obstaculos();
     void desenhar_canos();
-    void onTick();
+    void on_tick() override;
 };
 
 #endif
