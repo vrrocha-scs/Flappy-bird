@@ -18,6 +18,7 @@ class ObjetoRenderizavel{
         void set_posX(float x);
         void set_posY(float y);
         virtual void render_object();
+        virtual void on_tick(){};
 };
 
 #endif

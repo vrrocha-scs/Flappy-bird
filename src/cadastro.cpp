@@ -4,22 +4,22 @@
 #include<limits>
 #include<vector>
 
-cadastro::cadastro(std::string _nome,int _vitorias,int _derrotas, int _score):nome_jogador(_nome),vitoria(_vitorias),derrota(_derrotas),high_score(_score){}
+Cadastro::Cadastro(std::string _nome,int _vitorias,int _derrotas, int _score):nome_jogador(_nome),vitoria(_vitorias),derrota(_derrotas),high_score(_score){}
 
-cadastro* cadastro::verificar_dados(std::string possivel_nome){
+Cadastro* Cadastro::verificar_dados(std::string possivel_nome){
     std::string nome_dados;int aux_vitorias=0,aux_derrotas=0,aux_score=0;
     std::ifstream leitura_arq("dados.txt");
     if(leitura_arq.is_open()){
      while(leitura_arq>>nome_dados){
       if(possivel_nome==nome_dados){
        leitura_arq>>aux_vitorias>>aux_derrotas>>aux_score;
-       cadastro* novo_player = new cadastro(nome_dados, aux_vitorias, aux_derrotas, aux_score);
+       Cadastro* novo_player = new Cadastro(nome_dados, aux_vitorias, aux_derrotas, aux_score);
        return novo_player;
       }
       else 
       leitura_arq.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
     }
-    cadastro* novo_player = new cadastro(possivel_nome, aux_vitorias, aux_derrotas, aux_score);
+    Cadastro* novo_player = new Cadastro(possivel_nome, aux_vitorias, aux_derrotas, aux_score);
     leitura_arq.close();
 
     std::ofstream escrita_arq("dados.txt", std::ios::app);
@@ -38,7 +38,7 @@ cadastro* cadastro::verificar_dados(std::string possivel_nome){
     }
     }
 
-void cadastro::modificar_dados(int score_partida,bool resultado){
+void Cadastro::modificar_dados(int score_partida,bool resultado){
   if(high_score<score_partida){
     high_score=score_partida;
   }
@@ -50,17 +50,17 @@ void cadastro::modificar_dados(int score_partida,bool resultado){
   }
 
   std::ifstream arq_armazenagem("dados.txt");
-  std::vector<cadastro>cadastros_jogadores;
+  std::vector<Cadastro>cadastros_jogadores;
   std::string nome;
   int aux_vit,aux_der,aux_score;
   bool encontrado=false;
   if(arq_armazenagem.is_open()){
   while(arq_armazenagem>>nome>>aux_vit>>aux_der>>aux_score){
     if(nome!=nome_jogador){
-      cadastros_jogadores.push_back(cadastro(nome,aux_vit,aux_der,aux_score));
+      cadastros_jogadores.push_back(Cadastro(nome,aux_vit,aux_der,aux_score));
     }
     else
-    cadastros_jogadores.push_back(cadastro(nome_jogador,vitoria,derrota,high_score));
+    cadastros_jogadores.push_back(Cadastro(nome_jogador,vitoria,derrota,high_score));
     encontrado=true;
   }
   arq_armazenagem.close();

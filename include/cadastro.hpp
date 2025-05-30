@@ -3,17 +3,17 @@
 
 #include<string>
 
-class cadastro{
+class Cadastro{
   private:
    std::string nome_jogador;
    int vitoria;
    int derrota;
    int high_score;
   public:
-   cadastro* verificar_dados(std::string);
+   Cadastro* verificar_dados(std::string);
    void modificar_dados(int,bool);
 
-   cadastro(std::string,int,int,int);
+   Cadastro(std::string,int,int,int);
 };
 
 #endif
