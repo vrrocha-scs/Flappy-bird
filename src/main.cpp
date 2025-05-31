@@ -9,8 +9,8 @@
 #include "../include/randomizador.hpp"
 
 //tamanho da tela
-const int SCREEN_W = 800;
-const int SCREEN_H = 600;
+const int SCREEN_W = 1000;
+const int SCREEN_H = 1000;
 const float FPS = 120;
 
 double ultimo_spawn = 0;
@@ -29,7 +29,7 @@ int main()
     //ALLEGRO_EVENT_QUEUE * spawner_queue = NULL;
     ALLEGRO_TIMER * timer = NULL;
     //ALLEGRO_TIMER * spawner = NULL;
-    Randomizador rando(100, 400);
+    Randomizador rando(300, 700);
 
     bool playing = true;
 
@@ -73,12 +73,13 @@ int main()
                 c->on_tick();
             }
 
-            if (tempo_atual - ultimo_spawn >= 3)
+            if (tempo_atual - ultimo_spawn >= 2)
             {
                 ultimo_spawn = tempo_atual;
                 int altura_buraco = rando.valor_aleatorio();
-                canos.push_back(new Obstaculo(SCREEN_W, 0, "assets/images/canobaixo.png", 1.2, 30, altura_buraco));
-                canos.push_back(new Obstaculo(SCREEN_W, altura_buraco + 170, "assets/images/canobaixo.png", 1.2, 30, (SCREEN_H - altura_buraco + 170)));
+                int tamanhofixo = 0;
+                canos.push_back(new Obstaculo(SCREEN_W, -1000 + altura_buraco, "assets/images/canocima.png", 1.2, 50, altura_buraco));
+                canos.push_back(new Obstaculo(SCREEN_W, altura_buraco + tamanhofixo, "assets/images/canobaixo.png", 1.2, 50, (SCREEN_H - (altura_buraco + tamanhofixo))));
             }
 
             al_flip_display();
