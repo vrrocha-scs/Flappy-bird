@@ -29,7 +29,7 @@ int main()
     //ALLEGRO_EVENT_QUEUE * spawner_queue = NULL;
     ALLEGRO_TIMER * timer = NULL;
     //ALLEGRO_TIMER * spawner = NULL;
-    Randomizador rando(300, 700);
+    Randomizador rando(200, 800);
 
     bool playing = true;
 
@@ -77,9 +77,17 @@ int main()
             {
                 ultimo_spawn = tempo_atual;
                 int altura_buraco = rando.valor_aleatorio();
-                int tamanhofixo = 0;
-                canos.push_back(new Obstaculo(SCREEN_W, -1000 + altura_buraco, "assets/images/canocima.png", 1.2, 50, altura_buraco));
-                canos.push_back(new Obstaculo(SCREEN_W, altura_buraco + tamanhofixo, "assets/images/canobaixo.png", 1.2, 50, (SCREEN_H - (altura_buraco + tamanhofixo))));
+                int tamanho_gap = 100;
+                canos.push_back(new Obstaculo(SCREEN_W + 50, -1000 + altura_buraco, "assets/images/canocima.png", 1.2, 50, altura_buraco));
+                canos.push_back(new Obstaculo(SCREEN_W + 50, altura_buraco - tamanho_gap, "assets/images/canobaixo.png", 1.2, 50, (SCREEN_H - (altura_buraco))));
+            }
+            if(canos.size() >= 10)
+            {
+                vector<Obstaculo*>::iterator it = canos.begin();
+                delete *(it);
+                canos.erase(it);
+                delete *(it);
+                canos.erase(it);
             }
 
             al_flip_display();

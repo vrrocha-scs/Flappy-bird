@@ -19,6 +19,7 @@ class ObjetoRenderizavel{
         void set_posY(float y);
         virtual void render_object();
         virtual void on_tick(){};
+        virtual ~ObjetoRenderizavel();
 };
 
 #endif

@@ -31,3 +31,6 @@ void ObjetoRenderizavel::set_posY(float y){
     posY = y;
 }
 
+ObjetoRenderizavel::~ObjetoRenderizavel(){
+}
+
