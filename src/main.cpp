@@ -11,7 +11,7 @@
 //tamanho da tela
 const int SCREEN_W = 1000;
 const int SCREEN_H = 1000;
-const float FPS = 120;
+const float FPS = 60;
 
 double ultimo_spawn = 0;
 
@@ -36,7 +36,7 @@ int main()
     //spawner_queue = al_create_event_queue();
     event_queue = al_create_event_queue();
     display = al_create_display(SCREEN_W,SCREEN_H);
-    al_set_window_position(display,200,200);
+    al_set_window_position(display,100,100);
     al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
     al_flip_display();
     timer = al_create_timer(1.0/FPS);
@@ -73,7 +73,7 @@ int main()
                 c->on_tick();
             }
 
-            if (tempo_atual - ultimo_spawn >= 2)
+            if (tempo_atual - ultimo_spawn >= 6)
             {
                 ultimo_spawn = tempo_atual;
                 int altura_buraco = rando.valor_aleatorio();
@@ -92,7 +92,7 @@ int main()
 
             al_flip_display();
             al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
-    }
+        }
 
         //---CONTROLES---
         else if (ev.keyboard.keycode == ALLEGRO_KEY_UP){
