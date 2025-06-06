@@ -7,6 +7,10 @@ ObjetoRenderizavel::ObjetoRenderizavel(float x,float y,string image_path){
     object_bitmap = al_load_bitmap(image_path.c_str());
 }
 
+ObjetoRenderizavel::~ObjetoRenderizavel(){
+    al_destroy_bitmap(object_bitmap);
+}
+
 void ObjetoRenderizavel::render_object(){
     al_draw_bitmap(object_bitmap,posX,posY,0);
 }
@@ -31,6 +35,5 @@ void ObjetoRenderizavel::set_posY(float y){
     posY = y;
 }
 
-ObjetoRenderizavel::~ObjetoRenderizavel(){
-}
+
 
