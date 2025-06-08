@@ -12,6 +12,7 @@ class ObjetoRenderizavel{
         float posX, posY;
     public:
         ObjetoRenderizavel(float x,float y,string image_path);
+        virtual ~ObjetoRenderizavel();
         float get_posX();
         float get_posY();
         ALLEGRO_BITMAP* get_bitmap();
@@ -19,7 +20,6 @@ class ObjetoRenderizavel{
         void set_posY(float y);
         virtual void render_object();
         virtual void on_tick(){};
-        virtual ~ObjetoRenderizavel();
 };
 
 #endif
