@@ -6,14 +6,13 @@
 class Cadastro{
   private:
    std::string nome_jogador;
-   int vitoria;
-   int derrota;
+   int numero_partidas;
    int high_score;
   public:
    Cadastro* verificar_dados(std::string);
-   void modificar_dados(int,bool);
+   void modificar_dados(int);
 
-   Cadastro(std::string,int,int,int);
+   Cadastro(std::string,int,int);
 };
 
 #endif

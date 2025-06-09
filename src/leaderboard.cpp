@@ -9,7 +9,7 @@
     std::list<Leaderboard> tabelados;
     std::string aux_nome;
     int aux_pontucao_tabelados;
-    bool encontrou=false;
+    bool encontrou=false, modificado=false;
 
     std::fstream arq_tabela_leit("tabela.txt");
     if(arq_tabela_leit.is_open()){
@@ -31,6 +31,7 @@
           for (auto it=tabelados.begin();it!=tabelados.end();it++){
             if(score_partida>it->pontuacao_tabelados){
                tabelados.insert(it, Leaderboard(nome_jogador,score_partida));
+               modificado=true;
                if(tabelados.size()>TAMANHO){
                tabelados.pop_back();
                }
@@ -43,15 +44,17 @@
         std::cout<<"erro ao abrir tabela para leitura";
     }
     arq_tabela_leit.close();
-   
-    std::ofstream arq_tabela_esc("tabela.txt");
-    if(arq_tabela_esc.is_open()){
-      for (const auto& it : tabelados){
-        arq_tabela_esc<<it.nome_tabelados<<" "<<it.pontuacao_tabelados<<std::endl;
-      }
-    }
-    else{
+
+   if(modificado){
+     std::ofstream arq_tabela_esc("tabela.txt");
+     if(arq_tabela_esc.is_open()){
+       for (const auto& it : tabelados){
+         arq_tabela_esc<<it.nome_tabelados<<" "<<it.pontuacao_tabelados<<std::endl;
+       }
+     }
+     else{
         std::cout<<"erro ao abrir tabela para escrita";
-    }
-    arq_tabela_esc.close();
+     }
+     arq_tabela_esc.close();
+  }
  }
