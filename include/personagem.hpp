@@ -24,6 +24,7 @@ class Personagem : public ObjetoRenderizavel{
         void set_velocityY(float y);
         void on_tick() override;
         void jump();
+        bool checkCollision(Hitbox other_hitbox);
         void render_object() override;
 };
 

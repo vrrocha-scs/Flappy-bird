@@ -55,8 +55,6 @@ int main()
     //objetos do jogo
     vector<Obstaculo*> canos;
     Personagem* character = new Personagem(SCREEN_W/2 -250,SCREEN_H/2,character_sprite);
-    vector<ObjetoRenderizavel*> objects_to_render;
-    objects_to_render.push_back(character);
 
     //WHILE PRINCIPAL
     while(playing){
@@ -68,13 +66,14 @@ int main()
         if(ev.type == ALLEGRO_EVENT_TIMER){
             
             //Renderiza e chama o comportamento dos objetos a cada segundo
-            for(auto i : objects_to_render){
-                i->render_object();
-                i->on_tick();
-            }
+            character->on_tick();
             for (auto c : canos)
-            {
+            {   
                 c->on_tick();
+                //checagem de colisao
+                if(character->checkCollision(c->get_hitbox())){
+                    cout << "Colidiu";
+                }
             }
 
             if (tempo_atual - ultimo_spawn >= 6)
@@ -106,6 +105,15 @@ int main()
             playing = false;
         }
     }
+
+    //dealocando memória
+    delete character;
+
+    //dealocando imagens
+    al_destroy_bitmap(character_sprite);
+    al_destroy_bitmap(upper_pipe_sprite);
+    al_destroy_bitmap(lower_pipe_sprite);
+
 
     //fecha a janela
     al_destroy_display(display);

@@ -9,9 +9,7 @@ ObjetoRenderizavel::ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap){
     centerY = (al_get_bitmap_height(object_bitmap))/2;
 }
 
-ObjetoRenderizavel::~ObjetoRenderizavel(){
-    al_destroy_bitmap(object_bitmap);
-}
+
 
 void ObjetoRenderizavel::render_object(){
     al_draw_bitmap(object_bitmap,posX,posY,0);

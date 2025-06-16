@@ -3,8 +3,10 @@
 #include <math.h>
 
 #define M_PI 3.14159265358979323846
+#define JUMP_POWER 5
+#define GRAVITY 0.25
 
-Personagem::Personagem(float x, float y,ALLEGRO_BITMAP* bitmap) : ObjetoRenderizavel(x,y,bitmap),jump_power(3.5),gravity(0.15), score(0), hitbox(this){};
+Personagem::Personagem(float x, float y,ALLEGRO_BITMAP* bitmap) : ObjetoRenderizavel(x,y,bitmap),jump_power(JUMP_POWER),gravity(GRAVITY), score(0), hitbox(this){};
 
 void Personagem::move_character(){
 
@@ -38,15 +40,21 @@ float Personagem::get_velocityY(){
 }
 
 void Personagem::on_tick(){
+        render_object();
         hitbox.on_tick();
-        hitbox.draw_hitbox();
+        //hitbox.draw_hitbox();
         set_velocityY(get_velocityY()+gravity);
         move_character();
 }
 void Personagem::jump(){
     set_velocityY(-jump_power);
 }
-
+bool Personagem::checkCollision(Hitbox other_hitbox){
+    if(hitbox.has_collision(other_hitbox)){
+        return true;
+    }
+    return false;
+}
 void Personagem::render_object(){
     float rotation = min((velocityY/jump_power)*(M_PI/4)*0.45,M_PI/2);
     

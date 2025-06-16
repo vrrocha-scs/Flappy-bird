@@ -40,6 +40,10 @@ ObjetoRenderizavel(posX, posY, bitmap), _velocidadeX(velocidade), _larguraObs(la
         this->_alturaObs = a;
         return;
     }
+    Hitbox Obstaculo::get_hitbox(){
+        return hitbox;
+    }
+
 
     void Obstaculo::mover_obstaculos()
     {
@@ -65,6 +69,5 @@ ObjetoRenderizavel(posX, posY, bitmap), _velocidadeX(velocidade), _larguraObs(la
         this->mover_obstaculos();
 
     }
-
-
+    
 

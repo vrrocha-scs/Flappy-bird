@@ -12,7 +12,7 @@ class ObjetoRenderizavel{
         float posX, posY,centerX,centerY;
     public:
         ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap);
-        virtual ~ObjetoRenderizavel();
+        virtual ~ObjetoRenderizavel(){};
         float get_posX();
         float get_posY();
         float get_centerX();
