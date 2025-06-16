@@ -47,10 +47,14 @@ int main()
     
     al_start_timer(timer);
 
+    //sprites do jogo
+    ALLEGRO_BITMAP* character_sprite = al_load_bitmap("assets/images/character_placeholder.png");
+    ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
+    ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
+
     //objetos do jogo
     vector<Obstaculo*> canos;
-    
-    Personagem* character = new Personagem(SCREEN_W/2 -250,SCREEN_H/2,"assets/images/character_placeholder.png");
+    Personagem* character = new Personagem(SCREEN_W/2 -250,SCREEN_H/2,character_sprite);
     vector<ObjetoRenderizavel*> objects_to_render;
     objects_to_render.push_back(character);
 
@@ -78,8 +82,8 @@ int main()
                 ultimo_spawn = tempo_atual;
                 int altura_buraco = rando.valor_aleatorio();
                 int tamanho_gap = 100;
-                canos.push_back(new Obstaculo(SCREEN_W + 50, -1000 + altura_buraco, "assets/images/canocima.png", 1.2, 50, altura_buraco));
-                canos.push_back(new Obstaculo(SCREEN_W + 50, altura_buraco - tamanho_gap, "assets/images/canobaixo.png", 1.2, 50, (SCREEN_H - (altura_buraco))));
+                canos.push_back(new Obstaculo(SCREEN_W + 50, -1000 + altura_buraco, upper_pipe_sprite, 1.2, 50, altura_buraco));
+                canos.push_back(new Obstaculo(SCREEN_W + 50, altura_buraco - tamanho_gap, lower_pipe_sprite, 1.2, 50, (SCREEN_H - (altura_buraco))));
             }
             if(canos.size() >= 10)
             {
@@ -96,7 +100,7 @@ int main()
 
         //---CONTROLES---
         else if (ev.keyboard.keycode == ALLEGRO_KEY_UP){
-            character->set_velocityY(-3.5);
+            character->jump();
         }
         else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             playing = false;

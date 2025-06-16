@@ -4,8 +4,8 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 
-Obstaculo::Obstaculo(float posX, float posY, string image_path, float velocidade, float largura, float altura) : 
-ObjetoRenderizavel(posX, posY, image_path), _velocidadeX(velocidade), _larguraObs(largura), _alturaObs(altura)
+Obstaculo::Obstaculo(float posX, float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float largura, float altura) : 
+ObjetoRenderizavel(posX, posY, bitmap), _velocidadeX(velocidade), _larguraObs(largura), _alturaObs(altura),hitbox(this)
 {
     const float distmin = 170;
     cor = al_map_rgb(0, 255, 0);
@@ -60,8 +60,10 @@ ObjetoRenderizavel(posX, posY, image_path), _velocidadeX(velocidade), _larguraOb
 
     void Obstaculo::on_tick()
     {
+        hitbox.on_tick();
         this->desenhar_canos();
         this->mover_obstaculos();
+
     }
 
 

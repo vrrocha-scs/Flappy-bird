@@ -1,10 +1,10 @@
 #include "../include/objetorenderizavel.hpp"
 #include <allegro5/allegro_image.h>
 
-ObjetoRenderizavel::ObjetoRenderizavel(float x,float y,string image_path){
+ObjetoRenderizavel::ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap){
     posX = x;
     posY = y;
-    object_bitmap = al_load_bitmap(image_path.c_str());
+    object_bitmap = bitmap;
     centerX = (al_get_bitmap_width(object_bitmap))/2;
     centerY = (al_get_bitmap_height(object_bitmap))/2;
 }

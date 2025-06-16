@@ -4,7 +4,7 @@
 
 #define M_PI 3.14159265358979323846
 
-Personagem::Personagem(float x, float y,string image_path) : ObjetoRenderizavel(x,y,image_path),jump_power(3.5),gravity(0.15), score(0), hitbox(this){};
+Personagem::Personagem(float x, float y,ALLEGRO_BITMAP* bitmap) : ObjetoRenderizavel(x,y,bitmap),jump_power(3.5),gravity(0.15), score(0), hitbox(this){};
 
 void Personagem::move_character(){
 

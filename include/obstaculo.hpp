@@ -3,6 +3,7 @@
 
 #include <allegro5/allegro.h>
 #include "../include/objetorenderizavel.hpp"
+#include "hitbox.hpp"
 
 class Obstaculo  : public ObjetoRenderizavel{
     private:
@@ -11,11 +12,11 @@ class Obstaculo  : public ObjetoRenderizavel{
     float _larguraObs, _alturaObs;
     float distmin;
     ALLEGRO_COLOR cor;
-    
+    Hitbox hitbox;
 
     public:
     Obstaculo();
-    Obstaculo(float posX, float posY, string image_path, float velocidadeX, float largura, float altura);
+    Obstaculo(float posX, float posY, ALLEGRO_BITMAP* bitmap, float velocidadeX, float largura, float altura);
 
     float get_velocidadeX();
     void set_velocidadeX(float);

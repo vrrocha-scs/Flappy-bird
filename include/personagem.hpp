@@ -14,7 +14,7 @@ class Personagem : public ObjetoRenderizavel{
         int score;
         Hitbox hitbox;
     public:
-        Personagem(float x, float y,string image_path);
+        Personagem(float x, float y,ALLEGRO_BITMAP* bitmap);
         void move_character();
         float get_velocityX();
         float get_velocityY();

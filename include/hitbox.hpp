@@ -17,6 +17,7 @@ class Hitbox{
         void draw_hitbox();
         //Move a hitbox para a coordenada nova explicitada. ATENÇÃO: NÃO ESQUECER DE SEMPRE MOVIMENTAR A HITBOX JUNTO COM O OBJETO
         void move_hitbox(float new_posX,float new_posY);
+        void on_tick();
 };
 
 #endif
