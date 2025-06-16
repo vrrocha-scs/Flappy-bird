@@ -5,7 +5,7 @@ Personagem::Personagem(float x, float y,string image_path) : ObjetoRenderizavel(
 void Personagem::move_character(){
     set_posX(get_posX()+velocityX);
     set_posY(get_posY()+velocityY);
-    //hitbox.move_hitbox(get_posX(),get_posY());
+    hitbox.move_hitbox(get_posX(),get_posY());
 }
 
 void Personagem::gain_score(int x){
