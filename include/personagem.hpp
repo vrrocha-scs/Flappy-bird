@@ -9,6 +9,8 @@ class Personagem : public ObjetoRenderizavel{
     private:
         float velocityX;
         float velocityY;
+        float jump_power;
+        float gravity;
         int score;
         Hitbox hitbox;
     public:
@@ -21,7 +23,8 @@ class Personagem : public ObjetoRenderizavel{
         void set_velocityX(float x);
         void set_velocityY(float y);
         void on_tick() override;
-        //void render_object() override;
+        void jump();
+        void render_object() override;
 };
 
 

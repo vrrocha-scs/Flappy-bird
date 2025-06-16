@@ -5,6 +5,8 @@ ObjetoRenderizavel::ObjetoRenderizavel(float x,float y,string image_path){
     posX = x;
     posY = y;
     object_bitmap = al_load_bitmap(image_path.c_str());
+    centerX = (al_get_bitmap_width(object_bitmap))/2;
+    centerY = (al_get_bitmap_height(object_bitmap))/2;
 }
 
 ObjetoRenderizavel::~ObjetoRenderizavel(){
@@ -22,7 +24,12 @@ float ObjetoRenderizavel::get_posX(){
 float ObjetoRenderizavel::get_posY(){
     return posY;
 }
-
+float ObjetoRenderizavel::get_centerX(){
+    return centerX;
+}
+float ObjetoRenderizavel::get_centerY(){
+    return centerY;
+}
 ALLEGRO_BITMAP* ObjetoRenderizavel::get_bitmap(){
     return object_bitmap;
 }

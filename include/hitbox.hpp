@@ -2,15 +2,15 @@
 #define HITBOX
 
 #include <allegro5/allegro_primitives.h>
+#include "objetorenderizavel.hpp"
 
 class Hitbox{
     private:
-        float x1,y1,x2,y2,posX,posY;
+        float x1,y1,x2,y2;
+        ObjetoRenderizavel* attached_object;
     public:
-        //Constroi a partir de um retangulo
-        Hitbox(float x1,float y1,float x2,float y2,float posX,float posY);
-        //Constroi a partir das dimensoes de um bitmap
-        Hitbox(ALLEGRO_BITMAP *bitmap,float posX,float posY);
+        //Constroi a partir do objeto renderizavel em que se conecta
+        Hitbox(ObjetoRenderizavel* object);
         //Checa se houve colisao com a hitbox enviada
         bool has_collision(Hitbox hitbox);
         //Desenha o retangulo que representa a hitbox

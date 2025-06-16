@@ -14,7 +14,7 @@ all: main
 $(OBJ_DIR)/randomizador.o : $(INCLUDE_DIR)/randomizador.hpp $(SRC_DIR)/randomizador.cpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/randomizador.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/randomizador.o
 
-$(OBJ_DIR)/hitbox.o : $(INCLUDE_DIR)/hitbox.hpp $(SRC_DIR)/hitbox.cpp
+$(OBJ_DIR)/hitbox.o : $(INCLUDE_DIR)/hitbox.hpp $(INCLUDE_DIR)/objetorenderizavel.hpp  $(SRC_DIR)/hitbox.cpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/hitbox.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/hitbox.o
 
 $(OBJ_DIR)/cadastro.o : $(INCLUDE_DIR)/cadastro.hpp $(SRC_DIR)/cadastro.cpp 

@@ -1,11 +1,16 @@
 #include "../include/personagem.hpp"
+#include <algorithm> 
+#include <math.h>
 
-Personagem::Personagem(float x, float y,string image_path) : ObjetoRenderizavel(x,y,image_path), score(0), hitbox(0,0,0,0,get_posX(),get_posY()){};
+#define M_PI 3.14159265358979323846
+
+Personagem::Personagem(float x, float y,string image_path) : ObjetoRenderizavel(x,y,image_path),jump_power(3.5),gravity(0.15), score(0), hitbox(this){};
 
 void Personagem::move_character(){
+
     set_posX(get_posX()+velocityX);
     set_posY(get_posY()+velocityY);
-    hitbox.move_hitbox(get_posX(),get_posY());
+
 }
 
 void Personagem::gain_score(int x){
@@ -33,12 +38,17 @@ float Personagem::get_velocityY(){
 }
 
 void Personagem::on_tick(){
-        set_velocityY(get_velocityY()+0.15);
-        move_character();
+        hitbox.on_tick();
         hitbox.draw_hitbox();
+        set_velocityY(get_velocityY()+gravity);
+        move_character();
+}
+void Personagem::jump(){
+    set_velocityY(-jump_power);
 }
 
-//TODO: Personagem rotaciona em funcao de sua velocidade vertical
-// void Personagem::render_object(){
-//     al_draw_rotated_bitmap(get_bitmap(),get_posX(),get_posY(),get_posX(),get_posY(),velocityY*(0.1),0);
-// }
+void Personagem::render_object(){
+    float rotation = min((velocityY/jump_power)*(M_PI/4)*0.45,M_PI/2);
+    
+    al_draw_rotated_bitmap(get_bitmap(),get_centerX(),get_centerY(),get_posX(),get_posY(),rotation,0);
+}
