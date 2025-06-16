@@ -1,5 +1,5 @@
 #include "hitbox.hpp"
-
+Hitbox::Hitbox(float x1,float y1,float x2,float y2) : x1(x1),y1(y1),x2(x2),y2(y2){};
 
 Hitbox::Hitbox(ObjetoRenderizavel* object){
     attached_object = object;
@@ -32,5 +32,5 @@ void Hitbox::on_tick(){
 }
 
 void Hitbox::draw_hitbox(){
-    al_draw_filled_rectangle(x1,y1,x2,y2,al_map_rgba_f(1,0,0,0.25));
+    al_draw_filled_rectangle(x1,y1,x2,y2,al_map_rgba_f(0,1,0,0.25));
 }
