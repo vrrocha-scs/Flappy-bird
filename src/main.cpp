@@ -3,10 +3,21 @@
 #include <allegro5/allegro_image.h>
 #include <iostream>
 #include <vector>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 #include "../include/personagem.hpp"
 #include "../include/obstaculo.hpp"
 #include "../include/randomizador.hpp"
+#include "../include/menu.hpp"
+//Classe de estados do jogo
+enum class GameState {
+    PLAYING,
+    PAUSED,
+    GAMEOVER,
+    EXITING
+};
+
 
 //tamanho da tela
 const int SCREEN_W = 1000;
@@ -22,6 +33,15 @@ int main()
     al_init_primitives_addon();
     al_install_keyboard();
     al_init_image_addon();
+    al_init_font_addon();
+    al_init_ttf_addon();
+    ALLEGRO_PATH *path = al_get_standard_path(ALLEGRO_EXENAME_PATH);
+    if (path) {
+        al_remove_path_component(path, -1); 
+        al_change_directory(al_path_cstr(path, '/'));
+        al_change_directory("..");
+        al_destroy_path(path);
+    }
 
     //inicializando as structs padrão
     ALLEGRO_DISPLAY * display = NULL;
@@ -30,6 +50,12 @@ int main()
     ALLEGRO_TIMER * timer = NULL;
     //ALLEGRO_TIMER * spawner = NULL;
     Randomizador rando(200, 800);
+
+    ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 36, 0);
+    if (!menu_font) {
+        std::cerr << "Erro ao carregar fonte do menu!" << std::endl;
+        return -1;
+    }
 
     bool running = true;
 
@@ -58,9 +84,10 @@ int main()
     //controle de tempo
     double previous_time = al_get_time();
     double lag = 0;
+    GameState current_state = GameState::PLAYING;
     bool playing = true;
     //WHILE PRINCIPAL
-    while(running){
+    while(current_state != GameState::EXITING){
         
         double current_time = al_get_time();
         double elapsed = current_time-previous_time;
@@ -74,56 +101,93 @@ int main()
         
         //---INPUT NAO BLOCANTE---
         while(al_get_next_event(event_queue,&ev)){
-            if (ev.keyboard.keycode == ALLEGRO_KEY_UP && playing){
-                if(current_time-jump_cooldown > 0.25){
-                    character->jump();
-                    jump_cooldown = current_time;
+            if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+                current_state = GameState::EXITING;
+            }
+            if (current_state == GameState::PLAYING)
+            {
+                if (ev.keyboard.keycode == ALLEGRO_KEY_UP){
+                    if(current_time-jump_cooldown > 0.25){
+                        character->jump();
+                        jump_cooldown = current_time;
+                    }
+                }
+                else if(ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE){
+                    current_state = GameState::PAUSED;
                 }
             }
-            else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
-                running = false;
-            }
         }
 
-        //---LOGICA DE COLISÂO---
-        if(character->checkCollision(Chao)){
-            //IMPLEMENTAR TELA DE GAME OVER AQUI
-            playing = false;
+        if(current_state == GameState::PLAYING){
+            //---LOGICA DE COLISÂO---
+            if(character->checkCollision(Chao)){
+                //IMPLEMENTAR TELA DE GAME OVER AQUI
+                current_state = GameState::GAMEOVER;
+            }
+            // for (auto c : canos)
+            //     {   
+            //         if(character->checkCollision(c->get_hitbox())){
+            //             current_state = GameState::GAMEOVER;
+            //             break;
+            //         }
+            //     }
+            //---LOGICA DE TEMPO FIXO---
+            while(lag >= SECONDS_PER_UPDATE){
+                
+                //Chama o comportamento dos objetos a cada segundo
+                character->on_tick();
+                for (auto c : canos)
+                {   
+                    c->on_tick();
+                }
+
+
+                if (current_time - ultimo_spawn >= 6)
+                {
+                    ultimo_spawn = current_time;
+                    int altura_buraco = rando.valor_aleatorio();
+                    int tamanho_gap = 100;
+                    canos.push_back(new Obstaculo(SCREEN_W + 50, -1000 + altura_buraco, upper_pipe_sprite, 1.2, 50, altura_buraco));
+                    canos.push_back(new Obstaculo(SCREEN_W + 50, altura_buraco - tamanho_gap, lower_pipe_sprite, 1.2, 50, (SCREEN_H - (altura_buraco))));
+                }
+                if(canos.size() >= 10)
+                {
+                    vector<Obstaculo*>::iterator it = canos.begin();
+                    delete *(it);
+                    canos.erase(it);
+                    delete *(it);
+                    canos.erase(it);
+                }
+                lag -= SECONDS_PER_UPDATE;
+            }
         }
-        // for (auto c : canos)
-        //     {   
-        //         if(character->checkCollision(c->get_hitbox())){
-        //             playing = false;
-        //         }
-        //     }
-        //---LOGICA DE TEMPO FIXO---
-        while((lag >= SECONDS_PER_UPDATE) && playing ){
+        
+        if (current_state == GameState::PAUSED){
+            Menu pause_menu(display, menu_font, MenuType::PAUSE);
+            MenuResult result = pause_menu.show();
             
-            //Chama o comportamento dos objetos a cada segundo
-            character->on_tick();
-            for (auto c : canos)
-            {   
-                c->on_tick();
+            if (result == MenuResult::CONTINUE_GAME){
+                current_state = GameState::PLAYING;
+                previous_time = al_get_time();
             }
+            //else if (result == MenuResult::RESTART_GAME){
+            //    
+            //}
+            else if (result == MenuResult::EXIT_GAME){
+                current_state = GameState::EXITING;
+            }
+        }
+        else if (current_state == GameState::GAMEOVER){
+            Menu end_menu(display, menu_font, MenuType::END);
+            MenuResult result = end_menu.show();
 
-
-            if (current_time - ultimo_spawn >= 6)
-            {
-                ultimo_spawn = current_time;
-                int altura_buraco = rando.valor_aleatorio();
-                int tamanho_gap = 100;
-                canos.push_back(new Obstaculo(SCREEN_W + 50, -1000 + altura_buraco, upper_pipe_sprite, 1.2, 50, altura_buraco));
-                canos.push_back(new Obstaculo(SCREEN_W + 50, altura_buraco - tamanho_gap, lower_pipe_sprite, 1.2, 50, (SCREEN_H - (altura_buraco))));
-            }
-            if(canos.size() >= 10)
-            {
-                vector<Obstaculo*>::iterator it = canos.begin();
-                delete *(it);
-                canos.erase(it);
-                delete *(it);
-                canos.erase(it);
-            }
-            lag -= SECONDS_PER_UPDATE;
+            //if (result == MenuResult::RESTART_GAME){
+            //    
+            //}
+            //else if (result == MenuResult::EXIT_GAME){
+            //  current_state = GameState::EXITING;
+            //}
+            
         }
 
         al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));

@@ -18,7 +18,8 @@ enum class MenuResult {
     START_NEW_GAME,
     RESTART_GAME,
     CADASTRO,
-    EXIT_GAME
+    EXIT_GAME,
+    CONTINUE_GAME
 };
 
 class Menu {

@@ -3,3 +3,5 @@
 obj/*.o
 bin/
 bin/*.exe
+# Ignorar configurações de usuário do VS Code
+.vscode/launch.json
