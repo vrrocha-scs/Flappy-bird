@@ -32,14 +32,14 @@ $(OBJ_DIR)/obstaculo.o : $(INCLUDE_DIR)/obstaculo.hpp $(INCLUDE_DIR)/randomizado
 $(OBJ_DIR)/objetorenderizavel.o : $(INCLUDE_DIR)/objetorenderizavel.hpp $(SRC_DIR)/objetorenderizavel.cpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/objetorenderizavel.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/objetorenderizavel.o
 
-$(OBJ_DIR)/personagem.o : $(INCLUDE_DIR)/personagem.hpp $(INCLUDE_DIR)/objetorenderizavel.hpp $(INCLUDE_DIR)/hitbox.hpp $(SRC_DIR)/personagem.cpp $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/hitbox.o
+$(OBJ_DIR)/personagem.o : $(INCLUDE_DIR)/personagem.hpp $(INCLUDE_DIR)/objetorenderizavel.hpp $(INCLUDE_DIR)/hitbox.hpp $(SRC_DIR)/personagem.cpp $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o
 	${CC} ${CFLAGS} -c $(SRC_DIR)/personagem.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/personagem.o
 
 #ADICIONAR nova_classe.hpp DEPENDENTES AQUI
 $(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp $(INCLUDE_DIR)/obstaculo.hpp $(INCLUDE_DIR)/cadastro.hpp $(INCLUDE_DIR)/randomizador.hpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/main.cpp ${LIBS} -o $(OBJ_DIR)/main.o
 
-main: $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/randomizador.o
+main: $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/randomizador.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o
 	${CC} ${CFLAGS} $(OBJS) $(pkg-config --libs --cflags allegro-5 allegro_main-5 allegro_audio-5 allegro_image-5 allegro_primitives-5 allegro_ttf-5 allegro_font-5) -lallegro_main -lallegro_font -lallegro_ttf -lallegro_primitives -lallegro_image -lallegro -o bin/main.exe 
 
 OBJS_TEST = $(OBJ_DIR)/testes.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/randomizador.o
