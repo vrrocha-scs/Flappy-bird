@@ -39,5 +39,15 @@ $(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp $(INCLUDE_
 main: $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/randomizador.o
 	${CC} ${CFLAGS} $(OBJS) $(pkg-config --libs --cflags allegro-5 allegro_main-5 allegro_audio-5 allegro_image-5 allegro_primitives-5) -lallegro_main -lallegro_primitives -lallegro_image -lallegro -o bin/main.exe 
 
+OBJS_TEST = $(OBJ_DIR)/testes.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/randomizador.o
+
+$(OBJ_DIR)/testes.o: tests/testes.cpp tests/doctest.h $(INCLUDE_DIR)/personagem.hpp $(INCLUDE_DIR)/objetorenderizavel.hpp
+	${CC} ${CFLAGS} -c tests/testes.cpp ${LIBS} -I$(INCLUDE_DIR) -I tests -o $(OBJ_DIR)/testes.o
+
+meu_testador: $(OBJS_TEST)
+	${CC} ${CFLAGS} $(OBJS_TEST) $(pkg-config --libs --cflags allegro-5 allegro_main-5 allegro_audio-5 allegro_image-5 allegro_primitives-5) -lallegro_main -lallegro_primitives -lallegro_image -lallegro -o bin/meu_testador.exe
+
+test: meu_testador
+
 clean: 
 	rm -f main ${OBJ_DIR}/*.o 
