@@ -11,7 +11,7 @@ class Obstaculo  : public ObjetoRenderizavel{
     float _velocidadeX;
     float _larguraObs, _alturaObs;
     float distmin;
-    ALLEGRO_COLOR cor;
+    Hitbox hitbox;
 
     public:
     Obstaculo();
