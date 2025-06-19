@@ -90,12 +90,12 @@ int main()
             //IMPLEMENTAR TELA DE GAME OVER AQUI
             playing = false;
         }
-        // for (auto c : canos)
-        //     {   
-        //         if(character->checkCollision(c->get_hitbox())){
-        //             playing = false;
-        //         }
-        //     }
+         for (auto c : canos)
+             {   
+                 if(character->checkCollision(c->get_hitbox())){
+                     playing = false;
+                 }
+             }
         //---LOGICA DE TEMPO FIXO---
         while((lag >= SECONDS_PER_UPDATE) && playing ){
             
@@ -104,6 +104,7 @@ int main()
             for (auto c : canos)
             {   
                 c->on_tick();
+                c->get_hitbox().on_tick();
             }
 
 

@@ -40,9 +40,9 @@ float Personagem::get_velocityY(){
 }
 
 void Personagem::on_tick(){
-        hitbox.on_tick();
+       
         set_velocityY(get_velocityY()+gravity);
-        move_character();
+        move_character(); hitbox.on_tick();
 }
 void Personagem::jump(){
     set_velocityY(-jump_power);
@@ -54,9 +54,9 @@ bool Personagem::checkCollision(Hitbox other_hitbox){
     return false;
 }
 void Personagem::render_object(){
-    //hitbox.draw_hitbox();
+    
 
     float rotation = min((velocityY/jump_power)*(M_PI/4)*0.45,M_PI/2);
-    
     al_draw_rotated_bitmap(get_bitmap(),get_centerX(),get_centerY(),get_posX(),get_posY(),rotation,0);
+    hitbox.draw_hitbox();
 }

@@ -5,10 +5,10 @@ Hitbox::Hitbox(ObjetoRenderizavel* object){
     attached_object = object;
     float bitmap_height = al_get_bitmap_height(attached_object->get_bitmap());
     float bitmap_width = al_get_bitmap_width(attached_object->get_bitmap());
-    x1 = attached_object->get_posX() - bitmap_width/2;
-    x2 = attached_object->get_posX() + bitmap_width/2;
-    y1 = attached_object->get_posY() - bitmap_height/2;
-    y2 = attached_object->get_posY() + bitmap_height/2;
+    x1 = attached_object->get_posX();// - bitmap_width/2;
+    x2 = attached_object->get_posX() + bitmap_width;
+    y1 = attached_object->get_posY();// - bitmap_height/2;
+    y2 = attached_object->get_posY() + bitmap_height;
 }
 
 bool Hitbox::has_collision(Hitbox hitbox){
@@ -25,10 +25,10 @@ bool Hitbox::has_collision(Hitbox hitbox){
 void Hitbox::on_tick(){
     float bitmap_height = al_get_bitmap_height(attached_object->get_bitmap());
     float bitmap_width = al_get_bitmap_width(attached_object->get_bitmap());
-    x1 = attached_object->get_posX() - bitmap_width/2;
-    x2 = attached_object->get_posX() + bitmap_width/2;
-    y1 = attached_object->get_posY() - bitmap_height/2;
-    y2 = attached_object->get_posY() + bitmap_height/2;
+    x1 = attached_object->get_posX();// - bitmap_width/2;
+    x2 = attached_object->get_posX() + bitmap_width;
+    y1 = attached_object->get_posY();// - bitmap_height/2;
+    y2 = attached_object->get_posY() + bitmap_height;
 }
 
 void Hitbox::draw_hitbox(){
