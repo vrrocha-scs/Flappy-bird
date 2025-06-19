@@ -16,8 +16,7 @@ class Hitbox{
         bool has_collision(Hitbox hitbox);
         //Desenha o retangulo que representa a hitbox
         void draw_hitbox();
-        //Move a hitbox para a coordenada nova explicitada. ATENÇÃO: NÃO ESQUECER DE SEMPRE MOVIMENTAR A HITBOX JUNTO COM O OBJETO
-        void move_hitbox(float new_posX,float new_posY);
+        //Comportamento a cada tick da Hitbox (acompanha o ObjetoRenderizavel associado)
         void on_tick();
 };
 

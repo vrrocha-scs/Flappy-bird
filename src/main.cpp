@@ -5,11 +5,13 @@
 #include <vector>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_path.h>
 
 #include "../include/personagem.hpp"
 #include "../include/obstaculo.hpp"
 #include "../include/randomizador.hpp"
 #include "../include/menu.hpp"
+
 //Classe de estados do jogo
 enum class GameState {
     PLAYING,
@@ -23,7 +25,7 @@ enum class GameState {
 const int SCREEN_W = 1000;
 const int SCREEN_H = 1000;
 const float FPS = 60;
-const float SECONDS_PER_UPDATE = 1/FPS;
+const float SECONDS_PER_UPDATE = 1.0f / FPS;
 double ultimo_spawn = 0;
 
 int main()
@@ -57,14 +59,10 @@ int main()
         return -1;
     }
 
-    bool running = true;
-
     //spawner_queue = al_create_event_queue();
     event_queue = al_create_event_queue();
     display = al_create_display(SCREEN_W,SCREEN_H);
     al_set_window_position(display,100,100);
-    al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
-    al_flip_display();
     timer = al_create_timer(1.0/FPS);
 
     al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -78,21 +76,23 @@ int main()
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
 
     //objetos do jogo
-    vector<Obstaculo*> canos;
+    std::vector<Obstaculo*> canos;
     Personagem* character = new Personagem(SCREEN_W/2 -250,SCREEN_H/2,character_sprite);
     Hitbox Chao(0,SCREEN_H-100,SCREEN_W,SCREEN_H);
+    
     //controle de tempo
     double previous_time = al_get_time();
     double lag = 0;
+    double jump_cooldown = 0;
     GameState current_state = GameState::PLAYING;
-    bool playing = true;
+
     //WHILE PRINCIPAL
     while(current_state != GameState::EXITING){
         
         double current_time = al_get_time();
         double elapsed = current_time-previous_time;
         previous_time = current_time;
-        double jump_cooldown;
+        
         if(elapsed > 0.25){
             elapsed = SECONDS_PER_UPDATE;
         }
@@ -104,16 +104,19 @@ int main()
             if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
                 current_state = GameState::EXITING;
             }
+
             if (current_state == GameState::PLAYING)
             {
-                if (ev.keyboard.keycode == ALLEGRO_KEY_UP){
-                    if(current_time-jump_cooldown > 0.25){
-                        character->jump();
-                        jump_cooldown = current_time;
+                if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+                    if (ev.keyboard.keycode == ALLEGRO_KEY_UP){
+                        if(current_time-jump_cooldown > 0.25){
+                            character->jump();
+                            jump_cooldown = current_time;
+                        }
                     }
-                }
-                else if(ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE){
-                    current_state = GameState::PAUSED;
+                    else if(ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE){
+                        current_state = GameState::PAUSED;
+                    }
                 }
             }
         }
@@ -125,22 +128,22 @@ int main()
                 current_state = GameState::GAMEOVER;
             }
             // for (auto c : canos)
-            //     {   
-            //         if(character->checkCollision(c->get_hitbox())){
-            //             current_state = GameState::GAMEOVER;
-            //             break;
-            //         }
+            // { 
+            //     if(character->checkCollision(c->get_hitbox())){
+            //         current_state = GameState::GAMEOVER;
+            //         break;
             //     }
+            // }
+            
             //---LOGICA DE TEMPO FIXO---
             while(lag >= SECONDS_PER_UPDATE){
                 
                 //Chama o comportamento dos objetos a cada segundo
                 character->on_tick();
                 for (auto c : canos)
-                {   
+                { 
                     c->on_tick();
                 }
-
 
                 if (current_time - ultimo_spawn >= 6)
                 {
@@ -152,7 +155,7 @@ int main()
                 }
                 if(canos.size() >= 10)
                 {
-                    vector<Obstaculo*>::iterator it = canos.begin();
+                    std::vector<Obstaculo*>::iterator it = canos.begin();
                     delete *(it);
                     canos.erase(it);
                     delete *(it);
@@ -171,7 +174,7 @@ int main()
                 previous_time = al_get_time();
             }
             //else if (result == MenuResult::RESTART_GAME){
-            //    
+            // 
             //}
             else if (result == MenuResult::EXIT_GAME){
                 current_state = GameState::EXITING;
@@ -182,20 +185,20 @@ int main()
             MenuResult result = end_menu.show();
 
             //if (result == MenuResult::RESTART_GAME){
-            //    
+            // 
             //}
             //else if (result == MenuResult::EXIT_GAME){
-            //  current_state = GameState::EXITING;
+            //  current_state = GameState::EXITING;
             //}
-            
         }
 
+        //--- RENDERIZAÇÃO ---
         al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
 
         character->render_object();
         Chao.draw_hitbox();
         for (auto c : canos)
-        {   
+        { 
             c->desenhar_canos();
         }
 
@@ -204,15 +207,22 @@ int main()
 
     //dealocando memória
     delete character;
+    for (auto c : canos) {
+        delete c;
+    }
+    canos.clear();
+
 
     //dealocando imagens
     al_destroy_bitmap(character_sprite);
     al_destroy_bitmap(upper_pipe_sprite);
     al_destroy_bitmap(lower_pipe_sprite);
-
+    al_destroy_font(menu_font);
 
     //fecha a janela
     al_destroy_display(display);
     al_destroy_event_queue(event_queue);
+    al_destroy_timer(timer);
+
     return 0;
 }
