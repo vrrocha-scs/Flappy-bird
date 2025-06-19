@@ -6,7 +6,7 @@
 #define JUMP_POWER 5
 #define GRAVITY 0.25
 
-Personagem::Personagem(float x, float y,ALLEGRO_BITMAP* bitmap) : ObjetoRenderizavel(x,y,bitmap),jump_power(JUMP_POWER),gravity(GRAVITY), score(0), hitbox(this){};
+Personagem::Personagem(float x, float y,ALLEGRO_BITMAP* bitmap) : ObjetoRenderizavel(x,y,bitmap,1),jump_power(JUMP_POWER),gravity(GRAVITY), score(0){};
 
 void Personagem::move_character(){
 
@@ -40,7 +40,7 @@ float Personagem::get_velocityY(){
 }
 
 void Personagem::on_tick(){
-        hitbox.on_tick();
+        get_hitbox()->on_tick();
         set_velocityY(get_velocityY()+gravity);
         move_character();
 }
@@ -48,13 +48,13 @@ void Personagem::jump(){
     set_velocityY(-jump_power);
 }
 bool Personagem::checkCollision(Hitbox other_hitbox){
-    if(hitbox.has_collision(other_hitbox)){
+    if(get_hitbox()->has_collision(other_hitbox)){
         return true;
     }
     return false;
 }
 void Personagem::render_object(){
-    hitbox.draw_hitbox();
+    get_hitbox()->draw_hitbox();
 
     float rotation = min((velocityY/jump_power)*(M_PI/4)*0.45,M_PI/2);
     

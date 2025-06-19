@@ -5,7 +5,6 @@
 #include <vector>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
-#include <allegro5/allegro_path.h>
 
 #include "../include/personagem.hpp"
 #include "../include/obstaculo.hpp"
@@ -37,13 +36,7 @@ int main()
     al_init_image_addon();
     al_init_font_addon();
     al_init_ttf_addon();
-    ALLEGRO_PATH *path = al_get_standard_path(ALLEGRO_EXENAME_PATH);
-    if (path) {
-        al_remove_path_component(path, -1); 
-        al_change_directory(al_path_cstr(path, '/'));
-        al_change_directory("..");
-        al_destroy_path(path);
-    }
+
 
     //inicializando as structs padrão
     ALLEGRO_DISPLAY * display = NULL;
@@ -53,7 +46,7 @@ int main()
     //ALLEGRO_TIMER * spawner = NULL;
     Randomizador rando(200, 800);
 
-    ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 36, 0);
+    ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 48, 0);
     if (!menu_font) {
         std::cerr << "Erro ao carregar fonte do menu!" << std::endl;
         return -1;
@@ -78,7 +71,7 @@ int main()
     //objetos do jogo
     std::vector<Obstaculo*> canos;
     Personagem* character = new Personagem(SCREEN_W/2 -250,SCREEN_H/2,character_sprite);
-    Hitbox Chao(0,SCREEN_H-100,SCREEN_W,SCREEN_H);
+    ObjetoRenderizavel Chao(SCREEN_H-100,0,al_create_bitmap(SCREEN_W,100));
     
     //controle de tempo
     double previous_time = al_get_time();
@@ -123,17 +116,17 @@ int main()
 
         if(current_state == GameState::PLAYING){
             //---LOGICA DE COLISÂO---
-            if(character->checkCollision(Chao)){
+            if(character->checkCollision(*Chao.get_hitbox())){
                 //IMPLEMENTAR TELA DE GAME OVER AQUI
                 current_state = GameState::GAMEOVER;
             }
-            // for (auto c : canos)
-            // { 
-            //     if(character->checkCollision(c->get_hitbox())){
-            //         current_state = GameState::GAMEOVER;
-            //         break;
-            //     }
-            // }
+            for (auto c : canos)
+             { 
+                 if(character->checkCollision(*c->get_hitbox())){
+                     current_state = GameState::GAMEOVER;
+                     break;
+                 }
+            }
             
             //---LOGICA DE TEMPO FIXO---
             while(lag >= SECONDS_PER_UPDATE){
@@ -196,7 +189,7 @@ int main()
         al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
 
         character->render_object();
-        Chao.draw_hitbox();
+        Chao.get_hitbox()->draw_hitbox();
         for (auto c : canos)
         { 
             c->desenhar_canos();

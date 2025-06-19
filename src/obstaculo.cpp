@@ -5,7 +5,7 @@
 #include <allegro5/allegro_primitives.h>
 
 Obstaculo::Obstaculo(float posX, float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float largura, float altura) : 
-ObjetoRenderizavel(posX, posY, bitmap), _velocidadeX(velocidade), _larguraObs(largura), _alturaObs(altura), hitbox(this)
+ObjetoRenderizavel(posX, posY, bitmap,1), _velocidadeX(velocidade), _larguraObs(largura), _alturaObs(altura)
 {
     const float distmin = 170;
 }
@@ -49,7 +49,7 @@ ObjetoRenderizavel(posX, posY, bitmap), _velocidadeX(velocidade), _larguraObs(la
     void Obstaculo::desenhar_canos()
     {
         //Aleatorizando onde o buraco spawna
-        this->hitbox.draw_hitbox();
+        get_hitbox()->draw_hitbox();
         render_object();
         return;
     }
@@ -57,12 +57,9 @@ ObjetoRenderizavel(posX, posY, bitmap), _velocidadeX(velocidade), _larguraObs(la
     void Obstaculo::on_tick()
     {
         this->mover_obstaculos();
-        this->hitbox.on_tick();
+        get_hitbox()->on_tick();
     }
 
-    Hitbox Obstaculo::get_hitbox()
-    {
-        return this->hitbox;
-    }
+
     
 

@@ -11,7 +11,6 @@ class Obstaculo  : public ObjetoRenderizavel{
     float _velocidadeX;
     float _larguraObs, _alturaObs;
     float distmin;
-    Hitbox hitbox;
 
     public:
     Obstaculo();
@@ -26,7 +25,6 @@ class Obstaculo  : public ObjetoRenderizavel{
     void mover_obstaculos();
     void desenhar_canos();
     void on_tick() override;
-    Hitbox get_hitbox();
 };
 
 #endif

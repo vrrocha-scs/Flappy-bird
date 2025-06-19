@@ -3,16 +3,22 @@
 
 #include <allegro5/allegro.h>
 #include <string>
+#include "hitbox.hpp"
 
 using namespace std;
 
 class ObjetoRenderizavel{
     private:
-        ALLEGRO_BITMAP* object_bitmap;
         float posX, posY,centerX,centerY;
+        ALLEGRO_BITMAP* object_bitmap;
+        bool hasHitbox;
+        Hitbox hitbox;
+
     public:
         //Construtor padrão com coordenadas e BITMAP associados
         ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap);
+        ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap,bool hasHitbox);
+
         virtual ~ObjetoRenderizavel(){};
         //Retorna posição de X
         float get_posX();
@@ -22,6 +28,8 @@ class ObjetoRenderizavel{
         float get_centerX();
         //Retorna posição de Y do centro da imagem, relativo ao bitmap
         float get_centerY();
+        //Retorna a hitbox associada ao Objeto
+        Hitbox* get_hitbox();
         //Retorna o bitmap associado ao Objeto
         ALLEGRO_BITMAP* get_bitmap();
         //Define a posição X

@@ -3,7 +3,6 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro.h>
 #include "objetorenderizavel.hpp"
-#include "hitbox.hpp"
 
 class Personagem : public ObjetoRenderizavel{
     private:
@@ -12,7 +11,6 @@ class Personagem : public ObjetoRenderizavel{
         float jump_power;
         float gravity;
         int score;
-        Hitbox hitbox;
     public:
         //Construtor padrão
         Personagem(float x, float y,ALLEGRO_BITMAP* bitmap);
