@@ -8,6 +8,7 @@ class Leaderboard{
      int pontuacao_tabelados;
     public:
     Leaderboard(const std::string& nome,int pontuacao) : nome_tabelados(nome),pontuacao_tabelados(pontuacao){}
+    Leaderboard(){};
 
     void cadastro_tabela(std::string,int);
     void display_tabela();//a fazer

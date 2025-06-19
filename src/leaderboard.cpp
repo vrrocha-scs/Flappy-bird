@@ -6,12 +6,12 @@
 
 #define TAMANHO 5
 
+ //recebe os dados da partida e verifica se ela entrara na leaderboard 
  void Leaderboard::cadastro_tabela(std::string nome_jogador,int score_partida){
     std::list<Leaderboard> tabelados;
-    std::ifstream arq_tabela_leit("tabela.csv");
+    std::ifstream arq_tabela_leit("assets/images/tabela.csv");
     std::string linha;
-    bool encontrou=false;
-    bool modificado=false;
+    bool inserido=false;
     if(arq_tabela_leit.is_open()){
         while(std::getline(arq_tabela_leit,linha)){
             std::stringstream ss(linha);
@@ -21,40 +21,40 @@
              tabelados.emplace_back(nome, pontuacao);
             }
         }
+
+        //verifica se o player ja esta na tabela(retirar se ja estiver)
         for (auto it=tabelados.begin();it!=tabelados.end();it++){
           if(nome_jogador==it->nome_tabelados){
             if(score_partida>it->pontuacao_tabelados){
-                it->pontuacao_tabelados=score_partida;
-                modificado=true;
+                it=tabelados.erase(it);
             }
-            encontrou=true;
             break;
           }   
         }
-        if (!encontrou){
+
+        //verifica se o player pode entrar na tabela
           for (auto it=tabelados.begin();it!=tabelados.end();it++){
             if(score_partida>it->pontuacao_tabelados){
                tabelados.insert(it, Leaderboard(nome_jogador,score_partida));
-               modificado=true;
+               inserido=true;
                if(tabelados.size()>TAMANHO){
                tabelados.pop_back();
                }
                break;
             }
           }  
-          if(!modificado&& tabelados.size()<TAMANHO){
+          if(!inserido && tabelados.size()<TAMANHO){
             tabelados.push_back(Leaderboard(nome_jogador,score_partida));
-            modificado=true;
-          } 
-        }   
+            inserido=true;
+          }    
     }
     else{
         std::cerr<<"erro ao abrir tabela para leitura"<<std::endl;
     }
     arq_tabela_leit.close();
 
-   if(modificado){
-     std::ofstream arq_tabela_esc("tabela.csv");
+   if(inserido){
+     std::ofstream arq_tabela_esc("assets/images/tabela.csv");
      if(arq_tabela_esc.is_open()){
        int numero_linhas=0;
        for (const auto& it : tabelados){

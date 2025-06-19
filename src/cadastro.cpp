@@ -1,4 +1,5 @@
 #include "cadastro.hpp"
+#include "leaderboard.hpp"
 #include<fstream>
 #include<iostream>
 #include<limits>
@@ -7,8 +8,10 @@
 
 Cadastro::Cadastro(std::string _nome,int _score,int _numero_partidas):nome_jogador(_nome),high_score(_score),numero_partidas(_numero_partidas){}
 
+//faz a verificação dos dados do player, retornando um ponteiro para um tipo Cadastro se ja houver um jogador cadastrado ou cadastrando e retornando um ponteiro se 
+//nao houver cadastro
 Cadastro* Cadastro::verificar_dados(std::string possivel_nome){
-   std::ifstream leitura_arq("dados.csv");
+   std::ifstream leitura_arq("assets/images/dados.csv");
     if(leitura_arq.is_open()){
       std::string linha;
      while(getline(leitura_arq,linha)){
@@ -24,7 +27,7 @@ Cadastro* Cadastro::verificar_dados(std::string possivel_nome){
     }
     leitura_arq.close();
 
-    std::ofstream escrita_arq("dados.csv", std::ios::app);
+    std::ofstream escrita_arq("assets/images/dados.csv", std::ios::app);
     if(escrita_arq.is_open()){
     escrita_arq<<possivel_nome<<",0,0"<<std::endl;
     escrita_arq.close();
@@ -41,14 +44,14 @@ Cadastro* Cadastro::verificar_dados(std::string possivel_nome){
     }
 }
 
-
+//recebe os dados da partida e modifica no arquivo csv
 void Cadastro::modificar_dados(int score_partida){
   if(high_score<score_partida){
     high_score=score_partida;
   }
   numero_partidas++;
 
-  std::ifstream arq_armazenagem("dados.csv");
+  std::ifstream arq_armazenagem("assets/images/dados.csv");
   std::vector<Cadastro>cadastros_jogadores;
   std::string linha;
   bool encontrado=false;
@@ -65,7 +68,7 @@ void Cadastro::modificar_dados(int score_partida){
       encontrado=true;
       }
     else{
-    cadastros_jogadores.push_back(Cadastro(nome_jogador,high_score,numero_partidas));
+    cadastros_jogadores.push_back(Cadastro(nome,score,partidas));
     }
   }
 }
@@ -76,7 +79,7 @@ void Cadastro::modificar_dados(int score_partida){
     return;
   }
 
-  std::ofstream arq_escrita("dados.csv");
+  std::ofstream arq_escrita("assets/images/dados.csv");
   if(arq_escrita.is_open()){
   for(const auto& j:cadastros_jogadores){
     arq_escrita<<j.nome_jogador<<","<<j.high_score<<","<<j.numero_partidas<<std::endl;
@@ -87,4 +90,6 @@ void Cadastro::modificar_dados(int score_partida){
     std::cerr<<"erro ao abrir arquivo de escrita na funcao modificar dados"<<std::endl;
   }
 
+  Leaderboard leaderboard;
+  leaderboard.cadastro_tabela(nome_jogador,high_score);
 }
