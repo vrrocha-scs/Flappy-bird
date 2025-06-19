@@ -3,9 +3,12 @@ CFLAGS=-std=c++11 -Wall -g
 INCLUDE_DIR = include
 SRC_DIR = src
 OBJ_DIR = obj
+ALLEGRO_DIR = C:/allegro
+ALLEGRO_INCLUDE = -I$(ALLEGRO_DIR)/include
+ALLEGRO_LIBS = -L$(ALLEGRO_DIR)/lib -lallegro_monolith -lallegro_main
 #OBJETOS A SEREM LINKADOS NO MAIN (COLOQUE TODOS OS .o DAS CLASSES)
 OBJS = $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/randomizador.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o 
-LIBS = $(shell pkg-config --cflags --libs allegro-5 allegro_main-5 allegro_audio-5 allegro_font-5 allegro_ttf-5 allegro_image-5 allegro_primitives-5)
+#LIBS = $(shell pkg-config --cflags --libs allegro-5 allegro_main-5 allegro_audio-5 allegro_font-5 allegro_ttf-5 allegro_image-5 allegro_primitives-5)
 all: main 
 
 #$(OBJ_DIR)/nova_classe.o : $(INCLUDE_DIR)/nova_classe.hpp $(SRC_DIR)/nova_classe.cpp $(INCLUDE_DIR)/classe_dependente.hpp (se houver)
@@ -40,7 +43,7 @@ $(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp $(INCLUDE_
 	${CC} ${CFLAGS} -c $(SRC_DIR)/main.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/main.o
 
 main: $(OBJS)
-	${CC} ${CFLAGS} $(OBJS) ${LIBS} -o bin/main.exe 
+	${CC} ${CFLAGS} $(OBJS) $(ALLEGRO_LIBS) -o bin/main.exe 
 
 OBJS_TEST = $(OBJ_DIR)/testes.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/randomizador.o
 
