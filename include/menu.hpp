@@ -26,10 +26,10 @@ class Menu {
     private:
     void draw();
     MenuResult handle_input(ALLEGRO_EVENT ev);
-    ALLEGRO_DISPLAY *main_display;
+    //ALLEGRO_DISPLAY *main_display;
+    ALLEGRO_EVENT_QUEUE* event_queue;
     ALLEGRO_FONT *menu_font;
     MenuType menu_type;
-    ALLEGRO_EVENT_QUEUE *event_queue;
     
     std::vector<std::string> m_options;
     int selected_option;
@@ -38,9 +38,10 @@ class Menu {
     ALLEGRO_COLOR color_text;
     ALLEGRO_COLOR color_background;
     ALLEGRO_COLOR color_selected;
+    ALLEGRO_COLOR color_title;
 
     public:
-    Menu(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font, MenuType type);
+    Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type);
     ~Menu();
     MenuResult show();
 };

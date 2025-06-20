@@ -60,3 +60,12 @@ void Personagem::render_object(){
     
     al_draw_rotated_bitmap(get_bitmap(),get_centerX(),get_centerY(),get_posX()+get_centerX(),get_posY()+get_centerY(),rotation,0);
 }
+void Personagem::reset_position(float start_x, float start_y){
+    set_posX(start_x);
+    set_posY(start_y);
+
+    set_velocityY(0);
+    set_velocityX(0);
+
+    this->score = 0;
+}
