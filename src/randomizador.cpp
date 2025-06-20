@@ -4,13 +4,16 @@
 
 using namespace std;
 
-Randomizador::Randomizador(int _min, int _max) : min(_min), max(_max) {};
+Randomizador::Randomizador(int _min, int _max) : min(_min), max(_max) 
+{
+    
+};
 
 int Randomizador::valor_aleatorio()
 {
-    mt19937 gen(randy());
+    mt19937 gerador(randy());
     uniform_int_distribution<> distrib(get_min(), get_max());
-    return distrib(gen);
+    return distrib(gerador);
 }
 void Randomizador::set_min(int a)
 {

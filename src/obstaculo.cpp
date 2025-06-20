@@ -4,11 +4,21 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 
-Obstaculo::Obstaculo(float posX, float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float largura, float altura) : 
-ObjetoRenderizavel(posX, posY, bitmap,1), _velocidadeX(velocidade), _larguraObs(largura), _alturaObs(altura)
+const int SCREEN_W = 1000;
+const int SCREEN_H = 1000;
+
+Obstaculo::Obstaculo(float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float altura) : 
+ObjetoRenderizavel(SCREEN_W + 50, posY, bitmap,1), _velocidadeX(velocidade), _larguraObs(al_get_bitmap_width(bitmap)), _alturaObs(altura)
 {
-    const float distmin = 170;
+    
 }
+//Construtor de canos
+Obstaculo::Obstaculo(float posX, float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float altura) : 
+ObjetoRenderizavel(posX, posY, bitmap,1), _velocidadeX(velocidade), _larguraObs(al_get_bitmap_width(bitmap)), _alturaObs(altura)
+{
+    
+}
+//Construtor de outros obstáculos
 
     float Obstaculo::get_velocidadeX()
     {
@@ -48,7 +58,6 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _velocidadeX(velocidade), _larguraObs(
     }
     void Obstaculo::desenhar_canos()
     {
-        //Aleatorizando onde o buraco spawna
         get_hitbox()->draw_hitbox();
         render_object();
         return;

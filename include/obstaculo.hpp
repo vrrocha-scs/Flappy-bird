@@ -7,14 +7,15 @@
 
 class Obstaculo  : public ObjetoRenderizavel{
     private:
-    // posicaoX != posX: estou usando assim para diferenciar do bitmap
     float _velocidadeX;
     float _larguraObs, _alturaObs;
-    float distmin;
 
     public:
-    Obstaculo();
-    Obstaculo(float posX, float posY, ALLEGRO_BITMAP* bitmap, float velocidadeX, float largura, float altura);
+    Obstaculo(float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float altura);
+    //Construtor de canos
+    Obstaculo(float posX, float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float altura);
+    //Construtor de outros obstáculos
+
 
     float get_velocidadeX();
     void set_velocidadeX(float);
@@ -23,8 +24,11 @@ class Obstaculo  : public ObjetoRenderizavel{
     float get_alturaObs();
     void set_alturaObs(float);
     void mover_obstaculos();
+    //Move o obstáculo no eixo X
     void desenhar_canos();
+    //Renderiza os canos e(ou) desenha os hitbox
     void on_tick() override;
+    //Atualiza a posição
 };
 
 #endif

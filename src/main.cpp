@@ -27,6 +27,11 @@ const float FPS = 60;
 const float SECONDS_PER_UPDATE = 1.0f / FPS;
 double ultimo_spawn = 0;
 
+//alterações na dificuldade
+int multiplicador_espaco_canos = 2.5;
+int velocidade_dos_canos = 1.5;
+
+
 void restart_game(Personagem* &character, std::vector<Obstaculo*> &canos){
     character->reset_position(SCREEN_W/2 -250,SCREEN_H/2);
     for (auto c : canos)
@@ -151,9 +156,9 @@ int main()
                 {
                     ultimo_spawn = current_time;
                     int altura_buraco = rando.valor_aleatorio();
-                    int tamanho_gap = 100;
-                    canos.push_back(new Obstaculo(SCREEN_W + 50, -1000 + altura_buraco, upper_pipe_sprite, 1.2, 50, altura_buraco));
-                    canos.push_back(new Obstaculo(SCREEN_W + 50, altura_buraco - tamanho_gap, lower_pipe_sprite, 1.2, 50, (SCREEN_H - (altura_buraco))));
+                    int tamanho_gap = multiplicador_espaco_canos * (al_get_bitmap_height(character_sprite));
+                    canos.push_back(new Obstaculo(altura_buraco - (al_get_bitmap_height(upper_pipe_sprite)), upper_pipe_sprite, velocidade_dos_canos, altura_buraco));
+                    canos.push_back(new Obstaculo(altura_buraco + tamanho_gap, lower_pipe_sprite, velocidade_dos_canos, (al_get_bitmap_height(lower_pipe_sprite) - (altura_buraco))));
                 }
                 if(canos.size() >= 10) //alterei a logica para excluir os canos, motivo de estar crashando ao selecionar o pause (victor)
                 {
