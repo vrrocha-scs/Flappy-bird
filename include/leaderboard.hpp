@@ -1,16 +1,13 @@
 #ifndef LEADERBOARD_H
 #define LEADERBOARD_H
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 #include<string>
 
 class Leaderboard{
-    private:
-     std::string nome_tabelados;
-     int pontuacao_tabelados;
     public:
-    Leaderboard(const std::string& nome,int pontuacao) : nome_tabelados(nome),pontuacao_tabelados(pontuacao){}
-    Leaderboard(){};
-
     void cadastro_tabela(std::string,int);
-    void display_tabela();//a fazer
+    void display_tabela(ALLEGRO_DISPLAY*, ALLEGRO_FONT*, const char*);//a fazer
 };
 #endif

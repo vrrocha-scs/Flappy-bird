@@ -6,8 +6,8 @@
 class Cadastro{
   private:
    std::string nome_jogador;
-   int numero_partidas;
    int high_score;
+   int numero_partidas;
   public:
    static Cadastro* verificar_dados(std::string);
    void modificar_dados(int);

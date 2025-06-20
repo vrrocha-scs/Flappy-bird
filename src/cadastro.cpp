@@ -54,7 +54,6 @@ void Cadastro::modificar_dados(int score_partida){
   std::ifstream arq_armazenagem("assets/images/dados.csv");
   std::vector<Cadastro>cadastros_jogadores;
   std::string linha;
-  bool encontrado=false;
 
   if(arq_armazenagem.is_open()){
   while(getline(arq_armazenagem,linha)){
@@ -65,7 +64,6 @@ void Cadastro::modificar_dados(int score_partida){
       int partidas=std::stoi(partidas_str);
       if(nome==nome_jogador){
       cadastros_jogadores.push_back(Cadastro(nome,high_score,numero_partidas));
-      encontrado=true;
       }
     else{
     cadastros_jogadores.push_back(Cadastro(nome,score,partidas));
