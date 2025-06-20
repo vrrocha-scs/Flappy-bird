@@ -141,13 +141,13 @@ int main() {
         // --- Seção de Lógica do Jogo ---
         if (current_state == GameState::PLAYING) {
             // Colisão com chão
-            if (character->checkCollision(*Chao.get_hitbox())) {
+            if (character->checkCollision(Chao.get_hitbox())) {
                 current_state = GameState::GAMEOVER;
             }
 
             // Colisão com obstáculos
             for (auto c : canos) {
-                if (character->checkCollision(*c->get_hitbox())) {
+                if (character->checkCollision(c->get_hitbox())) {
                     current_state = GameState::GAMEOVER;
                     break;
                 }
@@ -220,7 +220,7 @@ int main() {
         al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
 
         character->render_object();
-        Chao.get_hitbox()->draw_hitbox();
+        Chao.get_hitbox().draw_hitbox();
 
         for (auto c : canos) {
             c->desenhar_canos();

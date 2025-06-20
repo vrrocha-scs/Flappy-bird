@@ -30,9 +30,9 @@ float ObjetoRenderizavel::get_centerY(){
     return centerY;
 }
 
-Hitbox* ObjetoRenderizavel::get_hitbox()
+Hitbox& ObjetoRenderizavel::get_hitbox()
 {
-    return &hitbox;
+    return hitbox;
 }
 
 ALLEGRO_BITMAP* ObjetoRenderizavel::get_bitmap(){

@@ -13,7 +13,7 @@ class Personagem : public ObjetoRenderizavel{
         int score;
     public:
         //Construtor padrão
-        Personagem(float x, float y,ALLEGRO_BITMAP* bitmap);
+        Personagem(float posX, float posY,ALLEGRO_BITMAP* bitmap);
         //Move o personagem de acordo com a velocidadeY
         void move_character();
         //Retorna velocidade horizontal
@@ -36,7 +36,7 @@ class Personagem : public ObjetoRenderizavel{
         bool checkCollision(Hitbox other_hitbox);
         //Renderizador especial do personagem
         void render_object() override;
-        //reset do personagem (victor adicionou para fazer a funcao de restart do jogo)
+        //reset do personagem
         void reset_position(float start_x, float start_y);
 };
 

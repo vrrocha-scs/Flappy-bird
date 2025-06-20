@@ -6,12 +6,16 @@
 #define JUMP_POWER 5
 #define GRAVITY 0.25
 
-Personagem::Personagem(float x, float y,ALLEGRO_BITMAP* bitmap) : ObjetoRenderizavel(x,y,bitmap,1),jump_power(JUMP_POWER),gravity(GRAVITY), score(0){};
+Personagem::Personagem(float posX, float posY,ALLEGRO_BITMAP* bitmap) : ObjetoRenderizavel(posX,posY,bitmap,1),jump_power(JUMP_POWER),gravity(GRAVITY){
+    velocityX = 0;
+    velocityY = 0;
+    score = 0;
+};
 
 void Personagem::move_character(){
 
-    set_posX(get_posX()+velocityX);
-    set_posY(get_posY()+velocityY);
+    this->set_posX(this->get_posX()+velocityX);
+    this->set_posY(this->get_posY()+velocityY);
 
 }
 
@@ -40,21 +44,22 @@ float Personagem::get_velocityY(){
 }
 
 void Personagem::on_tick(){
-        get_hitbox()->on_tick();
-        set_velocityY(get_velocityY()+gravity);
-        move_character();
+        this->set_velocityY(this->get_velocityY()+gravity);
+        this->move_character();
+        this->get_hitbox().on_tick();
+
 }
 void Personagem::jump(){
-    set_velocityY(-jump_power);
+    this->set_velocityY(-jump_power);
 }
 bool Personagem::checkCollision(Hitbox other_hitbox){
-    if(get_hitbox()->has_collision(other_hitbox)){
+    if(get_hitbox().has_collision(other_hitbox)){
         return true;
     }
     return false;
 }
 void Personagem::render_object(){
-    get_hitbox()->draw_hitbox();
+    get_hitbox().draw_hitbox();
 
     float rotation = min((velocityY/jump_power)*(M_PI/4)*0.45,M_PI/2);
     

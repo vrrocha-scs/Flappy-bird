@@ -58,7 +58,7 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _velocidadeX(velocidade), _larguraObs(
     }
     void Obstaculo::desenhar_canos()
     {
-        get_hitbox()->draw_hitbox();
+        get_hitbox().draw_hitbox();
         render_object();
         return;
     }
@@ -66,7 +66,7 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _velocidadeX(velocidade), _larguraObs(
     void Obstaculo::on_tick()
     {
         this->mover_obstaculos();
-        get_hitbox()->on_tick();
+        get_hitbox().on_tick();
     }
 
 

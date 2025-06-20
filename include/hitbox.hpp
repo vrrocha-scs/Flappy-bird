@@ -5,7 +5,8 @@
 
 class Hitbox{
     private:
-        const float& posX,posY;
+        const float& posX;
+        const float& posY;
         float x1,y1,x2,y2;
         float width,height;
 

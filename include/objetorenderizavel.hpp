@@ -29,7 +29,7 @@ class ObjetoRenderizavel{
         //Retorna posição de Y do centro da imagem, relativo ao bitmap
         float get_centerY();
         //Retorna a hitbox associada ao Objeto
-        Hitbox* get_hitbox();
+        Hitbox& get_hitbox();
         //Retorna o bitmap associado ao Objeto
         ALLEGRO_BITMAP* get_bitmap();
         //Define a posição X
