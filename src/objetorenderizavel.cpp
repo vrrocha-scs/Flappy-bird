@@ -47,5 +47,7 @@ void ObjetoRenderizavel::set_posY(float y){
     posY = y;
 }
 
-
+void ObjetoRenderizavel::set_bitmap(ALLEGRO_BITMAP* new_bitmap){
+    object_bitmap = new_bitmap;
+}
 

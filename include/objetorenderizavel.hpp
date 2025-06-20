@@ -36,7 +36,9 @@ class ObjetoRenderizavel{
         void set_posX(float x);
         //Define a posição Y
         void set_posY(float y);
-        //Renderiza a imagem nas coordenadas (x,y)
+        //Define um novo bitmap para o Objeto;
+        void set_bitmap(ALLEGRO_BITMAP* bitmap);
+        //Renderiza a imagsem nas coordenadas (x,y)
         virtual void render_object();
         //Comportamento a cada tick padrão
         virtual void on_tick(){};

@@ -11,9 +11,11 @@ class Personagem : public ObjetoRenderizavel{
         float jump_power;
         float gravity;
         int score;
+        ALLEGRO_BITMAP* idle_sprite;
+        ALLEGRO_BITMAP* jumping_sprite;
     public:
         //Construtor padrão
-        Personagem(float posX, float posY,ALLEGRO_BITMAP* bitmap);
+        Personagem(float posX, float posY,ALLEGRO_BITMAP* bitmap1,ALLEGRO_BITMAP* bitmap2);
         //Move o personagem de acordo com a velocidadeY
         void move_character();
         //Retorna velocidade horizontal

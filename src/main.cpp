@@ -74,6 +74,7 @@ int main() {
     // Bloco de Carregamento de Assets
     //================================================================================
     ALLEGRO_BITMAP* character_sprite = al_load_bitmap("assets/images/character_placeholder.png");
+    ALLEGRO_BITMAP* jumping_sprite = al_load_bitmap("assets/images/jumping_placeholder.png");
     ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
     ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 48, 0);
@@ -90,8 +91,8 @@ int main() {
     Randomizador* rando = new Randomizador(200, 800);
 
     std::vector<Obstaculo*> canos;
-    Personagem* character = new Personagem(SCREEN_W / 2 - 250, SCREEN_H / 2, character_sprite);
-    ObjetoRenderizavel Chao(SCREEN_H - 100, 0, al_create_bitmap(SCREEN_W, 100));
+    Personagem* character = new Personagem(SCREEN_W / 2 - 250, SCREEN_H / 2, character_sprite,jumping_sprite);
+    ObjetoRenderizavel Chao(0,SCREEN_H - 100, al_create_bitmap(SCREEN_W, 100));
 
     // Controle de tempo
     double previous_time = al_get_time();
@@ -145,19 +146,19 @@ int main() {
                 current_state = GameState::GAMEOVER;
             }
 
-            /* Colisão com obstáculos
+            //Colisão com obstáculos
             for (auto c : canos) {
                 if (character->checkCollision(c->get_hitbox())) {
                     current_state = GameState::GAMEOVER;
                     break;
                 }
-            }*/
+            }
             
 
             // Lógica de atualização baseada em tempo fixo
             while (lag >= SECONDS_PER_UPDATE) {
                 character->on_tick();
-
+                Chao.on_tick();
                 for (auto c : canos) {
                     c->on_tick();
                 }

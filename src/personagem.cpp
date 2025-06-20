@@ -6,7 +6,7 @@
 #define JUMP_POWER 5
 #define GRAVITY 0.25
 
-Personagem::Personagem(float posX, float posY,ALLEGRO_BITMAP* bitmap) : ObjetoRenderizavel(posX,posY,bitmap,1),jump_power(JUMP_POWER),gravity(GRAVITY){
+Personagem::Personagem(float posX, float posY,ALLEGRO_BITMAP* bitmap1,ALLEGRO_BITMAP* bitmap2) : ObjetoRenderizavel(posX,posY,bitmap1,1),jump_power(JUMP_POWER),gravity(GRAVITY),idle_sprite(bitmap1),jumping_sprite(bitmap2){
     velocityX = 0;
     velocityY = 0;
     score = 0;
@@ -44,6 +44,12 @@ float Personagem::get_velocityY(){
 }
 
 void Personagem::on_tick(){
+        if(get_velocityY() < 0){
+            set_bitmap(jumping_sprite);
+        }
+        else{
+            set_bitmap(idle_sprite);
+        }
         this->set_velocityY(this->get_velocityY()+gravity);
         this->move_character();
         this->get_hitbox().on_tick();
