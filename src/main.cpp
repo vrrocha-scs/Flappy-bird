@@ -29,23 +29,15 @@ const float SECONDS_PER_UPDATE = 1.0f / FPS;
 
 double ultimo_spawn = 0;
 
-<<<<<<< HEAD
 //alterações na dificuldade
 int multiplicador_espaco_canos = 2.5;
 int velocidade_dos_canos = 1.5;
 
-
-void restart_game(Personagem* &character, std::vector<Obstaculo*> &canos){
-    character->reset_position(SCREEN_W/2 -250,SCREEN_H/2);
-    for (auto c : canos)
-    {
-=======
 // Função de reinício do jogo
 void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos) {
     character->reset_position(SCREEN_W / 2 - 250, SCREEN_H / 2);
     
     for (auto c : canos) {
->>>>>>> a0ba9f0 (Refator: Melhora legibilidade do main e ajusta .gitignore)
         delete c;
     }
     
@@ -174,7 +166,6 @@ int main() {
                     ultimo_spawn = current_time;
 
                     int altura_buraco = rando.valor_aleatorio();
-<<<<<<< HEAD
                     int tamanho_gap = multiplicador_espaco_canos * (al_get_bitmap_height(character_sprite));
                     canos.push_back(new Obstaculo(altura_buraco - (al_get_bitmap_height(upper_pipe_sprite)), upper_pipe_sprite, velocidade_dos_canos, altura_buraco));
                     canos.push_back(new Obstaculo(altura_buraco + tamanho_gap, lower_pipe_sprite, velocidade_dos_canos, (al_get_bitmap_height(lower_pipe_sprite) - (altura_buraco))));
@@ -187,12 +178,6 @@ int main() {
                         delete canos.front();
                         canos.erase(canos.begin());
                     }
-=======
-                    int tamanho_gap = 100;
-
-                    canos.push_back(new Obstaculo(SCREEN_W + 50, -1000 + altura_buraco, upper_pipe_sprite, 1.2, 50, altura_buraco));
-                    canos.push_back(new Obstaculo(SCREEN_W + 50, altura_buraco - tamanho_gap, lower_pipe_sprite, 1.2, 50, SCREEN_H - altura_buraco));
->>>>>>> a0ba9f0 (Refator: Melhora legibilidade do main e ajusta .gitignore)
                 }
 
                 // Lógica de deleção
