@@ -152,6 +152,7 @@ int main() {
                     break;
                 }
             }
+            
 
             // Lógica de atualização baseada em tempo fixo
             while (lag >= SECONDS_PER_UPDATE) {
@@ -169,15 +170,6 @@ int main() {
                     int tamanho_gap = multiplicador_espaco_canos * (al_get_bitmap_height(character_sprite));
                     canos.push_back(new Obstaculo(altura_buraco - (al_get_bitmap_height(upper_pipe_sprite)), upper_pipe_sprite, velocidade_dos_canos, altura_buraco));
                     canos.push_back(new Obstaculo(altura_buraco + tamanho_gap, lower_pipe_sprite, velocidade_dos_canos, (al_get_bitmap_height(lower_pipe_sprite) - (altura_buraco))));
-                }
-                if(canos.size() >= 10) //alterei a logica para excluir os canos, motivo de estar crashando ao selecionar o pause (victor)
-                {
-                    delete canos.front(); 
-                    canos.erase(canos.begin());
-                    if (!canos.empty()) {
-                        delete canos.front();
-                        canos.erase(canos.begin());
-                    }
                 }
 
                 // Lógica de deleção
