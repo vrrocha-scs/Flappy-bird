@@ -27,6 +27,16 @@ const float FPS = 60;
 const float SECONDS_PER_UPDATE = 1.0f / FPS;
 double ultimo_spawn = 0;
 
+void restart_game(Personagem* &character, std::vector<Obstaculo*> &canos){
+    character->reset_position(SCREEN_W/2 -250,SCREEN_H/2);
+    for (auto c : canos)
+    {
+        delete c;
+    }
+    canos.clear();
+    ultimo_spawn = al_get_time();
+}
+
 int main()
 {
     //inicializando as bibliotecas
@@ -36,7 +46,6 @@ int main()
     al_init_image_addon();
     al_init_font_addon();
     al_init_ttf_addon();
-
 
     //inicializando as structs padrão
     ALLEGRO_DISPLAY * display = NULL;
@@ -146,43 +155,46 @@ int main()
                     canos.push_back(new Obstaculo(SCREEN_W + 50, -1000 + altura_buraco, upper_pipe_sprite, 1.2, 50, altura_buraco));
                     canos.push_back(new Obstaculo(SCREEN_W + 50, altura_buraco - tamanho_gap, lower_pipe_sprite, 1.2, 50, (SCREEN_H - (altura_buraco))));
                 }
-                if(canos.size() >= 10)
+                if(canos.size() >= 10) //alterei a logica para excluir os canos, motivo de estar crashando ao selecionar o pause (victor)
                 {
-                    std::vector<Obstaculo*>::iterator it = canos.begin();
-                    delete *(it);
-                    canos.erase(it);
-                    delete *(it);
-                    canos.erase(it);
+                    delete canos.front(); 
+                    canos.erase(canos.begin());
+                    if (!canos.empty()) {
+                        delete canos.front();
+                        canos.erase(canos.begin());
+                    }
                 }
                 lag -= SECONDS_PER_UPDATE;
             }
         }
         
         if (current_state == GameState::PAUSED){
-            Menu pause_menu(display, menu_font, MenuType::PAUSE);
+            Menu pause_menu(event_queue, menu_font, MenuType::PAUSE);
             MenuResult result = pause_menu.show();
             
             if (result == MenuResult::CONTINUE_GAME){
                 current_state = GameState::PLAYING;
                 previous_time = al_get_time();
             }
-            //else if (result == MenuResult::RESTART_GAME){
-            // 
-            //}
+            else if (result == MenuResult::RESTART_GAME){
+                restart_game(character, canos);
+                current_state = GameState::PLAYING;
+            }
             else if (result == MenuResult::EXIT_GAME){
                 current_state = GameState::EXITING;
             }
         }
         else if (current_state == GameState::GAMEOVER){
-            Menu end_menu(display, menu_font, MenuType::END);
+            Menu end_menu(event_queue, menu_font, MenuType::END);
             MenuResult result = end_menu.show();
 
-            //if (result == MenuResult::RESTART_GAME){
-            // 
-            //}
-            //else if (result == MenuResult::EXIT_GAME){
-            //  current_state = GameState::EXITING;
-            //}
+            if (result == MenuResult::RESTART_GAME){
+                restart_game(character, canos);
+                current_state = GameState::PLAYING;
+            }
+            else if (result == MenuResult::EXIT_GAME){
+                current_state = GameState::EXITING;
+            }
         }
 
         //--- RENDERIZAÇÃO ---

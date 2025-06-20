@@ -36,6 +36,8 @@ class Personagem : public ObjetoRenderizavel{
         bool checkCollision(Hitbox other_hitbox);
         //Renderizador especial do personagem
         void render_object() override;
+        //reset do personagem (victor adicionou para fazer a funcao de restart do jogo)
+        void reset_position(float start_x, float start_y);
 };
 
 
