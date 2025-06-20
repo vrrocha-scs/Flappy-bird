@@ -88,9 +88,7 @@ struct EntradaTabela
  }
 
 
-   void Leaderboard::display_tabela(ALLEGRO_DISPLAY* display, ALLEGRO_FONT* font, const char* titulo) {
-    std::cout << "Entrou em display_tabela" << std::endl;
-
+  void Leaderboard::display_tabela(ALLEGRO_DISPLAY* display, ALLEGRO_FONT* font, const char* titulo) {
     std::ifstream arq_tabela("assets/images/tabela.csv");
     if (!arq_tabela.is_open()) {
         std::cerr << "Erro ao abrir tabela.csv" << std::endl;
@@ -103,17 +101,18 @@ struct EntradaTabela
     }
     arq_tabela.close();
 
-    std::cout << "Linhas lidas: " << linhas.size() << std::endl;
-
     int largura = 400;
     int altura = 60 + 40 * linhas.size();
     int x = (al_get_display_width(display) - largura) / 2;
     int y = (al_get_display_height(display) - altura) / 2;
 
+    //realiza o display do retangulo e do titulo
+    al_clear_to_color(al_map_rgb(30, 30, 30));
     al_draw_filled_rectangle(x, y, x+largura, y+altura, al_map_rgba(0, 0, 0, 200));
     al_draw_rectangle(x, y, x+largura, y+altura, al_map_rgb(255,255,255), 2);
     al_draw_text(font, al_map_rgb(255,255,0), x+largura/2, y+10, ALLEGRO_ALIGN_CENTRE, titulo);
 
+    //display da tabela
     int y_offset = y + 50;
     for (size_t i = 0; i < linhas.size(); ++i) {
         std::string nome, pontuacao;
@@ -124,7 +123,11 @@ struct EntradaTabela
         al_draw_text(font, al_map_rgb(255,255,255), x+largura/2, y_offset + i*40, ALLEGRO_ALIGN_CENTRE, texto.c_str());
     }
 
+    al_draw_text(font, al_map_rgb(180,180,180), x+largura/2, y+altura-35, ALLEGRO_ALIGN_CENTRE, "Pressione qualquer tecla para sair");
+
     al_flip_display();
+
+    // Espera o player apertar uma tecla ou fechar a janela
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
     al_register_event_source(queue, al_get_display_event_source(display));
     al_register_event_source(queue, al_get_keyboard_event_source());
