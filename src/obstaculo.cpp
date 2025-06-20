@@ -1,6 +1,7 @@
 #include "obstaculo.hpp"
 #include "objetorenderizavel.hpp"
 #include "randomizador.hpp"
+#include <vector>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 
@@ -62,13 +63,43 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _velocidadeX(velocidade), _larguraObs(
         render_object();
         return;
     }
-
     void Obstaculo::on_tick()
     {
         this->mover_obstaculos();
         get_hitbox()->on_tick();
     }
-
-
-    
+    bool Obstaculo::remover_obstaculo()
+    {
+        if (this->get_posX() < 20)
+        {
+            delete this;
+            return true;
+        }
+        else    
+            return false;
+    }
+    void limpando_obstaculos(vector<Obstaculo*>& canos)
+    {
+        for (vector<Obstaculo*>::iterator it = canos.begin(); it != canos.end(); it++)
+            {
+                if ((*it)->remover_obstaculo())
+                {
+                    canos.erase(it);
+                }
+            }      
+    }
+    void adicionando_canos(vector<Obstaculo*>& canos, int altura_buraco, int tamanho_gap, ALLEGRO_BITMAP* upper_pipe_sprite, ALLEGRO_BITMAP* lower_pipe_sprite, int velocidade_canos)
+    {
+        canos.push_back(new Obstaculo(altura_buraco - (al_get_bitmap_height(upper_pipe_sprite)), upper_pipe_sprite, velocidade_canos, altura_buraco));
+        canos.push_back(new Obstaculo(altura_buraco + tamanho_gap, lower_pipe_sprite, velocidade_canos, (al_get_bitmap_height(lower_pipe_sprite) - (altura_buraco))));  
+        return;
+    }
+    int definir_altura_superior(Randomizador* rando)
+    {
+        return rando->valor_aleatorio();
+    }
+    int definir_tamanho_gap(int multiplicador, ALLEGRO_BITMAP* sprite_personagem)
+    {
+        return multiplicador * al_get_bitmap_height(sprite_personagem);
+    }
 

@@ -31,7 +31,7 @@ double ultimo_spawn = 0;
 
 //alterações na dificuldade
 int multiplicador_espaco_canos = 2.5;
-int velocidade_dos_canos = 1.5;
+int velocidade_canos = 1.5;
 
 // Função de reinício do jogo
 void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos) {
@@ -87,7 +87,7 @@ int main() {
     // Bloco de Variáveis e Objetos do Jogo
     //================================================================================
     GameState current_state = GameState::PLAYING;
-    Randomizador rando(200, 800);
+    Randomizador* rando = new Randomizador(200, 800);
 
     std::vector<Obstaculo*> canos;
     Personagem* character = new Personagem(SCREEN_W / 2 - 250, SCREEN_H / 2, character_sprite);
@@ -145,13 +145,13 @@ int main() {
                 current_state = GameState::GAMEOVER;
             }
 
-            // Colisão com obstáculos
+            /* Colisão com obstáculos
             for (auto c : canos) {
                 if (character->checkCollision(*c->get_hitbox())) {
                     current_state = GameState::GAMEOVER;
                     break;
                 }
-            }
+            }*/
             
 
             // Lógica de atualização baseada em tempo fixo
@@ -165,28 +165,15 @@ int main() {
                 // Lógica de Spawn
                 if (current_time - ultimo_spawn >= PIPE_SPAWN_INTERVAL) {
                     ultimo_spawn = current_time;
-
-                    int altura_buraco = rando.valor_aleatorio();
-                    int tamanho_gap = multiplicador_espaco_canos * (al_get_bitmap_height(character_sprite));
-                    canos.push_back(new Obstaculo(altura_buraco - (al_get_bitmap_height(upper_pipe_sprite)), upper_pipe_sprite, velocidade_dos_canos, altura_buraco));
-                    canos.push_back(new Obstaculo(altura_buraco + tamanho_gap, lower_pipe_sprite, velocidade_dos_canos, (al_get_bitmap_height(lower_pipe_sprite) - (altura_buraco))));
+                    int altura_buraco = definir_altura_superior(rando);
+                    int tamanho_gap = definir_tamanho_gap(multiplicador_espaco_canos, character_sprite);
+                    adicionando_canos(canos, altura_buraco, tamanho_gap, upper_pipe_sprite, lower_pipe_sprite, 1.5);
                 }
-
-                // Lógica de deleção
-                canos.erase(
-                    std::remove_if(canos.begin(), canos.end(), [](Obstaculo* cano) {
-                        // A condição para deletar: o cano está 100 pixels para fora da esquerda da tela?
-                        if (cano->get_posX() < -100) {
-                            delete cano;  // Libera a memória do objeto Obstaculo
-                            return true;  // Retorna 'true' para dizer ao remove_if que este item deve ser apagado
-                        }
-                        return false; // Mantém o cano na lista
-                    }),
-                    canos.end()
-                );
-                                
+            
                 lag -= SECONDS_PER_UPDATE;
             }
+
+            limpando_obstaculos(canos);
 
         }
 
@@ -233,6 +220,7 @@ int main() {
     // Bloco de Limpeza de Memória
     //================================================================================
     delete character;
+    delete rando;
 
     for (auto c : canos) {
         delete c;
