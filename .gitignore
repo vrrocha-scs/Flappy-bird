@@ -1,11 +1,13 @@
-*.exe
+# Pastas de build
+/bin/
+/obj/
+
+# Arquivos compilados
 *.o
-obj/*.o
-bin/
-bin/*.exe
-# Ignorar configurações de usuário do VS Code
-.vscode/launch.json
-bin/
-obj/    
 *.exe
-*.o
+
+# Configurações do VSCode
+/.vscode/
+
+# Exceção: NÃO ignore este arquivo específico dentro da pasta bin
+!/bin/NAO_APAGUE_ESSE_ARQUIVO.txt
