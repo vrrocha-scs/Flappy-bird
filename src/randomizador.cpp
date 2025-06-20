@@ -6,7 +6,6 @@ using namespace std;
 
 Randomizador::Randomizador(int _min, int _max) : min(_min), max(_max) 
 {
-    
 };
 
 int Randomizador::valor_aleatorio()
