@@ -72,8 +72,8 @@ int main() {
     //================================================================================
     // Bloco de Carregamento de Assets
     //================================================================================
-    ALLEGRO_BITMAP* character_sprite = al_load_bitmap("assets/images/character_placeholder.png");
-    ALLEGRO_BITMAP* jumping_sprite = al_load_bitmap("assets/images/jumping_placeholder.png");
+    ALLEGRO_BITMAP* character_sprite = al_load_bitmap("assets/images/character.png");
+    ALLEGRO_BITMAP* jumping_sprite = al_load_bitmap("assets/images/character_jumping.png");
     ALLEGRO_BITMAP* ground_sprite = al_load_bitmap("assets/images/chao.png");
     ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
