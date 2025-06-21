@@ -1,12 +1,19 @@
 #include "hitbox.hpp"
 
-Hitbox::Hitbox(const float& posX,const float& posY, float x1,float y1,float x2,float y2) : posX(posX),posY(posY),x1(x1),y1(y1),x2(x2),y2(y2){};
+Hitbox::Hitbox(const float& posX,const float& posY, float x1,float y1,float x2,float y2) : posX(posX),posY(posY),x1(x1),y1(y1),x2(x2),y2(y2),offsetX(0),offsetY(0){};
 
 Hitbox::Hitbox(const float& posX,const float& posY,float width,float height) : posX(posX), posY(posY),width(width),height(height){
-    x1 = posX;
+    offsetX = 0;
+    offsetY = 0;
+    x1 = posX + offsetX;
     x2 = posX + width;
-    y1 = posY;
+    y1 = posY + offsetY;
     y2 = posY + height;
+}
+
+void Hitbox::set_offset(float x,float y){
+    offsetX = x;
+    offsetY = y;
 }
 
 bool Hitbox::has_collision(Hitbox hitbox){
@@ -21,10 +28,10 @@ bool Hitbox::has_collision(Hitbox hitbox){
 };
 
 void Hitbox::on_tick(){
-    x1 = posX;
-    x2 = posX + width;
-    y1 = posY;
-    y2 = posY + height;
+    x1 = posX + offsetX;
+    x2 = posX + width + offsetX;
+    y1 = posY + offsetY;
+    y2 = posY + height + offsetY;
 }
 
 void Hitbox::draw_hitbox(){

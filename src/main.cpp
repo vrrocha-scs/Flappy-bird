@@ -78,7 +78,8 @@ int main() {
     ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
     ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 48, 0);
-    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound_2.wav");
+    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound_3.wav");
+    ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover_sound.wav");
 
     ALLEGRO_BITMAP* mountains_background = al_load_bitmap("assets/images/montanhas.png");
     ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
@@ -154,13 +155,16 @@ int main() {
         if (current_state == GameState::PLAYING) {
             // Colisão com chão
             if (character->checkCollision(Chao->get_hitbox())) {
+                al_play_sample(som_gameover, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 current_state = GameState::GAMEOVER;
             }
 
             //Colisão com obstáculos
             for (auto c : canos) {
                 if (character->checkCollision(c->get_hitbox())) {
+                    al_play_sample(som_gameover, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     current_state = GameState::GAMEOVER;
+
                     break;
                 }
             }
