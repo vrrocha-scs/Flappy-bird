@@ -2,8 +2,9 @@
 #include <allegro5/allegro_primitives.h>
 #include <iostream>
 
-Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
-    //main_display(display), 
+extern void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos); // Falando para o menu que existe uma funcao no main para que nao haja erro de compilacao
+
+Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type): 
     menu_font(font), 
     menu_type(type), 
     selected_option(0),
@@ -16,7 +17,7 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
     }
     else if(menu_type == MenuType::END) {
         m_options.push_back("Jogar Novamente");
-        // Colocar o numero de vitorias/derrotas do jogador e informar se bateu o highscore ou nao
+        m_options.push_back("Leaderboard");
         m_options.push_back("Sair");
     }
     else if(menu_type == MenuType::PAUSE) {
@@ -30,15 +31,6 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
         m_options.push_back("Escreva seu nick");
     }
 
-    //event_queue = al_create_event_queue();
-    //if (!event_queue) {
-    //    std::cerr << "ERRO: Falha ao criar a fila de eventos" << std::endl;
-    //}
-    //if (event_queue) {
-    //    al_register_event_source(event_queue, al_get_keyboard_event_source());
-    //    al_register_event_source(event_queue, al_get_display_event_source(main_display));
-    //}
-
     color_text = al_map_rgb(255, 255, 255); // branco
     color_background = al_map_rgba(0, 0, 0, 180); // preto transparente
     color_selected = al_map_rgb(255, 255, 0);
@@ -46,12 +38,13 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
 }
 
 Menu::~Menu() {
-    //if(event_queue) {
-    //    al_destroy_event_queue(event_queue);
-    //}
-}
 
-void Menu::draw() {
+}
+// Desenhar o menu recebendo o background para que o fundo permaneca aparecendo
+void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items) {
+    for (auto& item : background_items) {
+        item->render_object();
+    }
     ALLEGRO_DISPLAY *display = al_get_current_display();
     al_draw_filled_rectangle(0, 0, 
                             al_get_display_width(display),
@@ -80,15 +73,15 @@ void Menu::draw() {
         al_draw_text(menu_font, current_color, pos_x, pos_y, ALLEGRO_ALIGN_LEFT, option_text);
     }
 }
-
+// Funcao para lidar com a entrada no menu
 MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
     if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
         switch (ev.keyboard.keycode) {
-            case ALLEGRO_KEY_UP:
+            case ALLEGRO_KEY_UP: // Mexer nas opcoes usando a setinha para cima
                 selected_option--;
                 
-                
-                if (menu_type == MenuType::PAUSE) {
+
+                if (menu_type == MenuType::PAUSE) { 
                     
                     if (selected_option <= 0) { 
                         selected_option = m_options.size() - 1; 
@@ -101,7 +94,7 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
                 }
                 break;
 
-            case ALLEGRO_KEY_DOWN:
+            case ALLEGRO_KEY_DOWN: // Mexer nas opcoes usando a setinha para baixo
                 selected_option++;
 
                 if (menu_type == MenuType::PAUSE) {
@@ -115,7 +108,7 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
                 }
                 break;
             
-            case ALLEGRO_KEY_ENTER:
+            case ALLEGRO_KEY_ENTER: // Selecionar a opcao com enter em cada menu
                 is_active = false;
                 if(menu_type == MenuType::START) {
                     return (selected_option == 0) ? MenuResult::START_NEW_GAME : MenuResult::EXIT_GAME;
@@ -129,8 +122,13 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
                     }
                 }
                 else if(menu_type == MenuType::END) {
-                    return(selected_option == 0) ? MenuResult::RESTART_GAME : MenuResult::EXIT_GAME;
-                }
+                    switch(selected_option) {
+                        case 0: return MenuResult::RESTART_GAME;
+                        case 1: return MenuResult::SHOW_LEADERBOARD;
+                        case 2: return MenuResult::EXIT_GAME;
+                        default: return MenuResult::EXIT_GAME;
+        }
+    }
                 break;
             
             case ALLEGRO_KEY_ESCAPE:
@@ -149,22 +147,134 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
     return MenuResult::NO_ACTION;
 }
 
-MenuResult Menu::show() {
+MenuResult Menu::show(std::vector<ObjetoRenderizavel*>& background_items) {
     is_active = true;
     ALLEGRO_EVENT ev;
     MenuResult final_result = (menu_type == MenuType::PAUSE) ? MenuResult::CONTINUE_GAME : MenuResult::EXIT_GAME;
+    
     while(is_active) {
+        // Desenha a cena 
+        draw(background_items);
+        al_flip_display();
+
+        // Espera por um evento
         al_wait_for_event(event_queue, &ev);
 
+        // Processa o evento
         MenuResult current_action = handle_input(ev);
         if (current_action != MenuResult::NO_ACTION) {
             final_result = current_action;
         }
-        
-        if (is_active) {
-            draw();
-            al_flip_display();
-        }
     }
     return final_result;
+}
+
+std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std::vector<ObjetoRenderizavel*>& background_items){
+    std::string name = "";
+    bool editing = true;
+    double cursor_time = al_get_time();
+    bool show_cursor = true;
+    ALLEGRO_COLOR overlay_color = al_map_rgba(0, 0, 0, 180);
+
+    // Define uma "caixa de texto" invisível
+    const float INPUT_BOX_WIDTH = 500;
+    const float start_x = (SCREEN_W - INPUT_BOX_WIDTH) / 2.0;
+
+    while (editing) {
+        ALLEGRO_EVENT ev;
+
+        //Desenha a cena
+        for (auto& item : background_items) {
+            item->render_object();
+        }
+        al_draw_filled_rectangle(0, 0, SCREEN_W, SCREEN_H, overlay_color);
+        al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 - 50, ALLEGRO_ALIGN_CENTER, "Digite seu nome e pressione enter:");
+
+        if (al_get_time() - cursor_time > 0.5) {
+            show_cursor = !show_cursor;
+            cursor_time = al_get_time();
+        }
+        std::string text_to_draw = name + (show_cursor ? "|" : "");
+
+        //Desenha o texto
+        al_draw_text(font, al_map_rgb(255, 255, 0), start_x, SCREEN_H / 2, ALLEGRO_ALIGN_LEFT, text_to_draw.c_str());
+
+        al_flip_display();
+
+        //Espera e processa eventos
+        al_wait_for_event(queue, &ev);
+        if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+            if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER || ev.keyboard.keycode == ALLEGRO_KEY_PAD_ENTER) {
+                if (!name.empty()) editing = false;
+            } else if(ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE){
+                if(!name.empty()) name.pop_back();
+            }
+        } else if (ev.type == ALLEGRO_EVENT_KEY_CHAR) {
+            float current_width = al_get_text_width(font, text_to_draw.c_str());
+            if (ev.keyboard.unichar >= 32 && current_width < INPUT_BOX_WIDTH) {
+                char utf8[4];
+                al_utf8_encode(utf8, ev.keyboard.unichar);
+                name += utf8;
+            }
+        } else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+            return "";
+        }
+    }
+    return name;
+}
+
+void Menu::process_state_logic(
+    GameState& current_state,
+    Personagem*& character,
+    std::vector<Obstaculo*>& canos,
+    ALLEGRO_DISPLAY* display,
+    std::vector<ObjetoRenderizavel*>& background_items,
+    double& previous_time,
+    double& ultimo_spawn
+) {
+    MenuResult result = this->show(background_items);
+    MenuType type = this->menu_type;
+    
+    // Lógica para START
+    if (type == MenuType::START) {
+        if (result == MenuResult::START_NEW_GAME) {
+            std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
+            if (!nome_digitado.empty()) {
+                Cadastro* jogador_atual = Cadastro::verificar_dados(nome_digitado);
+                if (jogador_atual != nullptr) {
+                    current_state = GameState::PLAYING;
+                    previous_time = al_get_time();
+                    ultimo_spawn = al_get_time();
+                } else {
+                    current_state = GameState::EXITING;
+                }
+            }
+        } else if (result == MenuResult::EXIT_GAME) {
+            current_state = GameState::EXITING;
+        }
+    }
+    // Lógica para PAUSE
+    else if (type == MenuType::PAUSE) {
+        if (result == MenuResult::CONTINUE_GAME) {
+            current_state = GameState::PLAYING;
+            previous_time = al_get_time();
+        } else if (result == MenuResult::RESTART_GAME) {
+            restart_game(character, canos);
+            current_state = GameState::PLAYING;
+        } else if (result == MenuResult::EXIT_GAME) {
+            current_state = GameState::EXITING;
+        }
+    }
+    // Lógica para GAMEOVER
+    else if (type == MenuType::END) {
+        if (result == MenuResult::RESTART_GAME) {
+            restart_game(character, canos);
+            current_state = GameState::PLAYING;
+        } else if (result == MenuResult::SHOW_LEADERBOARD) {
+            Leaderboard leaderboard;
+            leaderboard.display_tabela(display, this->menu_font, "Melhores Pontuacoes");
+        } else if (result == MenuResult::EXIT_GAME) {
+            current_state = GameState::EXITING;
+        }
+    }
 }

@@ -11,7 +11,7 @@ all: main
 #$(OBJ_DIR)/nova_classe.o : $(INCLUDE_DIR)/nova_classe.hpp $(SRC_DIR)/nova_classe.cpp $(INCLUDE_DIR)/classe_dependente.hpp (se houver)
 #	${CC} ${CFLAGS} -c $(SRC_DIR)/nova_classe.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/nova_classe.o
 
-$(OBJ_DIR)/menu.o : $(INCLUDE_DIR)/menu.hpp $(SRC_DIR)/menu.cpp
+$(OBJ_DIR)/menu.o : $(INCLUDE_DIR)/menu.hpp $(SRC_DIR)/menu.cpp $(INCLUDE_DIR)/gamestate.hpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/menu.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/menu.o
 
 $(OBJ_DIR)/randomizador.o : $(INCLUDE_DIR)/randomizador.hpp $(SRC_DIR)/randomizador.cpp
@@ -36,7 +36,7 @@ $(OBJ_DIR)/personagem.o : $(INCLUDE_DIR)/personagem.hpp $(INCLUDE_DIR)/objetoren
 	${CC} ${CFLAGS} -c $(SRC_DIR)/personagem.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/personagem.o
 
 #ADICIONAR nova_classe.hpp DEPENDENTES AQUI
-$(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp $(INCLUDE_DIR)/obstaculo.hpp $(INCLUDE_DIR)/cadastro.hpp $(INCLUDE_DIR)/randomizador.hpp
+$(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp $(INCLUDE_DIR)/obstaculo.hpp $(INCLUDE_DIR)/cadastro.hpp $(INCLUDE_DIR)/randomizador.hpp $(INCLUDE_DIR)/gamestate.hpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/main.cpp ${LIBS} -o $(OBJ_DIR)/main.o
 
 main: $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/randomizador.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o

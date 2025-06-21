@@ -12,18 +12,11 @@
 #include "../include/obstaculo.hpp"
 #include "../include/randomizador.hpp"
 #include "../include/menu.hpp"
-
-// Enumerador de estados do jogo
-enum class GameState {
-    PLAYING,
-    PAUSED,
-    GAMEOVER,
-    EXITING
-};
+#include "../include/cadastro.hpp"
+#include "../include/leaderboard.hpp"
+#include "../include/gamestate.hpp"
 
 // Constantes da tela e tempo
-const int SCREEN_W = 1000;
-const int SCREEN_H = 1000;
 const float FPS = 60;
 const float SECONDS_PER_UPDATE = 1.0f / FPS;
 
@@ -90,7 +83,9 @@ int main() {
     //================================================================================
     // Bloco de Variáveis e Objetos do Jogo
     //================================================================================
-    GameState current_state = GameState::PLAYING;
+    GameState current_state = GameState::START;
+    Cadastro* jogador_atual = nullptr;
+    int score_da_partida = 0;
     Randomizador* rando = new Randomizador(200, 800);
 
     std::vector<Obstaculo*> canos;
@@ -192,42 +187,38 @@ int main() {
         }
 
         // // --- Seção de Lógica de MENUS (Bloqueante) ---
-        if (current_state == GameState::PAUSED) {
-            Menu pause_menu(event_queue, menu_font, MenuType::PAUSE);
-            MenuResult result = pause_menu.show();
+        if (current_state == GameState::START || current_state == GameState::PAUSED || current_state == GameState::GAMEOVER) {
+        // Determina o tipo de menu a ser criado com base no estado atual
+            MenuType menu_type_to_show = MenuType::START;
+                if (current_state == GameState::PAUSED) menu_type_to_show = MenuType::PAUSE;
+                if (current_state == GameState::GAMEOVER) menu_type_to_show = MenuType::END;
 
-            if (result == MenuResult::CONTINUE_GAME) {
-                current_state = GameState::PLAYING;
-                previous_time = al_get_time();
-            } else if (result == MenuResult::RESTART_GAME) {
-                restart_game(character, canos);
-                current_state = GameState::PLAYING;
-            } else if (result == MenuResult::EXIT_GAME) {
-                current_state = GameState::EXITING;
-            }
-        } else if (current_state == GameState::GAMEOVER) {
-            Menu end_menu(event_queue, menu_font, MenuType::END);
-            MenuResult result = end_menu.show();
+            // Cria o menu
+            Menu active_menu(event_queue, menu_font, menu_type_to_show);
+    
 
-            if (result == MenuResult::RESTART_GAME) {
-                restart_game(character, canos);
-                current_state = GameState::PLAYING;
-            } else if (result == MenuResult::EXIT_GAME) {
-                current_state = GameState::EXITING;
-            }
-        }
+        active_menu.process_state_logic(
+            current_state,
+            character,
+            canos,
+            display,
+            background_items,
+            previous_time,
+            ultimo_spawn
+            );
+}
 
         // --- Seção de Renderização ---
         al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
         for (auto i : background_items) {
             i->render_object();
         }
+        if(current_state == GameState::PLAYING){
         character->render_object();
-
         for (auto c : canos) {
             c->desenhar_canos();
         }
-        
+        }
         al_flip_display();
     }
 
