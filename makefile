@@ -40,7 +40,7 @@ $(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp $(INCLUDE_
 	${CC} ${CFLAGS} -c $(SRC_DIR)/main.cpp ${LIBS} -o $(OBJ_DIR)/main.o
 
 main: $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/randomizador.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o
-	${CC} ${CFLAGS} $(OBJS) $(pkg-config --libs --cflags allegro-5 allegro_main-5 allegro_audio-5 allegro_image-5 allegro_primitives-5 allegro_ttf-5 allegro_font-5) -lallegro_main -lallegro_font -lallegro_ttf -lallegro_primitives -lallegro_image -lallegro -o bin/main.exe 
+	${CC} ${CFLAGS} $(OBJS) $(pkg-config --libs --cflags allegro-5 allegro_main-5 allegro_audio-5 allegro_image-5 allegro_primitives-5 allegro_ttf-5 allegro_font-5) -lallegro_audio -lallegro_acodec -lallegro_main -lallegro_font -lallegro_ttf -lallegro_primitives -lallegro_image -lallegro -o bin/main.exe 
 
 OBJS_TEST = $(OBJ_DIR)/testes.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/randomizador.o
 
