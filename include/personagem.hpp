@@ -6,8 +6,6 @@
 
 class Personagem : public ObjetoRenderizavel{
     private:
-        float velocityX;
-        float velocityY;
         float jump_power;
         float gravity;
         int score;
@@ -18,18 +16,10 @@ class Personagem : public ObjetoRenderizavel{
         Personagem(float posX, float posY,ALLEGRO_BITMAP* bitmap1,ALLEGRO_BITMAP* bitmap2);
         //Move o personagem de acordo com a velocidadeY
         void move_character();
-        //Retorna velocidade horizontal
-        float get_velocityX();
-        //Retorna velocidade vertical
-        float get_velocityY();
         //Retorna pontuação do personagem
         int get_score();
         //Adiciona à pontuação
         void gain_score(int x);
-        //Define velocidade horizontal
-        void set_velocityX(float x);
-        //Define velocidade vertical
-        void set_velocityY(float y);
         //Comportamento por tick do personagem
         void on_tick() override;
         //Comando do pulo

@@ -9,27 +9,19 @@ const int SCREEN_W = 1000;
 const int SCREEN_H = 1000;
 
 Obstaculo::Obstaculo(float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float altura) : 
-ObjetoRenderizavel(SCREEN_W + 50, posY, bitmap,1), _velocidadeX(velocidade), _larguraObs(al_get_bitmap_width(bitmap)), _alturaObs(altura)
+ObjetoRenderizavel(SCREEN_W + 50, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap)), _alturaObs(altura)
 {
-    
+    set_velocityX(velocidade);
 }
 //Construtor de canos
 Obstaculo::Obstaculo(float posX, float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float altura) : 
-ObjetoRenderizavel(posX, posY, bitmap,1), _velocidadeX(velocidade), _larguraObs(al_get_bitmap_width(bitmap)), _alturaObs(altura)
+ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap)), _alturaObs(altura)
 {
-    
+    set_velocityX(velocidade);
+
 }
 //Construtor de outros obstáculos
 
-    float Obstaculo::get_velocidadeX()
-    {
-        return this->_velocidadeX; 
-    }
-    void Obstaculo::set_velocidadeX(float a)
-    {
-        this->_velocidadeX = a;
-        return;
-    }
 
     float Obstaculo::get_larguraObs()
     {
@@ -54,12 +46,11 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _velocidadeX(velocidade), _larguraObs(
 
     void Obstaculo::mover_obstaculos()
     {
-        this->set_posX(this->get_posX() - this->get_velocidadeX());
+        this->set_posX(this->get_posX() - this->get_velocityX());
         return;
     }
     void Obstaculo::desenhar_canos()
     {
-        get_hitbox().draw_hitbox();
         render_object();
         return;
     }

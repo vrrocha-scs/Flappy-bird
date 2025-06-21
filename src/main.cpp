@@ -30,7 +30,7 @@ const float SECONDS_PER_UPDATE = 1.0f / FPS;
 double ultimo_spawn = 0;
 
 //alterações na dificuldade
-int multiplicador_espaco_canos = 2.5;
+int multiplicador_espaco_canos = 4;
 int velocidade_canos = 1.5;
 
 // Função de reinício do jogo
@@ -75,11 +75,14 @@ int main() {
     //================================================================================
     ALLEGRO_BITMAP* character_sprite = al_load_bitmap("assets/images/character_placeholder.png");
     ALLEGRO_BITMAP* jumping_sprite = al_load_bitmap("assets/images/jumping_placeholder.png");
+    ALLEGRO_BITMAP* ground_sprite = al_load_bitmap("assets/images/chao.png");
     ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
     ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 48, 0);
 
-    if (!character_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !menu_font) {
+    ALLEGRO_BITMAP* mountains_background = al_load_bitmap("assets/images/montanhas.png");
+    ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
+    if (!character_sprite || !jumping_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !menu_font) {
         std::cerr << "Erro fatal: Falha ao carregar um ou mais assets." << std::endl;
         return -1;
     }
@@ -92,8 +95,13 @@ int main() {
 
     std::vector<Obstaculo*> canos;
     Personagem* character = new Personagem(SCREEN_W / 2 - 250, SCREEN_H / 2, character_sprite,jumping_sprite);
-    ObjetoRenderizavel Chao(0,SCREEN_H - 100, al_create_bitmap(SCREEN_W, 100));
-
+    ObjetoRenderizavel* Chao = new ObjetoRenderizavel(0,SCREEN_H - 90, ground_sprite,1);
+    ObjetoRenderizavel* Morros = new ObjetoRenderizavel(0,650,hills_background);
+    ObjetoRenderizavel* Montanhas = new ObjetoRenderizavel(0,0,mountains_background);
+    Montanhas->set_velocityX(-velocidade_canos*0.4);
+    Morros->set_velocityX(-velocidade_canos*0.8);
+    Chao->set_velocityX(-velocidade_canos);
+    vector<ObjetoRenderizavel*> background_items = {Montanhas,Morros,Chao};
     // Controle de tempo
     double previous_time = al_get_time();
     double lag = 0;
@@ -142,7 +150,7 @@ int main() {
         // --- Seção de Lógica do Jogo ---
         if (current_state == GameState::PLAYING) {
             // Colisão com chão
-            if (character->checkCollision(Chao.get_hitbox())) {
+            if (character->checkCollision(Chao->get_hitbox())) {
                 current_state = GameState::GAMEOVER;
             }
 
@@ -158,7 +166,12 @@ int main() {
             // Lógica de atualização baseada em tempo fixo
             while (lag >= SECONDS_PER_UPDATE) {
                 character->on_tick();
-                Chao.on_tick();
+                for (auto i : background_items) {
+                    i->on_tick();
+                    if(i->get_posX() < -2000){
+                        i->set_posX(0);
+                    }
+                }
                 for (auto c : canos) {
                     c->on_tick();
                 }
@@ -206,14 +219,15 @@ int main() {
 
         // --- Seção de Renderização ---
         al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
-
+        for (auto i : background_items) {
+            i->render_object();
+        }
         character->render_object();
-        Chao.get_hitbox().draw_hitbox();
 
         for (auto c : canos) {
             c->desenhar_canos();
         }
-
+        
         al_flip_display();
     }
 
@@ -222,6 +236,7 @@ int main() {
     //================================================================================
     delete character;
     delete rando;
+    delete Chao;
 
     for (auto c : canos) {
         delete c;

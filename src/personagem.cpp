@@ -7,15 +7,13 @@
 #define GRAVITY 0.25
 
 Personagem::Personagem(float posX, float posY,ALLEGRO_BITMAP* bitmap1,ALLEGRO_BITMAP* bitmap2) : ObjetoRenderizavel(posX,posY,bitmap1,1),jump_power(JUMP_POWER),gravity(GRAVITY),idle_sprite(bitmap1),jumping_sprite(bitmap2){
-    velocityX = 0;
-    velocityY = 0;
     score = 0;
 };
 
 void Personagem::move_character(){
 
-    this->set_posX(this->get_posX()+velocityX);
-    this->set_posY(this->get_posY()+velocityY);
+    this->set_posX(this->get_posX()+get_velocityX());
+    this->set_posY(this->get_posY()+get_velocityY());
 
 }
 
@@ -23,24 +21,8 @@ void Personagem::gain_score(int x){
     score += x;
 }
 
-void Personagem::set_velocityX(float x){
-    velocityX = x;
-}
-
-void Personagem::set_velocityY(float y){
-    velocityY = y;
-}
-
 int Personagem::get_score(){
     return score;
-}
-
-float Personagem::get_velocityX(){
-    return velocityX;
-}
-
-float Personagem::get_velocityY(){
-    return velocityY;
 }
 
 void Personagem::on_tick(){
@@ -65,15 +47,14 @@ bool Personagem::checkCollision(Hitbox other_hitbox){
     return false;
 }
 void Personagem::render_object(){
-    get_hitbox().draw_hitbox();
-
-    float rotation = min((velocityY/jump_power)*(M_PI/4)*0.45,M_PI/2);
+    float rotation = min((get_velocityY()/jump_power)*(M_PI/4)*0.45,M_PI/2);
     
     al_draw_rotated_bitmap(get_bitmap(),get_centerX(),get_centerY(),get_posX()+get_centerX(),get_posY()+get_centerY(),rotation,0);
 }
 void Personagem::reset_position(float start_x, float start_y){
     set_posX(start_x);
     set_posY(start_y);
+    this->get_hitbox().on_tick();
 
     set_velocityY(0);
     set_velocityX(0);

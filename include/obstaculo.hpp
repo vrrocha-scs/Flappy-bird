@@ -9,7 +9,6 @@
 
 class Obstaculo  : public ObjetoRenderizavel{
     private:
-    float _velocidadeX;
     float _larguraObs, _alturaObs;
 
     public:
@@ -19,8 +18,6 @@ class Obstaculo  : public ObjetoRenderizavel{
     //Construtor de outros obstáculos
 
 
-    float get_velocidadeX();
-    void set_velocidadeX(float);
     float get_larguraObs();
     void set_larguraObs(float);
     float get_alturaObs();

@@ -4,11 +4,15 @@
 ObjetoRenderizavel::ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap) : posX(x), posY(y), object_bitmap(bitmap),hasHitbox(0),hitbox(-1,-1,-1,-1,-1,-1){
     centerX = (al_get_bitmap_width(object_bitmap))/2;
     centerY = (al_get_bitmap_height(object_bitmap))/2;
+    velocityX = 0;
+    velocityY = 0;
 }
 ObjetoRenderizavel::ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap,bool hasHitbox) : posX(x), posY(y), object_bitmap(bitmap),hasHitbox(1),hitbox(posX,posY,al_get_bitmap_width(object_bitmap),al_get_bitmap_height(object_bitmap))
 {
     centerX = (al_get_bitmap_width(object_bitmap))/2;
     centerY = (al_get_bitmap_height(object_bitmap))/2;
+    velocityX = 0;
+    velocityY = 0;
 }
 
 
@@ -30,6 +34,13 @@ float ObjetoRenderizavel::get_centerY(){
     return centerY;
 }
 
+float ObjetoRenderizavel::get_velocityX(){
+    return velocityX;
+}
+float ObjetoRenderizavel::get_velocityY(){
+    return velocityY;
+}
+
 Hitbox& ObjetoRenderizavel::get_hitbox()
 {
     return hitbox;
@@ -47,6 +58,20 @@ void ObjetoRenderizavel::set_posY(float y){
     posY = y;
 }
 
+void ObjetoRenderizavel::set_velocityX(float x){
+    velocityX = x;
+}
+
+void ObjetoRenderizavel::set_velocityY(float y){
+    velocityY = y;
+}
+void ObjetoRenderizavel::on_tick(){
+    move_object();
+}
+void ObjetoRenderizavel::move_object(){
+    posX += velocityX;
+    posY -= velocityY;
+}
 void ObjetoRenderizavel::set_bitmap(ALLEGRO_BITMAP* new_bitmap){
     object_bitmap = new_bitmap;
 }
