@@ -78,7 +78,7 @@ int main() {
     ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
     ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 48, 0);
-    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound_2.wav");
+    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound_3.wav");
 
     ALLEGRO_BITMAP* mountains_background = al_load_bitmap("assets/images/montanhas.png");
     ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
