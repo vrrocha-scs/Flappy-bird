@@ -75,6 +75,7 @@ int main() {
     ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
     ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 80, 0);
+    ALLEGRO_FONT* score_font = al_load_font("assets/fonts/game_over.ttf", 160, 0);
     ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound_3.wav");
     ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover_sound.wav");
 
@@ -197,7 +198,6 @@ int main() {
             
                 lag -= SECONDS_PER_UPDATE;
             }
-            std::cout << character->get_score();
             if (!canos.empty())
             {
                 limpando_obstaculos(canos);
@@ -228,8 +228,9 @@ int main() {
             ultimo_spawn
             );
 }
-
         // --- Seção de Renderização ---
+        
+
         al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
         for (auto i : background_items) {
             i->render_object();
@@ -239,6 +240,7 @@ int main() {
         for (auto c : canos) {
             c->desenhar_canos();
         }
+        al_draw_textf(score_font, al_map_rgb(255, 255, 255), SCREEN_W/2, 20, ALLEGRO_ALIGN_CENTRE,"%i", character->get_score());
         }
         al_flip_display();
     }
@@ -259,6 +261,7 @@ int main() {
     al_destroy_bitmap(upper_pipe_sprite);
     al_destroy_bitmap(lower_pipe_sprite);
     al_destroy_font(menu_font);
+    al_destroy_font(score_font);
     al_destroy_display(display);
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);

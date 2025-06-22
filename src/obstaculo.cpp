@@ -73,7 +73,7 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap
     }
     bool Obstaculo::remover_obstaculo()
     {
-        if (this->get_posX() < 20)
+        if (this->get_posX() < -10)
         {
             delete this;
             return true;
