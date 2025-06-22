@@ -13,11 +13,8 @@ Cadastro::Cadastro(std::string _nome,int _score,int _numero_partidas):nome_jogad
 Cadastro* Cadastro::verificar_dados(std::string possivel_nome){
   //verifica se entra em alguma excessão que resultaria em erro
    if(possivel_nome.find(',') != std::string::npos){
-     throw std::invalid_argument("Caracter ',' não é permitido no nickname");
+     throw std::invalid_argument("Não utilize ',' no nome");
    }
-  /* if(possivel_nome.size()>20){
-     throw std::runtime_error("Utilize um nickname com até 25 caracteres");
-   }*/
   //verifica se o player existe e retorna um ponteiro com o cadastro
    std::ifstream leitura_arq("assets/datas/dados.csv");
     if(leitura_arq.is_open()){

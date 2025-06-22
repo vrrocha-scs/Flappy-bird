@@ -238,18 +238,37 @@ void Menu::process_state_logic(
     // Lógica para START
     if (type == MenuType::START) {
         if (result == MenuResult::START_NEW_GAME) {
-            std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
-            if (!nome_digitado.empty()) {
-                Cadastro* jogador_atual = Cadastro::verificar_dados(nome_digitado);
-                if (jogador_atual != nullptr) {
-                    current_state = GameState::PLAYING;
-                    previous_time = al_get_time();
-                    ultimo_spawn = al_get_time();
-                } else {
-                    current_state = GameState::EXITING;
+            while(1){
+             try{
+                std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
+                if (!nome_digitado.empty()) {
+                    Cadastro* jogador_atual = Cadastro::verificar_dados(nome_digitado);
+                    if (jogador_atual != nullptr) {
+                      current_state = GameState::PLAYING;
+                      previous_time = al_get_time();
+                      ultimo_spawn = al_get_time();
+                      break;
+                   }else {
+                      current_state = GameState::EXITING;
+                      break;
+                    }
                 }
-            }
-        } else if (result == MenuResult::EXIT_GAME) {
+             }
+             catch(std::invalid_argument& e){
+               // Limpa a tela e desenha o fundo
+                for (auto& item : background_items) {
+                    item->render_object();
+                }
+                ALLEGRO_DISPLAY *display = al_get_current_display();
+                al_draw_filled_rectangle(0, 0, al_get_display_width(display), al_get_display_height(display), al_map_rgba(0,0,0,180));
+                // Desenha a mensagem de erro no centro da tela
+                al_draw_text(this->menu_font, al_map_rgb(255, 0, 0), al_get_display_width(display)/2, al_get_display_height(display)/2, ALLEGRO_ALIGN_CENTER, e.what());
+                al_flip_display();
+                al_rest(2.0);
+           }
+            } 
+          }
+           else if (result == MenuResult::EXIT_GAME) {
             current_state = GameState::EXITING;
         }
     }
