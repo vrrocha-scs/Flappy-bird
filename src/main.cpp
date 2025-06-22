@@ -22,12 +22,8 @@
 // Constantes da tela e tempo
 const float FPS = 60;
 const float SECONDS_PER_UPDATE = 1.0f / FPS;
-
 double ultimo_spawn = 0;
 
-//alterações na dificuldade
-int multiplicador_espaco_canos = 4;
-int velocidade_canos = 1.5;
 
 // Função de reinício do jogo
 void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos) {
@@ -92,10 +88,15 @@ int main() {
     //================================================================================
     // Bloco de Variáveis e Objetos do Jogo
     //================================================================================
+    int multiplicador_espaco_canos = 3.0;
+    int velocidade_canos = 1.5;
+    int tamanho_gap = definir_tamanho_gap(multiplicador_espaco_canos, character_sprite);
     GameState current_state = GameState::START;
     Cadastro* jogador_atual = nullptr;
     int score_da_partida = 0;
-    Randomizador* rando = new Randomizador(200, 800);
+    int minimo = 100;
+    int maximo = SCREEN_H - (al_get_bitmap_height(ground_sprite) + tamanho_gap + minimo);
+    Randomizador* rando = new Randomizador(minimo, maximo);
 
     std::vector<Obstaculo*> canos;
     Personagem* character = new Personagem(SCREEN_W / 2 - 250, SCREEN_H / 2, character_sprite,jumping_sprite);
@@ -184,20 +185,24 @@ int main() {
                 }
                 for (auto c : canos) {
                     c->on_tick();
+                    c->check_passagem(character);
                 }
                 
                 // Lógica de Spawn
                 if (current_time - ultimo_spawn >= PIPE_SPAWN_INTERVAL) {
                     ultimo_spawn = current_time;
                     int altura_buraco = definir_altura_superior(rando);
-                    int tamanho_gap = definir_tamanho_gap(multiplicador_espaco_canos, character_sprite);
                     adicionando_canos(canos, altura_buraco, tamanho_gap, upper_pipe_sprite, lower_pipe_sprite, 1.5);
                 }
             
                 lag -= SECONDS_PER_UPDATE;
             }
-
-            limpando_obstaculos(canos);
+            std::cout << character->get_score();
+            if (!canos.empty())
+            {
+                limpando_obstaculos(canos);
+            }
+            
 
         }
 

@@ -37,3 +37,8 @@ void Hitbox::on_tick(){
 void Hitbox::draw_hitbox(){
     al_draw_filled_rectangle(x1,y1,x2,y2,al_map_rgba_f(0,1,0,0.25));
 }
+
+float Hitbox::get_posX()
+{
+    return this->posX;
+}

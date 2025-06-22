@@ -22,7 +22,7 @@ void Personagem::gain_score(int x){
 }
 
 int Personagem::get_score(){
-    return score;
+    return score/2;
 }
 
 void Personagem::on_tick(){

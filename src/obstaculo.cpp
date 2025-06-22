@@ -11,6 +11,7 @@ const int SCREEN_H = 1000;
 Obstaculo::Obstaculo(float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float altura) : 
 ObjetoRenderizavel(SCREEN_W + 50, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap)), _alturaObs(altura)
 {
+    passou_personagem = false;
     set_velocityX(velocidade);
 }
 //Construtor de canos
@@ -18,6 +19,7 @@ Obstaculo::Obstaculo(float posX, float posY, ALLEGRO_BITMAP* bitmap, float veloc
 ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap)), _alturaObs(altura)
 {
     set_velocityX(velocidade);
+    passou_personagem = false;
 
 }
 //Construtor de outros obstáculos
@@ -42,6 +44,15 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap
         this->_alturaObs = a;
         return;
     }
+    bool Obstaculo::get_passou()
+    {
+        return passou_personagem;
+    }
+    void Obstaculo::set_passou(bool aux)
+    {
+        passou_personagem = aux;
+        return;
+    }
 
 
     void Obstaculo::mover_obstaculos()
@@ -58,6 +69,7 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap
     {
         this->mover_obstaculos();
         get_hitbox().on_tick();
+        get_hitbox().draw_hitbox();
     }
     bool Obstaculo::remover_obstaculo()
     {
@@ -68,6 +80,15 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap
         }
         else    
             return false;
+    }
+    void Obstaculo::check_passagem(Personagem* personagem)
+    {
+        if ((personagem->get_posX() > ((this->get_hitbox()).get_posX() + this->get_larguraObs()) && !this->get_passou()))
+        {
+            this->set_passou(true);
+            personagem->gain_score(1);
+        }
+        return;
     }
     void limpando_obstaculos(vector<Obstaculo*>& canos)
     {
