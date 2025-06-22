@@ -40,11 +40,23 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
 Menu::~Menu() {
 
 }
-// Desenhar o menu recebendo o background para que o fundo permaneca aparecendo
-void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items) {
+// desenhar o menu
+void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos) {
+    al_clear_to_color(al_map_rgba_f(0, 0, 1, 0)); // desenho o fundo azul
     for (auto& item : background_items) {
         item->render_object();
     }
+    if(menu_type != MenuType::START) {
+        if(character) {
+            character->render_object();
+        }
+        for (auto& c : canos)
+        {
+            c->desenhar_canos();
+        }
+        
+    }
+
     ALLEGRO_DISPLAY *display = al_get_current_display();
     al_draw_filled_rectangle(0, 0, 
                             al_get_display_width(display),
@@ -147,14 +159,14 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
     return MenuResult::NO_ACTION;
 }
 
-MenuResult Menu::show(std::vector<ObjetoRenderizavel*>& background_items) {
+MenuResult Menu::show(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos) {
     is_active = true;
     ALLEGRO_EVENT ev;
     MenuResult final_result = (menu_type == MenuType::PAUSE) ? MenuResult::CONTINUE_GAME : MenuResult::EXIT_GAME;
     
     while(is_active) {
         // Desenha a cena 
-        draw(background_items);
+        draw(background_items, character, canos);
         al_flip_display();
 
         // Espera por um evento
@@ -181,6 +193,7 @@ std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std:
     const float start_x = (SCREEN_W - INPUT_BOX_WIDTH) / 2.0;
 
     while (editing) {
+        al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
         ALLEGRO_EVENT ev;
 
         //Desenha a cena
@@ -225,6 +238,7 @@ std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std:
 
 void Menu::process_state_logic(
     GameState& current_state,
+    Cadastro*& jogador_atual,
     Personagem*& character,
     std::vector<Obstaculo*>& canos,
     ALLEGRO_DISPLAY* display,
@@ -232,27 +246,29 @@ void Menu::process_state_logic(
     double& previous_time,
     double& ultimo_spawn
 ) {
-    MenuResult result = this->show(background_items);
+    MenuResult result = this->show(background_items, character, canos);
     MenuType type = this->menu_type;
     
     // Lógica para START
     if (type == MenuType::START) {
-        if (result == MenuResult::START_NEW_GAME) {
-            std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
-            if (!nome_digitado.empty()) {
-                Cadastro* jogador_atual = Cadastro::verificar_dados(nome_digitado);
-                if (jogador_atual != nullptr) {
-                    current_state = GameState::PLAYING;
-                    previous_time = al_get_time();
-                    ultimo_spawn = al_get_time();
-                } else {
-                    current_state = GameState::EXITING;
-                }
+    if (result == MenuResult::START_NEW_GAME) {
+        std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
+        if (!nome_digitado.empty()) {
+            jogador_atual = Cadastro::verificar_dados(nome_digitado); // Chamo verificar dados para registrar ou fazer o login do jogador
+            
+            if (jogador_atual != nullptr) {
+                current_state = GameState::PLAYING;
+                previous_time = al_get_time();
+                ultimo_spawn = al_get_time();
+            } else {
+                // Sai caso haja algum erro
+                current_state = GameState::EXITING;
             }
-        } else if (result == MenuResult::EXIT_GAME) {
-            current_state = GameState::EXITING;
         }
+    } else if (result == MenuResult::EXIT_GAME) {
+        current_state = GameState::EXITING;
     }
+}
     // Lógica para PAUSE
     else if (type == MenuType::PAUSE) {
         if (result == MenuResult::CONTINUE_GAME) {

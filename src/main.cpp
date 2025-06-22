@@ -71,7 +71,7 @@ int main() {
     ALLEGRO_BITMAP* ground_sprite = al_load_bitmap("assets/images/chao.png");
     ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
-    ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 48, 0);
+    ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 80, 0);
 
     ALLEGRO_BITMAP* mountains_background = al_load_bitmap("assets/images/montanhas.png");
     ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
@@ -147,12 +147,14 @@ int main() {
             // Colisão com chão
             if (character->checkCollision(Chao->get_hitbox())) {
                 current_state = GameState::GAMEOVER;
+                jogador_atual->modificar_dados(score_da_partida);
             }
 
             //Colisão com obstáculos
             for (auto c : canos) {
                 if (character->checkCollision(c->get_hitbox())) {
                     current_state = GameState::GAMEOVER;
+                    jogador_atual->modificar_dados(score_da_partida);
                     break;
                 }
             }
@@ -199,6 +201,7 @@ int main() {
 
         active_menu.process_state_logic(
             current_state,
+            jogador_atual,
             character,
             canos,
             display,

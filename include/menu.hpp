@@ -35,7 +35,7 @@ const int SCREEN_H = 1000;
 
 class Menu {
     private:
-    void draw(std::vector<ObjetoRenderizavel*>& background_items);
+    void draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos);
     MenuResult handle_input(ALLEGRO_EVENT ev);
     ALLEGRO_EVENT_QUEUE* event_queue;
     ALLEGRO_FONT *menu_font;
@@ -53,9 +53,10 @@ class Menu {
     public:
     Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type);
     ~Menu();
-    MenuResult show(std::vector<ObjetoRenderizavel*>& background_items);
+    MenuResult show(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos);
     void process_state_logic(
         GameState& current_state,
+        Cadastro*& jogador_atual,
         Personagem*& character,
         std::vector<Obstaculo*>& canos,
         ALLEGRO_DISPLAY* display,
