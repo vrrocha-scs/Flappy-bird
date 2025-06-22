@@ -171,7 +171,6 @@ int main() {
                     current_state = GameState::GAMEOVER;
                     score_da_partida = character->get_score();
                     jogador_atual->modificar_dados(score_da_partida);
-
                     break;
                 }
             }
