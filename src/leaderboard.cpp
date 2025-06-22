@@ -26,7 +26,7 @@ bool comparaEntradas(const EntradaTabela& a, const EntradaTabela& b) { //logica 
 //recebe os dados da partida e verifica se ela entrara na leaderboard
 void Leaderboard::cadastro_tabela(std::string nome_jogador, int score_partida) {
     std::list<EntradaTabela> tabelados;
-    std::ifstream arq_tabela_leit("assets/images/tabela.csv");
+    std::ifstream arq_tabela_leit("assets/datas/tabela.csv");
     std::string linha;
 
     if (arq_tabela_leit.is_open()) {
@@ -71,7 +71,7 @@ void Leaderboard::cadastro_tabela(std::string nome_jogador, int score_partida) {
     }
     
     // registra a tabela(somente se ouver alguma modificação nos dados)
-    std::ofstream arq_tabela_esc("assets/images/tabela.csv");
+    std::ofstream arq_tabela_esc("assets/datas/tabela.csv");
     if (arq_tabela_esc.is_open()) {
         for (const auto& it : tabelados) {
             arq_tabela_esc << it.nome << "," << it.pontuacao << std::endl;
@@ -90,7 +90,7 @@ void Leaderboard::cadastro_tabela(std::string nome_jogador, int score_partida) {
 
 
   void Leaderboard::display_tabela(ALLEGRO_DISPLAY* display, ALLEGRO_FONT* font, const char* titulo) {
-    std::ifstream arq_tabela("assets/images/tabela.csv");
+    std::ifstream arq_tabela("assets/datas/tabela.csv");
     if (!arq_tabela.is_open()) {
         std::cerr << "Erro ao abrir tabela.csv" << std::endl;
         return;
@@ -102,8 +102,8 @@ void Leaderboard::cadastro_tabela(std::string nome_jogador, int score_partida) {
     }
     arq_tabela.close();
 
-    int largura = 400;
-    int altura = 60 + 40 * linhas.size();
+    int largura = 600;
+    int altura = 60 + 60 * linhas.size();
     int x = (al_get_display_width(display) - largura) / 2;
     int y = (al_get_display_height(display) - altura) / 2;
 
@@ -126,7 +126,7 @@ void Leaderboard::cadastro_tabela(std::string nome_jogador, int score_partida) {
         al_draw_text(font, al_map_rgb(255,255,255), x+largura/2, y_offset + i*40, ALLEGRO_ALIGN_CENTRE, texto.c_str());
     }
 
-    al_draw_text(font, al_map_rgb(180,180,180), x+largura/2, y+altura-35, ALLEGRO_ALIGN_CENTRE, "Pressione qualquer tecla para sair");
+    al_draw_text(font, al_map_rgb(180,180,180), x+largura/2, y+altura-60, ALLEGRO_ALIGN_CENTRE, "Pressione qualquer tecla para sair");
 
     al_flip_display();
 

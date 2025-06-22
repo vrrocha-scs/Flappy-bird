@@ -3,6 +3,8 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 #include <iostream>
 #include <vector>
@@ -49,6 +51,10 @@ int main() {
     al_init_image_addon();
     al_init_font_addon();
     al_init_ttf_addon();
+    al_install_audio();
+    al_init_acodec_addon();
+    al_reserve_samples(16);
+
 
     ALLEGRO_DISPLAY* display = al_create_display(SCREEN_W, SCREEN_H);
     ALLEGRO_EVENT_QUEUE* event_queue = al_create_event_queue();
@@ -67,16 +73,18 @@ int main() {
     //================================================================================
     // Bloco de Carregamento de Assets
     //================================================================================
-    ALLEGRO_BITMAP* character_sprite = al_load_bitmap("assets/images/character_placeholder.png");
-    ALLEGRO_BITMAP* jumping_sprite = al_load_bitmap("assets/images/jumping_placeholder.png");
+    ALLEGRO_BITMAP* character_sprite = al_load_bitmap("assets/images/character.png");
+    ALLEGRO_BITMAP* jumping_sprite = al_load_bitmap("assets/images/character_jumping.png");
     ALLEGRO_BITMAP* ground_sprite = al_load_bitmap("assets/images/chao.png");
     ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
     ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 80, 0);
+    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound_3.wav");
+    ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover_sound.wav");
 
     ALLEGRO_BITMAP* mountains_background = al_load_bitmap("assets/images/montanhas.png");
     ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
-    if (!character_sprite || !jumping_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !menu_font) {
+    if (!character_sprite || !jumping_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !menu_font || !som_pulo) {
         std::cerr << "Erro fatal: Falha ao carregar um ou mais assets." << std::endl;
         return -1;
     }
@@ -136,6 +144,7 @@ int main() {
                     if (current_time - jump_cooldown > JUMP_COOLDOWN_SECONDS) {
                         character->jump();
                         jump_cooldown = current_time;
+                        al_play_sample(som_pulo, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     }
                 } else if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
                     current_state = GameState::PAUSED;
@@ -147,6 +156,7 @@ int main() {
         if (current_state == GameState::PLAYING) {
             // Colisão com chão
             if (character->checkCollision(Chao->get_hitbox())) {
+                al_play_sample(som_gameover, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 current_state = GameState::GAMEOVER;
                 jogador_atual->modificar_dados(score_da_partida);
             }
@@ -154,8 +164,10 @@ int main() {
             //Colisão com obstáculos
             for (auto c : canos) {
                 if (character->checkCollision(c->get_hitbox())) {
+                    al_play_sample(som_gameover, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     current_state = GameState::GAMEOVER;
                     jogador_atual->modificar_dados(score_da_partida);
+
                     break;
                 }
             }

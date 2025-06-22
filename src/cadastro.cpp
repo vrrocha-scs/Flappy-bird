@@ -23,7 +23,7 @@ Cadastro* Cadastro::verificar_dados(std::string possivel_nome) {
         return nullptr;
     }
     //verifica se o player existe e retorna um ponteiro com o cadastro
-    std::ifstream leitura_arq("assets/images/dados.csv");
+    std::ifstream leitura_arq("assets/datas/dados.csv");
     if (leitura_arq.is_open()) {
       std::string linha;
       while (getline(leitura_arq, linha)) {
@@ -43,7 +43,7 @@ Cadastro* Cadastro::verificar_dados(std::string possivel_nome) {
       leitura_arq.close();
 
       //cadastra o player como novo e retorna um ponteiro para seu cadastro
-      std::ofstream escrita_arq("assets/images/dados.csv", std::ios::app);
+      std::ofstream escrita_arq("assets/datas/dados.csv", std::ios::app);
       if (escrita_arq.is_open()) {
         escrita_arq << nome_limpo_input << ",0,0" << std::endl;
         escrita_arq.close();
@@ -55,7 +55,7 @@ Cadastro* Cadastro::verificar_dados(std::string possivel_nome) {
     }
     else {
         //se o arquivo nao existir cria um novo e cadastra o primeiro jogador
-        std::ofstream novo_arquivo("assets/images/dados.csv");
+        std::ofstream novo_arquivo("assets/datas/dados.csv");
         if (novo_arquivo.is_open()) {
             novo_arquivo << nome_limpo_input << ",0,0" << std::endl;
             novo_arquivo.close();
@@ -74,7 +74,7 @@ void Cadastro::modificar_dados(int score_partida){
   }
   numero_partidas++;
 
-  std::ifstream arq_armazenagem("assets/images/dados.csv");
+  std::ifstream arq_armazenagem("assets/datas/dados.csv");
   std::vector<Cadastro> cadastros_jogadores;
   std::string linha;
 
@@ -102,7 +102,7 @@ void Cadastro::modificar_dados(int score_partida){
     return;
   }
 
-  std::ofstream arq_escrita("assets/images/dados.csv");
+  std::ofstream arq_escrita("assets/datas/dados.csv");
   if(arq_escrita.is_open()){
     for(const auto& j:cadastros_jogadores){
         arq_escrita << j.nome_jogador << "," << j.high_score << "," << j.numero_partidas << std::endl;

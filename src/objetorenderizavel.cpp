@@ -14,6 +14,13 @@ ObjetoRenderizavel::ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap,bo
     velocityX = 0;
     velocityY = 0;
 }
+ObjetoRenderizavel::ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap,bool hasHitbox,float width,float height) : posX(x), posY(y), object_bitmap(bitmap),hasHitbox(1),hitbox(posX,posY,width,height)
+{
+    centerX = (al_get_bitmap_width(object_bitmap))/2;
+    centerY = (al_get_bitmap_height(object_bitmap))/2;
+    velocityX = 0;
+    velocityY = 0;
+}
 
 
 void ObjetoRenderizavel::render_object(){
