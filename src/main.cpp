@@ -160,6 +160,7 @@ int main() {
             if (character->checkCollision(Chao->get_hitbox())) {
                 al_play_sample(som_gameover, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 current_state = GameState::GAMEOVER;
+                score_da_partida = character->get_score();
                 jogador_atual->modificar_dados(score_da_partida);
             }
 
@@ -168,6 +169,7 @@ int main() {
                 if (character->checkCollision(c->get_hitbox())) {
                     al_play_sample(som_gameover, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     current_state = GameState::GAMEOVER;
+                    score_da_partida = character->get_score();
                     jogador_atual->modificar_dados(score_da_partida);
 
                     break;
