@@ -15,6 +15,7 @@
 #include "../include/cadastro.hpp"
 #include "../include/leaderboard.hpp"
 #include "../include/gamestate.hpp"
+#include "../include/utils.hpp"
 
 // Constantes da tela e tempo
 const float FPS = 60;
