@@ -11,6 +11,7 @@ class Personagem : public ObjetoRenderizavel{
         int score;
         ALLEGRO_BITMAP* idle_sprite;
         ALLEGRO_BITMAP* jumping_sprite;
+        bool invincible;
     public:
         //Construtor padrão
         Personagem(float posX, float posY,ALLEGRO_BITMAP* bitmap1,ALLEGRO_BITMAP* bitmap2);
@@ -30,6 +31,8 @@ class Personagem : public ObjetoRenderizavel{
         void render_object() override;
         //reset do personagem
         void reset_position(float start_x, float start_y);
+        bool get_invincible();
+        void set_invincible(bool aux);
 };
 
 

@@ -9,6 +9,7 @@
 Personagem::Personagem(float posX, float posY,ALLEGRO_BITMAP* bitmap1,ALLEGRO_BITMAP* bitmap2) : ObjetoRenderizavel(posX,posY,bitmap1,1,64,50),jump_power(JUMP_POWER),gravity(GRAVITY),idle_sprite(bitmap1),jumping_sprite(bitmap2){
     score = 0;
     get_hitbox().set_offset(0,14);
+    invincible = false;
 };
 
 void Personagem::move_character(){
@@ -60,4 +61,13 @@ void Personagem::reset_position(float start_x, float start_y){
     set_velocityX(0);
 
     this->score = 0;
+}
+bool Personagem::get_invincible()
+{
+    return invincible;
+}
+void Personagem::set_invincible(bool aux)
+{
+    invincible = aux;
+    return;
 }

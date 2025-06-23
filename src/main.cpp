@@ -25,6 +25,7 @@ const float FPS = 60;
 const float SECONDS_PER_UPDATE = 1.0f / FPS;
 double ultimo_spawn_canos = 0;
 double ultimo_spawn_coletavel = 0;
+double inicio_efeito_invencivel = 10;
 
 
 // Função de reinício do jogo
@@ -144,7 +145,7 @@ int main() {
     // Constantes de gameplay para fácil ajuste
     const float JUMP_COOLDOWN_SECONDS = 0.25f;
     const float intervalo_spawn_canos = 5.0;
-    const float intervalo_spawn_coletavel = 7.0;
+    const float intervalo_spawn_coletavel = 10;
 
     //================================================================================
     // Loop Principal do Jogo
@@ -194,7 +195,7 @@ int main() {
 
             //Colisão com obstáculos
             for (auto c : canos) {
-                if (character->checkCollision(c->get_hitbox())) {
+                if ((character->checkCollision(c->get_hitbox())) && (character->get_invincible() == false)) {
                     al_play_sample(som_gameover, 0.8, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     current_state = GameState::GAMEOVER;
                     score_da_partida = character->get_score();
@@ -207,10 +208,12 @@ int main() {
             for (auto p : coletaveis){
                 if(p->checkCollision(character->get_hitbox())){
                     p->set_coletado(true);
-                    //std::cout << "encostou";
+                    character->set_invincible(true);
                     //current_state = GameState::INVINCIBLE;
                 };
             }
+
+
             
 
             // Lógica de atualização baseada em tempo fixo
@@ -243,8 +246,19 @@ int main() {
                 ultimo_spawn_coletavel += SECONDS_PER_UPDATE;
                 if (ultimo_spawn_coletavel>= intervalo_spawn_coletavel)
                 {
-                    coletaveis.push_back(new Coletavel(SCREEN_H/2, SCREEN_W/2, green_ball_sprite, 1.5));
+                    coletaveis.push_back(new Coletavel(SCREEN_H/2, SCREEN_W/2, green_ball_sprite, velocidade_canos));
                     ultimo_spawn_coletavel -= intervalo_spawn_coletavel;
+                }
+
+                inicio_efeito_invencivel -= SECONDS_PER_UPDATE;
+                if(character->get_invincible() == true)
+                {
+                    //std::cout << "estou invencivel" << std::endl;
+                    if(inicio_efeito_invencivel <= 0)
+                    {
+                        character->set_invincible(false);
+                        inicio_efeito_invencivel = 10;
+                    }
                 }
             
                 lag -= SECONDS_PER_UPDATE;
@@ -323,15 +337,11 @@ int main() {
     al_destroy_bitmap(ground_sprite);
     al_destroy_bitmap(upper_pipe_sprite);
     al_destroy_bitmap(lower_pipe_sprite);
-    al_destroy_bitmap(mountains_background);
-    al_destroy_bitmap(hills_background);
 
     // Destruindo as FONTES
     al_destroy_bitmap(green_ball_sprite);
-    al_destroy_bitmap(ground_sprite);
     al_destroy_bitmap(hills_background);
     al_destroy_bitmap(mountains_background);
-    al_destroy_bitmap(jumping_sprite);
     al_destroy_font(menu_font);
     al_destroy_font(score_font);
 
