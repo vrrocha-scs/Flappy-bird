@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-extern void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos); // Falando para o menu que existe uma funcao no main para que nao haja erro de compilacao
+extern void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis); // Falando para o menu que existe uma funcao no main para que nao haja erro de compilacao
 
 Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type): 
     menu_font(font), 
@@ -57,7 +57,7 @@ Menu::~Menu() {
 }
 
 // desenhar o menu
-void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos) {
+void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis) {
     al_clear_to_color(al_map_rgba_f(0, 0, 1, 0)); // desenho o fundo azul
     for (auto& item : background_items) {
         item->render_object();
@@ -69,6 +69,10 @@ void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* 
         for (auto& c : canos)
         {
             c->render_object();
+        }
+        for (auto& p : coletaveis)
+        {
+            p->render_object();
         }
     }
 
@@ -181,14 +185,14 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
     return MenuResult::NO_ACTION;
 }
 
-MenuResult Menu::show(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos) {
+MenuResult Menu::show(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis) {
     is_active = true;
     ALLEGRO_EVENT ev;
     MenuResult final_result = (menu_type == MenuType::PAUSE) ? MenuResult::CONTINUE_GAME : MenuResult::EXIT_GAME;
     
     while(is_active) {
         // Desenha a cena 
-        draw(background_items, character, canos);
+        draw(background_items, character, canos, coletaveis);
         al_flip_display();
 
         // Espera por um evento
@@ -265,10 +269,11 @@ void Menu::process_state_logic(
     std::vector<Obstaculo*>& canos,
     ALLEGRO_DISPLAY* display,
     std::vector<ObjetoRenderizavel*>& background_items,
+    std::vector<Coletavel*>& coletaveis,
     double& previous_time,
-    double& ultimo_spawn
+    double& ultimo_spawn_canos
 ) {
-    MenuResult result = this->show(background_items, character, canos);
+    MenuResult result = this->show(background_items, character, canos, coletaveis);
     MenuType type = this->menu_type;
     
     // Lógica para START
@@ -281,7 +286,7 @@ void Menu::process_state_logic(
                 if (jogador_atual != nullptr) {
                     current_state = GameState::PLAYING;
                     previous_time = al_get_time();
-                    ultimo_spawn = al_get_time();
+                    ultimo_spawn_canos = al_get_time();
                 } else {
                     // Sai caso haja algum erro
                     current_state = GameState::EXITING;
@@ -297,7 +302,7 @@ void Menu::process_state_logic(
             current_state = GameState::PLAYING;
             previous_time = al_get_time();
         } else if (result == MenuResult::RESTART_GAME) {
-            restart_game(character, canos);
+            restart_game(character, canos, coletaveis);
             current_state = GameState::PLAYING;
         } else if (result == MenuResult::EXIT_GAME) {
             current_state = GameState::EXITING;
@@ -306,7 +311,7 @@ void Menu::process_state_logic(
     // Lógica para GAMEOVER
     else if (type == MenuType::END) {
         if (result == MenuResult::RESTART_GAME) {
-            restart_game(character, canos);
+            restart_game(character, canos, coletaveis);
             current_state = GameState::PLAYING;
         } else if (result == MenuResult::SHOW_LEADERBOARD) {
             Leaderboard leaderboard;

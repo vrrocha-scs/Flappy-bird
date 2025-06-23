@@ -18,7 +18,8 @@ class Coletavel : public ObjetoRenderizavel{
     void mover_coletavel();
     //Atualiza a posição
     void on_tick() override;
-
+    //Verifica colisão
+    bool checkCollision(Hitbox other_hitbox);
 };
 
 
