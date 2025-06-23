@@ -28,16 +28,21 @@ double ultimo_spawn_coletavel = 0;
 
 
 // Função de reinício do jogo
-void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos) {
+void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis){
     character->reset_position(SCREEN_W / 2 - 250, SCREEN_H / 2);
     
     for (auto c : canos) {
         delete c;
     }
+
+    for(auto p : coletaveis){
+        delete p;
+    }
     
     canos.clear();
+    coletaveis.clear();
     ultimo_spawn_canos = 0;
-    double ultimo_spawn_coletavel = 0;
+    ultimo_spawn_coletavel = 0;
 }
 
 int main() {
@@ -200,13 +205,11 @@ int main() {
 
             //Colisão com coletáveis
             for (auto p : coletaveis){
-                if(character->checkCollision(p->get_hitbox())){
+                if(p->checkCollision(character->get_hitbox())){
                     p->set_coletado(true);
-                    std::cout << "encostou";
-                    current_state = GameState::INVENCIBLE;
-                    delete p;
-                    break;
-                }
+                    //std::cout << "encostou";
+                    //current_state = GameState::INVINCIBLE;
+                };
             }
             
 
@@ -225,8 +228,7 @@ int main() {
                 }
                 for (auto p : coletaveis)
                 {
-                    if (p->get_coletado() == false)
-                         p->on_tick();
+                    p->on_tick();
                 }
                 
                 // Lógica de Spawn
@@ -241,7 +243,7 @@ int main() {
                 ultimo_spawn_coletavel += SECONDS_PER_UPDATE;
                 if (ultimo_spawn_coletavel>= intervalo_spawn_coletavel)
                 {
-                    coletaveis.push_back(new Coletavel(SCREEN_H/2, SCREEN_W/2, green_ball_sprite, 5));
+                    coletaveis.push_back(new Coletavel(SCREEN_H/2, SCREEN_W/2, green_ball_sprite, 1.5));
                     ultimo_spawn_coletavel -= intervalo_spawn_coletavel;
                 }
             
@@ -273,6 +275,7 @@ int main() {
             canos,
             display,
             background_items,
+            coletaveis,
             previous_time,
             ultimo_spawn_canos
             );
@@ -291,8 +294,11 @@ int main() {
         }
         for (auto p : coletaveis)
         {
-            if (p->get_coletado() == false)
+            if(p->get_coletado() == false)
+            {
                 p->render_object();
+            }
+            
         }
         al_draw_textf(score_font, al_map_rgb(255, 255, 255), SCREEN_W/2, 20, ALLEGRO_ALIGN_CENTRE,"%i", character->get_score());
         }

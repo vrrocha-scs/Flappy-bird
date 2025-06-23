@@ -6,6 +6,7 @@
 #include <allegro5/allegro_audio.h>
 #include<vector>
 #include<string>
+#include"../include/coletavel.hpp"
 #include"../include/personagem.hpp"
 #include"../include/obstaculo.hpp"
 #include"../include/gamestate.hpp"
@@ -36,7 +37,7 @@ const int SCREEN_H = 1000;
 
 class Menu {
     private:
-    void draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos);
+    void draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis);
     MenuResult handle_input(ALLEGRO_EVENT ev);
     ALLEGRO_EVENT_QUEUE* event_queue;
     ALLEGRO_FONT *menu_font;
@@ -56,7 +57,7 @@ class Menu {
     public:
     Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type);
     ~Menu();
-    MenuResult show(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos);
+    MenuResult show(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis);
     void process_state_logic(
         GameState& current_state,
         Cadastro*& jogador_atual,
@@ -64,6 +65,7 @@ class Menu {
         std::vector<Obstaculo*>& canos,
         ALLEGRO_DISPLAY* display,
         std::vector<ObjetoRenderizavel*>& background_items,
+        std::vector<Coletavel*>& coletaveis,
         double& previous_time,
         double& ultimo_spawn
     );
