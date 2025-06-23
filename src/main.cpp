@@ -236,18 +236,17 @@ int main() {
                 
                 // Lógica de Spawn
                 ultimo_spawn_canos += SECONDS_PER_UPDATE;
+                ultimo_spawn_coletavel += SECONDS_PER_UPDATE;
                 if (ultimo_spawn_canos >= intervalo_spawn_canos) {
                     //ultimo_spawn = current_time;
                     int altura_buraco = definir_altura_superior(rando);
                     adicionando_canos(canos, altura_buraco, tamanho_gap, upper_pipe_sprite, lower_pipe_sprite, velocidade_canos);
                     ultimo_spawn_canos -= intervalo_spawn_canos;
-                }
-
-                ultimo_spawn_coletavel += SECONDS_PER_UPDATE;
-                if (ultimo_spawn_coletavel>= intervalo_spawn_coletavel)
-                {
-                    coletaveis.push_back(new Coletavel(SCREEN_H/2, SCREEN_W/2, green_ball_sprite, velocidade_canos));
-                    ultimo_spawn_coletavel -= intervalo_spawn_coletavel;
+                    if (ultimo_spawn_coletavel >= intervalo_spawn_coletavel)
+                    {
+                        coletaveis.push_back(new Coletavel(altura_buraco + (tamanho_gap/2), green_ball_sprite, velocidade_canos));
+                        ultimo_spawn_coletavel -= intervalo_spawn_coletavel; 
+                    }
                 }
 
                 inicio_efeito_invencivel -= SECONDS_PER_UPDATE;
@@ -302,7 +301,7 @@ int main() {
             i->render_object();
         }
         if(current_state == GameState::PLAYING){
-        character->render_object();
+        
         for (auto c : canos) {
             c->render_object();
         }
@@ -312,8 +311,8 @@ int main() {
             {
                 p->render_object();
             }
-            
         }
+        character->render_object();
         al_draw_textf(score_font, al_map_rgb(255, 255, 255), SCREEN_W/2, 20, ALLEGRO_ALIGN_CENTRE,"%i", character->get_score());
         }
         al_flip_display();

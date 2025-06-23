@@ -5,8 +5,11 @@
 
 using namespace std;
 
-Coletavel::Coletavel(int posX, int posY, ALLEGRO_BITMAP* sprite, int velocidadeX) :
-ObjetoRenderizavel(posX, posY, sprite, true)
+const int SCREEN_W = 1000;
+const int SCREEN_H = 1000;
+
+Coletavel::Coletavel(int posY, ALLEGRO_BITMAP* sprite, int velocidadeX) :
+ObjetoRenderizavel(SCREEN_W + 50, posY, sprite, true)
 {
     this->set_velocityX(velocidadeX);
     coletado = false;
