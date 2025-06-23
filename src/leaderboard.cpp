@@ -108,8 +108,7 @@ void Leaderboard::cadastro_tabela(std::string nome_jogador, int score_partida) {
     int y = (al_get_display_height(display) - altura) / 2;
 
     //realiza o display do retangulo e do titulo
-    al_clear_to_color(al_map_rgb(30, 30, 30));
-    al_draw_filled_rectangle(x, y, x+largura, y+altura, al_map_rgba(0, 0, 0, 200));
+    al_draw_filled_rectangle(x, y, x+largura, y+altura, al_map_rgba(0, 0, 0, 255));
     al_draw_rectangle(x, y, x+largura, y+altura, al_map_rgb(255,255,255), 2);
     al_draw_text(font, al_map_rgb(255,255,0), x+largura/2, y+10, ALLEGRO_ALIGN_CENTRE, titulo);
 
@@ -148,3 +147,5 @@ void Leaderboard::cadastro_tabela(std::string nome_jogador, int score_partida) {
     }
     al_destroy_event_queue(queue);
 }
+
+
