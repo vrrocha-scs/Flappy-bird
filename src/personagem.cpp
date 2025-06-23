@@ -41,7 +41,7 @@ void Personagem::jump(){
     this->set_velocityY(-jump_power);
 }
 bool Personagem::checkCollision(Hitbox other_hitbox){
-    if(get_hitbox().has_collision(other_hitbox)){
+    if(get_hitbox().has_collision(other_hitbox) || other_hitbox.has_collision(get_hitbox())){
         return true;
     }
     return false;
