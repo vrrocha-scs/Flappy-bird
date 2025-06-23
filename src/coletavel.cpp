@@ -1,12 +1,14 @@
 #include "coletavel.hpp"
 #include "objetorenderizavel.hpp"
 #include "hitbox.hpp"
+#include "gamestate.hpp"
 
 using namespace std;
 
 Coletavel::Coletavel(int posX, int posY, ALLEGRO_BITMAP* sprite, int velocidadeX) :
-ObjetoRenderizavel(posX, posY, sprite, velocidadeX)
+ObjetoRenderizavel(posX, posY, sprite)
 {
+    this->set_velocityX(velocidadeX);
     coletado = false;
 }
 
@@ -21,7 +23,7 @@ bool Coletavel::get_coletado()
 
 void Coletavel::mover_coletavel()
 {
-    this->set_posX(this->get_posX() + this->get_velocityX());
+    this->set_posX(this->get_posX() - this->get_velocityX());
     return;
 }
 void Coletavel::on_tick()
@@ -29,3 +31,5 @@ void Coletavel::on_tick()
     this->mover_coletavel();
     get_hitbox().on_tick();
 }
+
+//void 

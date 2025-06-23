@@ -23,7 +23,8 @@
 // Constantes da tela e tempo
 const float FPS = 60;
 const float SECONDS_PER_UPDATE = 1.0f / FPS;
-double ultimo_spawn = 0;
+double ultimo_spawn_canos = 0;
+double ultimo_spawn_coletavel = 0;
 
 
 // Função de reinício do jogo
@@ -35,7 +36,8 @@ void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos) {
     }
     
     canos.clear();
-    ultimo_spawn = 0;
+    ultimo_spawn_canos = 0;
+    double ultimo_spawn_coletavel = 0;
 }
 
 int main() {
@@ -102,6 +104,7 @@ int main() {
     Randomizador* rando = new Randomizador(minimo, maximo);
 
     std::vector<Obstaculo*> canos;
+    std::vector<Coletavel*> coletaveis;
     Personagem* character = new Personagem(SCREEN_W / 2 - 250, SCREEN_H / 2, character_sprite,jumping_sprite);
     ObjetoRenderizavel* Chao = new ObjetoRenderizavel(0,SCREEN_H - 90, ground_sprite,1);
     ObjetoRenderizavel* Morros = new ObjetoRenderizavel(0,650,hills_background);
@@ -118,6 +121,7 @@ int main() {
     // Constantes de gameplay para fácil ajuste
     const float JUMP_COOLDOWN_SECONDS = 0.25f;
     const float intervalo_spawn_canos = 5.0;
+    const float intervalo_spawn_coletavel = 7.0;
 
     //================================================================================
     // Loop Principal do Jogo
@@ -175,6 +179,17 @@ int main() {
                     break;
                 }
             }
+
+            //Colisão com coletáveis
+            for (auto p : coletaveis){
+                if(character->checkCollision(p->get_hitbox())){
+                    p->set_coletado(true);
+                    std::cout << "encostou";
+                    current_state = GameState::INVENCIBLE;
+                    delete p;
+                    break;
+                }
+            }
             
 
             // Lógica de atualização baseada em tempo fixo
@@ -190,14 +205,26 @@ int main() {
                     c->on_tick();
                     c->check_passagem(character);
                 }
+                for (auto p : coletaveis)
+                {
+                    if (p->get_coletado() == false)
+                         p->on_tick();
+                }
                 
                 // Lógica de Spawn
-                ultimo_spawn += SECONDS_PER_UPDATE;
-                if (ultimo_spawn >= intervalo_spawn_canos) {
+                ultimo_spawn_canos += SECONDS_PER_UPDATE;
+                if (ultimo_spawn_canos >= intervalo_spawn_canos) {
                     //ultimo_spawn = current_time;
                     int altura_buraco = definir_altura_superior(rando);
                     adicionando_canos(canos, altura_buraco, tamanho_gap, upper_pipe_sprite, lower_pipe_sprite, velocidade_canos);
-                    ultimo_spawn -= intervalo_spawn_canos;
+                    ultimo_spawn_canos -= intervalo_spawn_canos;
+                }
+
+                ultimo_spawn_coletavel += SECONDS_PER_UPDATE;
+                if (ultimo_spawn_coletavel>= intervalo_spawn_coletavel)
+                {
+                    coletaveis.push_back(new Coletavel(SCREEN_H/2, SCREEN_W/2, green_ball_sprite, 5));
+                    ultimo_spawn_coletavel -= intervalo_spawn_coletavel;
                 }
             
                 lag -= SECONDS_PER_UPDATE;
@@ -229,7 +256,7 @@ int main() {
             display,
             background_items,
             previous_time,
-            ultimo_spawn
+            ultimo_spawn_canos
             );
 }
         // --- Seção de Renderização ---
@@ -243,6 +270,11 @@ int main() {
         character->render_object();
         for (auto c : canos) {
             c->render_object();
+        }
+        for (auto p : coletaveis)
+        {
+            if (p->get_coletado() == false)
+                p->render_object();
         }
         al_draw_textf(score_font, al_map_rgb(255, 255, 255), SCREEN_W/2, 20, ALLEGRO_ALIGN_CENTRE,"%i", character->get_score());
         }

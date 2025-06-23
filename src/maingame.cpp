@@ -107,7 +107,7 @@ void MainGame::render_screen(){
     if(current_state == GameState::PLAYING){
     character->render_object();
     for (auto c : canos) {
-        c->desenhar_canos();
+        c->render_object();
     }
     al_draw_textf(score_font, al_map_rgb(255, 255, 255), SCREEN_W/2, 20, ALLEGRO_ALIGN_CENTRE,"%i", character->get_score());
     }
@@ -121,7 +121,7 @@ void MainGame::restart_game() {
     }
     
     canos.clear();
-    ultimo_spawn = al_get_time();
+    ultimo_spawn_canos = 0;
 }
 
 void MainGame::create_menu(double& previous_time){

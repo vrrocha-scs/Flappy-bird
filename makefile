@@ -11,7 +11,7 @@ all: main
 #$(OBJ_DIR)/nova_classe.o : $(INCLUDE_DIR)/nova_classe.hpp $(SRC_DIR)/nova_classe.cpp $(INCLUDE_DIR)/classe_dependente.hpp (se houver)
 #	${CC} ${CFLAGS} -c $(SRC_DIR)/nova_classe.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/nova_classe.o
 
-$(OBJ_DIR)/coletavel.o : $(INCLUDE_DIR)/coletavel.hpp $(SRC_DIR)/coletavel.cpp $(INCLUDE_DIR)/hitbox.hpp $(INCLUDE_DIR)/objetorenderizavel.hpp
+$(OBJ_DIR)/coletavel.o : $(INCLUDE_DIR)/coletavel.hpp $(SRC_DIR)/coletavel.cpp $(INCLUDE_DIR)/hitbox.hpp $(INCLUDE_DIR)/objetorenderizavel.hpp $(INCLUDE_DIR)/gamestate.hpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/coletavel.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/coletavel.o
 
 $(OBJ_DIR)/menu.o : $(INCLUDE_DIR)/menu.hpp $(SRC_DIR)/menu.cpp $(INCLUDE_DIR)/gamestate.hpp
