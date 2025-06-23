@@ -87,6 +87,9 @@ int main() {
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
     ALLEGRO_BITMAP* mountains_background = al_load_bitmap("assets/images/montanhas.png");
     ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
+    ALLEGRO_BITMAP* icon = al_load_bitmap("assets/images/character_jumping.png");
+
+    al_set_display_icon(display, icon);
 
     //FONTES
     ALLEGRO_BITMAP* green_ball_sprite = al_load_bitmap("assets/images/bolaverde.png");
@@ -99,7 +102,7 @@ int main() {
     ALLEGRO_SAMPLE* music = al_load_sample("assets/sounds/background-music.ogg");
 
     if (!character_sprite || !jumping_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !mountains_background|| !hills_background ||
-         !menu_font || !score_font || !som_pulo || !som_gameover || !music) {
+         !menu_font || !score_font || !som_pulo || !som_gameover || !music || !icon) {
         std::cerr << "Erro fatal: Falha ao carregar um ou mais assets." << std::endl;
         return -1;
     }
@@ -290,7 +293,8 @@ int main() {
             background_items,
             coletaveis,
             previous_time,
-            ultimo_spawn_canos
+            ultimo_spawn_canos,
+            lag
             );
 }
         // --- Seção de Renderização ---
@@ -336,6 +340,7 @@ int main() {
     al_destroy_bitmap(ground_sprite);
     al_destroy_bitmap(upper_pipe_sprite);
     al_destroy_bitmap(lower_pipe_sprite);
+    al_destroy_bitmap(icon);
 
     // Destruindo as FONTES
     al_destroy_font(menu_font);

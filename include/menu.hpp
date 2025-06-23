@@ -67,7 +67,8 @@ class Menu {
         std::vector<ObjetoRenderizavel*>& background_items,
         std::vector<Coletavel*>& coletaveis,
         double& previous_time,
-        double& ultimo_spawn
+        double& ultimo_spawn,
+        double& lag
     );
 
     

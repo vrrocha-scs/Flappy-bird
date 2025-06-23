@@ -271,48 +271,43 @@ void Menu::process_state_logic(
     std::vector<ObjetoRenderizavel*>& background_items,
     std::vector<Coletavel*>& coletaveis,
     double& previous_time,
-    double& ultimo_spawn_canos
+    double& ultimo_spawn_canos,
+    double& lag
 ) {
     MenuResult result = this->show(background_items, character, canos, coletaveis);
     MenuType type = this->menu_type;
     
     // Lógica para START
     if (type == MenuType::START) {
-      while(1){
-       try{
+    try {
         if (result == MenuResult::START_NEW_GAME) {
-                std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
-                if (!nome_digitado.empty()) {
-                    jogador_atual = Cadastro::verificar_dados(nome_digitado); // Chama verificar dados para registrar ou fazer o login do jogador
-                 if (jogador_atual != nullptr) {
-                        current_state = GameState::PLAYING;
-                        previous_time = al_get_time();
-                        ultimo_spawn_canos = al_get_time();
-                        break;
-                 } else {
-                     // Sai caso haja algum erro
-                        current_state = GameState::EXITING;
-                        break;
-                     }
-               }
-           else if (result == MenuResult::EXIT_GAME) {
-            current_state = GameState::EXITING;
-            break;
+            std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
+
+            if (!nome_digitado.empty()) {
+                jogador_atual = Cadastro::verificar_dados(nome_digitado);
+
+                if (jogador_atual != nullptr) {
+                    current_state = GameState::PLAYING;
+                    previous_time = al_get_time();
+                    ultimo_spawn_canos = 0;
+                    lag = 0.0;
+                }
+            }
         }
-       }
-      }
-      catch(invalid_argument& e){
-        std::string texto=e.what();
-        //al_clear_to_color(al_map_rgb(0, 0, 0));
+        else if (result == MenuResult::EXIT_GAME) {
+            current_state = GameState::EXITING;
+        }
+    }
+    catch (const std::invalid_argument& e) {
+        std::string texto = e.what();
         al_draw_text(this->menu_font, al_map_rgb(255, 0, 0),
-        al_get_display_width(display)/2,
-        al_get_display_height(display)/2+60,
+        al_get_display_width(display) / 2,
+        al_get_display_height(display) / 2 + 60,
         ALLEGRO_ALIGN_CENTRE, texto.c_str());
         al_flip_display();
         al_rest(1.5);
-      }
     }
-    }
+}
     // Lógica para PAUSE
     else if (type == MenuType::PAUSE) {
         if (result == MenuResult::CONTINUE_GAME) {
