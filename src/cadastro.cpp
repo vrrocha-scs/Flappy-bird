@@ -18,7 +18,7 @@ Cadastro* Cadastro::verificar_dados(std::string possivel_nome) {
     std::string nome_limpo_input = trim(possivel_nome);
     //verifica se entra em alguma excessão que resultaria em erro
     if(possivel_nome.find(',') != std::string::npos) {
-    throw std::invalid_argument("Não utilize ',' no nome");
+    throw std::invalid_argument("digite o nome sem ' , '");
     }
     //caso o nome seja vazio retorna nullptr
     if (nome_limpo_input.empty()) {
@@ -136,7 +136,7 @@ void Cadastro::display_estatisticas(ALLEGRO_DISPLAY* display, ALLEGRO_FONT* font
     al_draw_rectangle(x, y, x+largura, y+altura, al_map_rgb(255,255,255), 2);
     al_draw_text(font, al_map_rgb(255,255,0), x+largura/2, y+10, ALLEGRO_ALIGN_CENTRE, titulo);
 
-    //display da tabela
+    //display das estatisticas
     int y_offset = y + 50;
     double pontuacao_media=(numero_partidas>0) ? (double)score_geral/numero_partidas : 0.0;
     
