@@ -30,8 +30,6 @@ class Obstaculo  : public ObjetoRenderizavel{
     //Move o obstáculo no eixo X
     void mover_obstaculos();
     //Renderiza os canos e(ou) desenha os hitbox
-    void desenhar_canos();
-    //Atualiza a posição
     void on_tick() override;
     //Remove obstáculos
     bool remover_obstaculo();

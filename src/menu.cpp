@@ -52,7 +52,7 @@ void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* 
         }
         for (auto& c : canos)
         {
-            c->desenhar_canos();
+            c->render_object();
         }
         
     }

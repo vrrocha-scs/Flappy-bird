@@ -54,22 +54,15 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap
         return;
     }
 
-
     void Obstaculo::mover_obstaculos()
     {
         this->set_posX(this->get_posX() - this->get_velocityX());
-        return;
-    }
-    void Obstaculo::desenhar_canos()
-    {
-        render_object();
         return;
     }
     void Obstaculo::on_tick()
     {
         this->mover_obstaculos();
         get_hitbox().on_tick();
-        get_hitbox().draw_hitbox();
     }
     bool Obstaculo::remover_obstaculo()
     {

@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 
+#include "../include/coletavel.hpp"
 #include "../include/personagem.hpp"
 #include "../include/obstaculo.hpp"
 #include "../include/randomizador.hpp"
@@ -74,6 +75,7 @@ int main() {
     ALLEGRO_BITMAP* ground_sprite = al_load_bitmap("assets/images/chao.png");
     ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
+    ALLEGRO_BITMAP* green_ball_sprite = al_load_bitmap("assets/images/bolaverde.png");
     ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 80, 0);
     ALLEGRO_FONT* score_font = al_load_font("assets/fonts/game_over.ttf", 160, 0);
     ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound_3.wav");
@@ -240,7 +242,7 @@ int main() {
         if(current_state == GameState::PLAYING){
         character->render_object();
         for (auto c : canos) {
-            c->desenhar_canos();
+            c->render_object();
         }
         al_draw_textf(score_font, al_map_rgb(255, 255, 255), SCREEN_W/2, 20, ALLEGRO_ALIGN_CENTRE,"%i", character->get_score());
         }
@@ -262,6 +264,11 @@ int main() {
     al_destroy_bitmap(character_sprite);
     al_destroy_bitmap(upper_pipe_sprite);
     al_destroy_bitmap(lower_pipe_sprite);
+    al_destroy_bitmap(green_ball_sprite);
+    al_destroy_bitmap(ground_sprite);
+    al_destroy_bitmap(hills_background);
+    al_destroy_bitmap(mountains_background);
+    al_destroy_bitmap(jumping_sprite);
     al_destroy_font(menu_font);
     al_destroy_font(score_font);
     al_destroy_display(display);
