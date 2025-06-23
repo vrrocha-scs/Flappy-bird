@@ -34,7 +34,7 @@ void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos) {
     }
     
     canos.clear();
-    ultimo_spawn = al_get_time();
+    ultimo_spawn = 0;
 }
 
 int main() {
@@ -115,8 +115,7 @@ int main() {
 
     // Constantes de gameplay para fácil ajuste
     const float JUMP_COOLDOWN_SECONDS = 0.25f;
-    const float PIPE_SPAWN_INTERVAL = 6.0f;
-    const int MAX_PIPES = 10;
+    const float intervalo_spawn_canos = 5.0;
 
     //================================================================================
     // Loop Principal do Jogo
@@ -191,10 +190,12 @@ int main() {
                 }
                 
                 // Lógica de Spawn
-                if (current_time - ultimo_spawn >= PIPE_SPAWN_INTERVAL) {
-                    ultimo_spawn = current_time;
+                ultimo_spawn += SECONDS_PER_UPDATE;
+                if (ultimo_spawn >= intervalo_spawn_canos) {
+                    //ultimo_spawn = current_time;
                     int altura_buraco = definir_altura_superior(rando);
-                    adicionando_canos(canos, altura_buraco, tamanho_gap, upper_pipe_sprite, lower_pipe_sprite, 1.5);
+                    adicionando_canos(canos, altura_buraco, tamanho_gap, upper_pipe_sprite, lower_pipe_sprite, velocidade_canos);
+                    ultimo_spawn -= intervalo_spawn_canos;
                 }
             
                 lag -= SECONDS_PER_UPDATE;
