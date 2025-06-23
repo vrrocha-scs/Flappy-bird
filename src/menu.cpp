@@ -58,48 +58,38 @@ Menu::~Menu() {
 
 // desenhar o menu
 void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis) {
-    al_clear_to_color(al_map_rgba_f(0, 0, 1, 0)); // desenho o fundo azul
-    for (auto& item : background_items) {
-        item->render_object();
+    al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
+    for (auto i : background_items) {
+        i->render_object();
     }
-    if(menu_type != MenuType::START) {
-        if(character) {
-            character->render_object();
-        }
-        for (auto& c : canos)
-        {
-            c->render_object();
-        }
-        for (auto& p : coletaveis)
-        {
+    for (auto c : canos) {
+        c->render_object();
+    }
+    for (auto p : coletaveis) {
+        if (!p->get_coletado()) {
             p->render_object();
         }
     }
+    character->render_object();
 
-    ALLEGRO_DISPLAY *display = al_get_current_display();
-    al_draw_filled_rectangle(0, 0, 
-                            al_get_display_width(display),
-                            al_get_display_height(display),
-                            color_background);
-    float screen_width = al_get_display_width(display);
-    float font_height = al_get_font_line_height(menu_font);
-    float start_y = (al_get_display_height(display) - (m_options.size() * font_height * 1.5)) / 2.0;
+    float panel_width = 500;
+    float panel_height = 80 + (m_options.size() * 50);
+    float panel_x = (SCREEN_W - panel_width) / 2;
+    float panel_y = (SCREEN_H - panel_height) / 2;
+
+    al_draw_filled_rectangle(panel_x, panel_y, panel_x + panel_width, panel_y + panel_height, al_map_rgba(0, 0, 0, 150));
+    
+    al_draw_rectangle(panel_x, panel_y, panel_x + panel_width, panel_y + panel_height, al_map_rgb(255, 255, 255), 2.0);
 
     for (size_t i = 0; i < m_options.size(); ++i) {
-        ALLEGRO_COLOR current_color;
-
-        if (menu_type == MenuType::PAUSE && i == 0) {
-            current_color = color_title;
-        } else {
-            current_color = (i == selected_option) ? color_selected : color_text;
+        ALLEGRO_COLOR color = (i == selected_option) ? color_selected : color_text;
+        
+        if (i == 0 && menu_type == MenuType::PAUSE) {
+            color = color_title;
         }
 
-        const char* option_text = m_options[i].c_str();
-        float text_width = al_get_text_width(menu_font, option_text);
-        float pos_x = (screen_width - text_width) / 2.0;
-        float pos_y = start_y + (i * font_height * 1.5);
-
-        al_draw_text(menu_font, current_color, pos_x, pos_y, ALLEGRO_ALIGN_LEFT, option_text);
+        float text_y = panel_y + 40 + (i * 50);
+        al_draw_text(menu_font, color, panel_x + panel_width / 2, text_y, ALLEGRO_ALIGN_CENTRE, m_options[i].c_str());
     }
 }
 
