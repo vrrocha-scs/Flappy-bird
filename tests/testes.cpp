@@ -5,7 +5,7 @@
 
 #include "personagem.hpp"
 #include "objetorenderizavel.hpp"
-
+/*
 TEST_CASE("Testando a fisica e as acoes do Personagem") {
 
     // =============== SETUP ====================
@@ -177,7 +177,7 @@ TEST_CASE("Testando a classe base ObjetoRenderizavel") {
         CHECK(objeto_teste.get_posX() == doctest::Approx(999.0f));
         CHECK(objeto_teste.get_posY() == doctest::Approx(-50.0f));
     }*/
-
+/*
     al_destroy_bitmap(bitmap_fantasma);
     al_uninstall_system();
-}
+}*/

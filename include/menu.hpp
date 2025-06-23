@@ -3,6 +3,7 @@
 
 #include<allegro5/allegro.h>
 #include<allegro5/allegro_font.h>
+#include <allegro5/allegro_audio.h>
 #include<vector>
 #include<string>
 #include"../include/personagem.hpp"
@@ -39,6 +40,8 @@ class Menu {
     MenuResult handle_input(ALLEGRO_EVENT ev);
     ALLEGRO_EVENT_QUEUE* event_queue;
     ALLEGRO_FONT *menu_font;
+    ALLEGRO_SAMPLE* select_sound;
+    ALLEGRO_SAMPLE* confirm_sound;
     MenuType menu_type;
     
     std::vector<std::string> m_options;

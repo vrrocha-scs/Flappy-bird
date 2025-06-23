@@ -70,23 +70,41 @@ int main() {
     //================================================================================
     // Bloco de Carregamento de Assets
     //================================================================================
+
+    //IMAGENS
     ALLEGRO_BITMAP* character_sprite = al_load_bitmap("assets/images/character.png");
     ALLEGRO_BITMAP* jumping_sprite = al_load_bitmap("assets/images/character_jumping.png");
     ALLEGRO_BITMAP* ground_sprite = al_load_bitmap("assets/images/chao.png");
     ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
+    ALLEGRO_BITMAP* mountains_background = al_load_bitmap("assets/images/montanhas.png");
+    ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
+
+    //FONTES
     ALLEGRO_BITMAP* green_ball_sprite = al_load_bitmap("assets/images/bolaverde.png");
     ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 80, 0);
     ALLEGRO_FONT* score_font = al_load_font("assets/fonts/game_over.ttf", 160, 0);
-    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound_3.wav");
-    ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover_sound.wav");
 
-    ALLEGRO_BITMAP* mountains_background = al_load_bitmap("assets/images/montanhas.png");
-    ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
-    if (!character_sprite || !jumping_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !menu_font || !som_pulo) {
+    //SONS
+    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound.wav");
+    ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover_sound.wav");
+    ALLEGRO_SAMPLE* music = al_load_sample("assets/sounds/background-music.ogg");
+
+    if (!character_sprite || !jumping_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !mountains_background|| !hills_background ||
+         !menu_font || !score_font || !som_pulo || !som_gameover || !music) {
         std::cerr << "Erro fatal: Falha ao carregar um ou mais assets." << std::endl;
         return -1;
     }
+
+    //BACKGROUND SOUND
+    ALLEGRO_VOICE* voice = al_create_voice(44100, ALLEGRO_AUDIO_DEPTH_INT16, ALLEGRO_CHANNEL_CONF_2);
+    ALLEGRO_MIXER* mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_INT16, ALLEGRO_CHANNEL_CONF_2);
+    al_attach_mixer_to_voice(mixer, voice);
+    ALLEGRO_SAMPLE_INSTANCE* music_instance = al_create_sample_instance(music);
+    al_attach_sample_instance_to_mixer(music_instance, mixer);
+    al_set_sample_instance_playmode(music_instance, ALLEGRO_PLAYMODE_LOOP);
+    al_set_sample_instance_gain(music_instance, 0.3); // volume ajustável [0,1]
+    al_play_sample_instance(music_instance); 
 
     //================================================================================
     // Bloco de Variáveis e Objetos do Jogo
@@ -147,7 +165,7 @@ int main() {
                     if (current_time - jump_cooldown > JUMP_COOLDOWN_SECONDS) {
                         character->jump();
                         jump_cooldown = current_time;
-                        al_play_sample(som_pulo, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                        al_play_sample(som_pulo, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     }
                 } else if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
                     current_state = GameState::PAUSED;
@@ -159,7 +177,7 @@ int main() {
         if (current_state == GameState::PLAYING) {
             // Colisão com chão
             if (character->checkCollision(Chao->get_hitbox())) {
-                al_play_sample(som_gameover, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                al_play_sample(som_gameover, 0.8, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                 current_state = GameState::GAMEOVER;
                 score_da_partida = character->get_score();
                 jogador_atual->modificar_dados(score_da_partida);
@@ -168,7 +186,7 @@ int main() {
             //Colisão com obstáculos
             for (auto c : canos) {
                 if (character->checkCollision(c->get_hitbox())) {
-                    al_play_sample(som_gameover, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                    al_play_sample(som_gameover, 0.8, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     current_state = GameState::GAMEOVER;
                     score_da_partida = character->get_score();
                     jogador_atual->modificar_dados(score_da_partida);
@@ -261,9 +279,16 @@ int main() {
     }
     canos.clear();
 
+    // Destruindo as IMAGENS (Bitmaps)
     al_destroy_bitmap(character_sprite);
+    al_destroy_bitmap(jumping_sprite);
+    al_destroy_bitmap(ground_sprite);
     al_destroy_bitmap(upper_pipe_sprite);
     al_destroy_bitmap(lower_pipe_sprite);
+    al_destroy_bitmap(mountains_background);
+    al_destroy_bitmap(hills_background);
+
+    // Destruindo as FONTES
     al_destroy_bitmap(green_ball_sprite);
     al_destroy_bitmap(ground_sprite);
     al_destroy_bitmap(hills_background);
@@ -271,9 +296,22 @@ int main() {
     al_destroy_bitmap(jumping_sprite);
     al_destroy_font(menu_font);
     al_destroy_font(score_font);
-    al_destroy_display(display);
+
+    // Destruindo os SONS
+    al_destroy_sample(som_pulo);
+    al_destroy_sample(som_gameover);
+    al_destroy_sample(music);
+    al_destroy_sample_instance(music_instance);
+    al_destroy_mixer(mixer);
+    al_destroy_voice(voice);
+    al_uninstall_audio();
+
+
+    // Destruindo os recursos principais do Allegro
+    al_destroy_display(display); 
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
+
 
     return 0;
 }
