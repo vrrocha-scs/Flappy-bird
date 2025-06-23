@@ -11,7 +11,9 @@ class Randomizador
     private:
     int min;
     int max;
-    random_device randy;
+    random_device rd;
+    mt19937 gerador;
+
 
     public:
     Randomizador(int min, int max);

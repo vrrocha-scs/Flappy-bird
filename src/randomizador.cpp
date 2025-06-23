@@ -6,11 +6,11 @@ using namespace std;
 
 Randomizador::Randomizador(int _min, int _max) : min(_min), max(_max) 
 {
+    mt19937 gerador(rd());
 };
 
 int Randomizador::valor_aleatorio()
 {
-    mt19937 gerador(randy());
     uniform_int_distribution<> distrib(get_min(), get_max());
     return distrib(gerador);
 }

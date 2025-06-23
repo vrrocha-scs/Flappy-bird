@@ -34,7 +34,7 @@ void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos) {
     }
     
     canos.clear();
-    ultimo_spawn = al_get_time();
+    ultimo_spawn = 0;
 }
 
 int main() {
