@@ -1,6 +1,8 @@
 #include "menu.hpp"
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_audio.h>
 #include <iostream>
+
 
 extern void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos); // Falando para o menu que existe uma funcao no main para que nao haja erro de compilacao
 
@@ -9,8 +11,16 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
     menu_type(type), 
     selected_option(0),
     is_active(false),
-    event_queue(queue)
+    event_queue(queue),
+    select_sound(nullptr)
 {
+
+    select_sound = al_load_sample("assets/sounds/select_sound.ogg");
+    confirm_sound = al_load_sample("assets/sounds/confirm_sound.ogg");
+    if (!select_sound || !confirm_sound) {
+        std::cerr << "Erro ao carregar som de selecao ou de confirmação" << std::endl;
+    }
+
     if (menu_type == MenuType::START) {
         m_options.push_back("Cadastro");
         m_options.push_back("Sair");
@@ -26,7 +36,7 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
         m_options.push_back("Reiniciar");     
         m_options.push_back("Sair");           
         selected_option = 1; // Começa a seleção em "Continuar"
-}
+    }
     else if(menu_type == MenuType::REGISTER) {
         m_options.push_back("Escreva seu nick");
     }
@@ -38,8 +48,14 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
 }
 
 Menu::~Menu() {
-
+    if (select_sound) {
+        al_destroy_sample(select_sound);
+    }
+    if (confirm_sound) {
+        al_destroy_sample(confirm_sound);
+    }
 }
+
 // desenhar o menu
 void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos) {
     al_clear_to_color(al_map_rgba_f(0, 0, 1, 0)); // desenho o fundo azul
@@ -54,7 +70,6 @@ void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* 
         {
             c->render_object();
         }
-        
     }
 
     ALLEGRO_DISPLAY *display = al_get_current_display();
@@ -76,38 +91,40 @@ void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* 
         }
 
         const char* option_text = m_options[i].c_str();
-        
         float text_width = al_get_text_width(menu_font, option_text);
         float pos_x = (screen_width - text_width) / 2.0;
-
         float pos_y = start_y + (i * font_height * 1.5);
 
         al_draw_text(menu_font, current_color, pos_x, pos_y, ALLEGRO_ALIGN_LEFT, option_text);
     }
 }
-// Funcao para lidar com a entrada no menu
+
+// Função para lidar com a entrada no menu
 MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
     if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
         switch (ev.keyboard.keycode) {
-            case ALLEGRO_KEY_UP: // Mexer nas opcoes usando a setinha para cima
+            case ALLEGRO_KEY_UP: // Mexer nas opções usando a seta para cima
                 selected_option--;
-                
+                // Toca o som de seleção ao pressionar para cima
+                if (select_sound)
+                    al_play_sample(select_sound, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 
                 if (menu_type == MenuType::PAUSE) { 
-                    
                     if (selected_option <= 0) { 
                         selected_option = m_options.size() - 1; 
                     }
                 } else {
-                    
                     if (selected_option < 0) {
                         selected_option = m_options.size() - 1; 
                     }
                 }
                 break;
 
-            case ALLEGRO_KEY_DOWN: // Mexer nas opcoes usando a setinha para baixo
+            case ALLEGRO_KEY_DOWN: // Mexer nas opções usando a seta para baixo
                 selected_option++;
+                // Toca o som de seleção ao pressionar para baixo
+                if (select_sound)
+                    al_play_sample(select_sound, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 
                 if (menu_type == MenuType::PAUSE) {
                     if (selected_option >= m_options.size()) {
@@ -120,8 +137,13 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
                 }
                 break;
             
-            case ALLEGRO_KEY_ENTER: // Selecionar a opcao com enter em cada menu
-                is_active = false;
+            case ALLEGRO_KEY_ENTER: // Selecionar a opção com enter em cada menu
+                // Toca o som de confirmação ao pressionar ENTER
+                if (confirm_sound)
+                    al_play_sample(confirm_sound, 0.8, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+                    al_rest(0.2); // Espera 100ms só para testar se o som toca antes de sair
+                   
+                is_active = false; 
                 if(menu_type == MenuType::START) {
                     return (selected_option == 0) ? MenuResult::START_NEW_GAME : MenuResult::EXIT_GAME;
                 }
@@ -139,8 +161,8 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
                         case 1: return MenuResult::SHOW_LEADERBOARD;
                         case 2: return MenuResult::EXIT_GAME;
                         default: return MenuResult::EXIT_GAME;
-        }
-    }
+                    }
+                }
                 break;
             
             case ALLEGRO_KEY_ESCAPE:
@@ -196,7 +218,7 @@ std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std:
         al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
         ALLEGRO_EVENT ev;
 
-        //Desenha a cena
+        // Desenha a cena
         for (auto& item : background_items) {
             item->render_object();
         }
@@ -209,12 +231,12 @@ std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std:
         }
         std::string text_to_draw = name + (show_cursor ? "|" : "");
 
-        //Desenha o texto
+        // Desenha o texto
         al_draw_text(font, al_map_rgb(255, 255, 0), start_x, SCREEN_H / 2, ALLEGRO_ALIGN_LEFT, text_to_draw.c_str());
 
         al_flip_display();
 
-        //Espera e processa eventos
+        // Espera e processa eventos
         al_wait_for_event(queue, &ev);
         if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
             if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER || ev.keyboard.keycode == ALLEGRO_KEY_PAD_ENTER) {
@@ -251,24 +273,24 @@ void Menu::process_state_logic(
     
     // Lógica para START
     if (type == MenuType::START) {
-    if (result == MenuResult::START_NEW_GAME) {
-        std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
-        if (!nome_digitado.empty()) {
-            jogador_atual = Cadastro::verificar_dados(nome_digitado); // Chamo verificar dados para registrar ou fazer o login do jogador
-            
-            if (jogador_atual != nullptr) {
-                current_state = GameState::PLAYING;
-                previous_time = al_get_time();
-                ultimo_spawn = al_get_time();
-            } else {
-                // Sai caso haja algum erro
-                current_state = GameState::EXITING;
+        if (result == MenuResult::START_NEW_GAME) {
+            std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
+            if (!nome_digitado.empty()) {
+                jogador_atual = Cadastro::verificar_dados(nome_digitado); // Chama verificar dados para registrar ou fazer o login do jogador
+                
+                if (jogador_atual != nullptr) {
+                    current_state = GameState::PLAYING;
+                    previous_time = al_get_time();
+                    ultimo_spawn = al_get_time();
+                } else {
+                    // Sai caso haja algum erro
+                    current_state = GameState::EXITING;
+                }
             }
+        } else if (result == MenuResult::EXIT_GAME) {
+            current_state = GameState::EXITING;
         }
-    } else if (result == MenuResult::EXIT_GAME) {
-        current_state = GameState::EXITING;
     }
-}
     // Lógica para PAUSE
     else if (type == MenuType::PAUSE) {
         if (result == MenuResult::CONTINUE_GAME) {
