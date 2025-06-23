@@ -338,9 +338,6 @@ int main() {
     al_destroy_bitmap(lower_pipe_sprite);
 
     // Destruindo as FONTES
-    al_destroy_bitmap(green_ball_sprite);
-    al_destroy_bitmap(hills_background);
-    al_destroy_bitmap(mountains_background);
     al_destroy_font(menu_font);
     al_destroy_font(score_font);
 
