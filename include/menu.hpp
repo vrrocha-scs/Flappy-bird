@@ -27,6 +27,7 @@ enum class MenuType {
 enum class MenuResult {
     NO_ACTION,
     START_NEW_GAME,
+    PROCESS_LOGIN,
     RESTART_GAME,
     CADASTRO,
     EXIT_GAME,
@@ -39,7 +40,7 @@ enum class MenuResult {
     SET_DIFFICULTY_MEDIUM,
     SET_DIFFICULTY_HARD
 };
-// Pega o nome do jogador da entrada da caixa de texto e envia para a funcao cadastro para saber se a pessoa ja existe ou nao
+// Pega o nome do jogador no login
 std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std::vector<ObjetoRenderizavel*>& background_items);
 
 const int SCREEN_W = 1000;
@@ -72,7 +73,7 @@ class Menu {
     ~Menu();
     // Funcao para mostrar o menu e esperar um evento
     MenuResult show(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis);
-    // Abre o Menu de acordo com o estado e da return de acordo com a selecao da opcao
+    // Abre o Menu de acordo com o estado e lida com a selecao de opcoes
     void process_state_logic(
         GameState& current_state,
         Cadastro*& jogador_atual,

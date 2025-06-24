@@ -133,7 +133,7 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
             // Fala o que cada opcao retorna de acordo com o que esta selecionado e de acordo com o menu
                 if (menu_type == MenuType::LOGIN)
                 {
-                    return (selected_option == 0) ? MenuResult::START_NEW_GAME : MenuResult::EXIT_GAME;
+                    return (selected_option == 0) ? MenuResult::PROCESS_LOGIN : MenuResult::EXIT_GAME;
                 } else if (menu_type == MenuType::MAIN_MENU) { 
                     switch (selected_option) {
                         case 0: return MenuResult::START_NEW_GAME;
@@ -287,17 +287,13 @@ void Menu::process_state_logic(
 
     // Lógica para START
     if (this->menu_type == MenuType::LOGIN) {
-        if (result == MenuResult::START_NEW_GAME) {
+        if (result == MenuResult::PROCESS_LOGIN) {
             try {
                 std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
                 if (!nome_digitado.empty()) {
                     jogador_atual = Cadastro::verificar_dados(nome_digitado);
                     if (jogador_atual != nullptr) {
-                        restart_game(character, canos, coletaveis);
                         current_state = GameState::MAIN_MENU;
-                        previous_time = al_get_time();
-                        lag = 0.0;
-                        ultimo_spawn_canos = 0;
                     }
                 }
             } 
@@ -314,6 +310,9 @@ void Menu::process_state_logic(
                 al_flip_display();
                 al_rest(2.0);
             }
+        }
+        else if (result == MenuResult::EXIT_GAME) {
+            current_state = GameState::EXITING;
         }
     } 
         else if (this->menu_type == MenuType::MAIN_MENU) {
