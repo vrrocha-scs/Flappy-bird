@@ -15,6 +15,8 @@
 
 // Clase para dizer quais os tipos de menus existentes
 enum class MenuType {
+    LOGIN,
+    MAIN_MENU,
     START,
     DIFFICULTY,
     END,
@@ -30,6 +32,7 @@ enum class MenuResult {
     EXIT_GAME,
     CONTINUE_GAME,
     SHOW_LEADERBOARD,
+    SHOW_STATISTICS,
     OPEN_DIFFICULTY_MENU,
     SET_DIFFICULTY_EASY,
     SET_DIFFICULTY_MEDIUM,
@@ -81,7 +84,8 @@ class Menu {
         double& ultimo_spawn,
         double& lag,
         float& velocidade_canos,
-        int& multiplicador_espaco_canos
+        int& multiplicador_espaco_canos,
+        float& intervalo_spawn_canos
     );
 
     

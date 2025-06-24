@@ -28,7 +28,7 @@ const float SECONDS_PER_UPDATE = 1.0f / FPS;
 double ultimo_spawn_canos = 0;
 double ultimo_spawn_coletavel = 0;
 double inicio_efeito_invencivel = 10;
-
+const float DISTANCIA_ENTRE_CANOS = 450.0f;
 
 // Função de reinício do jogo
 void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis){
@@ -146,7 +146,7 @@ int main() {
     int multiplicador_espaco_canos = 3.0;
     float velocidade_canos = 1.5;
     int tamanho_gap = definir_tamanho_gap(multiplicador_espaco_canos, character_sprite);
-    GameState current_state = GameState::START;
+    GameState current_state = GameState::LOGIN;
     Cadastro* jogador_atual = nullptr;
     int score_da_partida = 0;
     int minimo = 100;
@@ -170,7 +170,7 @@ int main() {
 
     // Constantes de gameplay para fácil ajuste
     const float JUMP_COOLDOWN_SECONDS = 0.25f;
-    const float intervalo_spawn_canos = 5.0;
+    float intervalo_spawn_canos = DISTANCIA_ENTRE_CANOS / (velocidade_canos * FPS);
     const float intervalo_spawn_coletavel = 10;
 
     //================================================================================
@@ -298,15 +298,18 @@ int main() {
 
 
         // // --- Seção de Lógica de MENUS (Bloqueante) ---
-        if (current_state == GameState::START || current_state == GameState::PAUSED || current_state == GameState::GAMEOVER) {
-            if (current_state == GameState::GAMEOVER) {
-                interfaces.mostrarGameOver(score_font, score_da_partida);
-             }
+        if (current_state == GameState::LOGIN || current_state == GameState::MAIN_MENU || current_state == GameState::PAUSED || current_state == GameState::GAMEOVER) {
         // Determina o tipo de menu a ser criado com base no estado atual
-            MenuType menu_type_to_show = MenuType::START;
-                if (current_state == GameState::PAUSED) menu_type_to_show = MenuType::PAUSE;
-                if (current_state == GameState::GAMEOVER) menu_type_to_show = MenuType::END;
-
+        MenuType menu_type_to_show;
+        if (current_state == GameState::LOGIN) {
+            menu_type_to_show = MenuType::LOGIN;
+        } else if (current_state == GameState::MAIN_MENU) {
+            menu_type_to_show = MenuType::MAIN_MENU;
+    } else if (current_state == GameState::PAUSED) {
+            menu_type_to_show = MenuType::PAUSE;
+    } else { // GAMEOVER
+            menu_type_to_show = MenuType::END;
+    }
             // Cria o menu
             Menu active_menu(event_queue, menu_font, menu_type_to_show);
     
@@ -323,7 +326,8 @@ int main() {
             ultimo_spawn_canos,
             lag,
             velocidade_canos,
-            multiplicador_espaco_canos
+            multiplicador_espaco_canos,
+            intervalo_spawn_canos
             );
 }
         // --- Seção de Renderização ---

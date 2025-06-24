@@ -140,18 +140,18 @@ void Cadastro::display_estatisticas(ALLEGRO_DISPLAY* display, ALLEGRO_FONT* font
     int y_offset = y + 50;
     double pontuacao_media=(numero_partidas>0) ? (double)score_geral/numero_partidas : 0.0;
     
-        std::string texto = "nome: "+ nome_jogador;
+        std::string texto = "Nome: "+ nome_jogador;
         al_draw_text(font, al_map_rgb(255,255,255), x+largura/2, y_offset + 0*40, ALLEGRO_ALIGN_CENTRE, texto.c_str());
 
-        texto = "numero de partidas: " + std::to_string(numero_partidas);
+        texto = "Numero de partidas: " + std::to_string(numero_partidas);
         al_draw_text(font, al_map_rgb(255,255,255), x+largura/2, y_offset + 1*40, ALLEGRO_ALIGN_CENTRE, texto.c_str());
 
-        texto = "high score: " + std::to_string(high_score);
+        texto = "High score: " + std::to_string(high_score);
         al_draw_text(font, al_map_rgb(255,255,255), x+largura/2, y_offset + 2*40, ALLEGRO_ALIGN_CENTRE, texto.c_str());
 
         std::stringstream ss_pontuacao_media;
         ss_pontuacao_media<< std::fixed<<std::setprecision(2);
-        ss_pontuacao_media << "score medio: " << pontuacao_media;
+        ss_pontuacao_media << "Score medio: " << pontuacao_media;
         texto = ss_pontuacao_media.str();
         al_draw_text(font, al_map_rgb(255,255,255), x+largura/2, y_offset + 3*40, ALLEGRO_ALIGN_CENTRE, texto.c_str());
     
