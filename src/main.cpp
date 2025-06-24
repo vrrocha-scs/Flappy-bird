@@ -91,27 +91,37 @@ int main() {
     ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
     ALLEGRO_BITMAP* icon = al_load_bitmap("assets/images/character_jumping.png");
     ALLEGRO_BITMAP* splash_img = al_load_bitmap("assets/images/splash.png");
+    ALLEGRO_BITMAP* green_ball_sprite = al_load_bitmap("assets/images/bolaverde.png");
+
+    if (!character_sprite || !jumping_sprite || !ground_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !mountains_background||
+         !hills_background || !icon  || !splash_img || !green_ball_sprite) {
+        std::cerr << "Erro fatal: Falha ao carregar uma ou mais imagens" << std::endl;
+        return -1;
+    }
 
     al_set_display_icon(display, icon);
+    
 
     //FONTES
-    ALLEGRO_BITMAP* green_ball_sprite = al_load_bitmap("assets/images/bolaverde.png");
     ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 80, 0);
     ALLEGRO_FONT* score_font = al_load_font("assets/fonts/game_over.ttf", 160, 0);
-    Interfaces interfaces(display, event_queue, menu_font);
+
+    if (!menu_font || !score_font) {
+        std::cerr << "Erro fatal: Falha ao carregar uma ou mais fontes" << std::endl;
+        return -1;
+    }
+
 
     //SONS
     ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound.wav");
     ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover_sound.wav");
     ALLEGRO_SAMPLE* music = al_load_sample("assets/sounds/background-music.ogg");
 
-    if (!character_sprite || !jumping_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !mountains_background|| !hills_background ||
-         !menu_font || !score_font || !som_pulo || !som_gameover || !music || !icon) {
-        std::cerr << "Erro fatal: Falha ao carregar um ou mais assets." << std::endl;
+    if (!som_pulo || !som_gameover || !music) {
+        std::cerr << "Erro fatal: Falha ao carregar um ou mais audios" << std::endl;
         return -1;
     }
 
-    interfaces.mostrarSplash(splash_img);
 
 
 
@@ -124,6 +134,10 @@ int main() {
     al_set_sample_instance_playmode(music_instance, ALLEGRO_PLAYMODE_LOOP);
     al_set_sample_instance_gain(music_instance, 0.3); // volume ajustável [0,1]
     al_play_sample_instance(music_instance); 
+
+    //SLASH
+    Interfaces interfaces(display, event_queue, menu_font);
+    interfaces.mostrarSplash(splash_img);
 
     //================================================================================
     // Bloco de Variáveis e Objetos do Jogo
