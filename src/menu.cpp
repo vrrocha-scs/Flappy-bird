@@ -1,4 +1,5 @@
 #include "menu.hpp"
+#include "interfaces.hpp"
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_audio.h>
 #include <iostream>
@@ -246,15 +247,15 @@ std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std:
         if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
             if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER || ev.keyboard.keycode == ALLEGRO_KEY_PAD_ENTER) {
                 if (!name.empty()) editing = false;
-            } else if(ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE){
-                if(!name.empty()) name.pop_back();
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_BACKSPACE) {
+                if (!name.empty()) name.pop_back();
             }
         } else if (ev.type == ALLEGRO_EVENT_KEY_CHAR) {
             float current_width = al_get_text_width(font, text_to_draw.c_str());
             if (ev.keyboard.unichar >= 32 && current_width < INPUT_BOX_WIDTH) {
                 char utf8[4];
-                al_utf8_encode(utf8, ev.keyboard.unichar);
-                name += utf8;
+                int len = al_utf8_encode(utf8, ev.keyboard.unichar);  // obtém número de bytes escritos
+                name.append(utf8, len);  // adiciona apenas os bytes válidos à string
             }
         } else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
             return "";
