@@ -43,8 +43,6 @@ const int SCREEN_H = 1000;
 
 class Menu {
     private:
-    // Desenha o menu
-    void draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis);
     // Lida com a entrada de teclas
     MenuResult handle_input(ALLEGRO_EVENT ev);
     ALLEGRO_EVENT_QUEUE* event_queue;
@@ -68,22 +66,11 @@ class Menu {
     ~Menu();
     // Funcao para mostrar o menu e esperar um evento
     MenuResult show(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis);
-    // Abre o Menu de acordo com o estado e da return de acordo com a selecao da opcao
-    void process_state_logic(
-        GameState& current_state,
-        Cadastro*& jogador_atual,
-        Personagem*& character,
-        std::vector<Obstaculo*>& canos,
-        ALLEGRO_DISPLAY* display,
-        std::vector<ObjetoRenderizavel*>& background_items,
-        std::vector<Coletavel*>& coletaveis,
-        double& previous_time,
-        double& ultimo_spawn,
-        double& lag,
-        float& velocidade_canos,
-        int& multiplicador_espaco_canos
-    );
+    // Desenha o menu
+    void draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis);
 
+    //Retorna o tipo de menu;
+    MenuType get_menu_type();
     
 };
 #endif

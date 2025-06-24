@@ -8,6 +8,7 @@
 
 class Interfaces {
 public:
+    Interfaces(){};
     Interfaces(ALLEGRO_DISPLAY* display, ALLEGRO_EVENT_QUEUE* queue);
     Interfaces(ALLEGRO_DISPLAY* display, ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font);
 

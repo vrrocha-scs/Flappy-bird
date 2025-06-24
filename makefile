@@ -4,7 +4,7 @@ INCLUDE_DIR = include
 SRC_DIR = src
 OBJ_DIR = obj
 #OBJETOS A SEREM LINKADOS NO MAIN (COLOQUE TODOS OS .o DAS CLASSES)
-OBJS = $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/randomizador.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o $(OBJ_DIR)/coletavel.o $(OBJ_DIR)/icone.o $(OBJ_DIR)/interfaces.o
+OBJS = $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/randomizador.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o $(OBJ_DIR)/coletavel.o $(OBJ_DIR)/icone.o $(OBJ_DIR)/interfaces.o $(OBJ_DIR)/maingame.o
 LIBS = -I/X/allegro/5.2.10.1_1/include -L/X/allegro/5.2.10.1_1/lib
 all: main 
 
@@ -50,11 +50,14 @@ $(OBJ_DIR)/objetorenderizavel.o : $(INCLUDE_DIR)/objetorenderizavel.hpp $(SRC_DI
 $(OBJ_DIR)/personagem.o : $(INCLUDE_DIR)/personagem.hpp $(INCLUDE_DIR)/objetorenderizavel.hpp $(INCLUDE_DIR)/hitbox.hpp $(SRC_DIR)/personagem.cpp $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o
 	${CC} ${CFLAGS} -c $(SRC_DIR)/personagem.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/personagem.o
 
+$(OBJ_DIR)/maingame.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/maingame.cpp $(INCLUDE_DIR)/obstaculo.hpp $(INCLUDE_DIR)/cadastro.hpp $(INCLUDE_DIR)/randomizador.hpp $(INCLUDE_DIR)/gamestate.hpp $(INCLUDE_DIR)/coletavel.hpp $(INCLUDE_DIR)/interfaces.hpp $(INCLUDE_DIR)/menu.hpp
+	${CC} ${CFLAGS} -c $(SRC_DIR)/maingame.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/maingame.o
+
 #ADICIONAR nova_classe.hpp DEPENDENTES AQUI
 $(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp $(INCLUDE_DIR)/obstaculo.hpp $(INCLUDE_DIR)/cadastro.hpp $(INCLUDE_DIR)/randomizador.hpp $(INCLUDE_DIR)/gamestate.hpp $(INCLUDE_DIR)/coletavel.hpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/main.cpp ${LIBS} -o $(OBJ_DIR)/main.o
 
-main: $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/randomizador.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o $(OBJ_DIR)/coletavel.o $(OBJ_DIR)/icone.o $(OBJ_DIR)/interfaces.o
+main: $(OBJ_DIR)/main.o $(OBJS)
 	${CC} ${CFLAGS} $(OBJS) $(pkg-config --libs --cflags allegro-5 allegro_main-5 allegro_audio-5 allegro_image-5 allegro_primitives-5 allegro_ttf-5 allegro_font-5) -lallegro_audio -lallegro_acodec -lallegro_main -lallegro_font -lallegro_ttf -lallegro_primitives -lallegro_image -lallegro -o bin/main.exe 
 
 OBJS_TEST = $(OBJ_DIR)/testes.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/randomizador.o
