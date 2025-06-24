@@ -135,7 +135,7 @@ int main() {
     al_set_sample_instance_gain(music_instance, 0.3); // volume ajustável [0,1]
     al_play_sample_instance(music_instance); 
 
-    //SLASH
+    //SPLASH
     al_rest(0.3); 
     Interfaces interfaces(display, event_queue, menu_font);
     interfaces.mostrarSplash(splash_img);

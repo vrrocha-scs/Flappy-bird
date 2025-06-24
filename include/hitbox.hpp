@@ -24,6 +24,7 @@ class Hitbox{
         //Comportamento a cada tick da Hitbox (acompanha o ObjetoRenderizavel associado)
         void on_tick();
         float get_posX();
+        float get_posY();
 
 };
 

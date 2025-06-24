@@ -42,3 +42,8 @@ float Hitbox::get_posX()
 {
     return this->posX;
 }
+
+float Hitbox::get_posY()
+{
+    return this->posY;
+}

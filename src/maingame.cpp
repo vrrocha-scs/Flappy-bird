@@ -1,7 +1,7 @@
 #include "maingame.hpp"
 
 float MainGame::SCREEN_H = 1000;
-float MainGame::SCREEN_W = 1000;
+float MainGame::SCREEN_W = 1000; 
 
 MainGame::MainGame() : MainGame(1.5){}
 
@@ -68,16 +68,42 @@ void MainGame::init_addons(){
 }
 
 void MainGame::load_assets(){
-    character_sprite = al_load_bitmap("assets/images/character.png");
-    jumping_sprite = al_load_bitmap("assets/images/character_jumping.png");
-    ground_sprite = al_load_bitmap("assets/images/chao.png");
-    upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
-    lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
-    menu_font = al_load_font("assets/fonts/game_over.ttf", 80, 0);
-    score_font = al_load_font("assets/fonts/game_over.ttf", 160, 0);
-    som_game_over = al_load_sample("assets/sounds/gameover_sound.wav");
-    if (!character_sprite || !jumping_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !menu_font || !som_game_over) {
-        std::cerr << "Erro fatal: Falha ao carregar um ou mais assets." << std::endl;
+     //IMAGENS
+    ALLEGRO_BITMAP* character_sprite = al_load_bitmap("assets/images/character.png");
+    ALLEGRO_BITMAP* jumping_sprite = al_load_bitmap("assets/images/character_jumping.png");
+    ALLEGRO_BITMAP* ground_sprite = al_load_bitmap("assets/images/chao.png");
+    ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
+    ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
+    ALLEGRO_BITMAP* mountains_background = al_load_bitmap("assets/images/montanhas.png");
+    ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
+    ALLEGRO_BITMAP* icon = al_load_bitmap("assets/images/character_jumping.png");
+    ALLEGRO_BITMAP* splash_img = al_load_bitmap("assets/images/splash.png");
+    ALLEGRO_BITMAP* green_ball_sprite = al_load_bitmap("assets/images/bolaverde.png");
+
+    if (!character_sprite || !jumping_sprite || !ground_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !mountains_background||
+         !hills_background || !icon  || !splash_img || !green_ball_sprite) {
+        std::cerr << "Erro fatal: Falha ao carregar uma ou mais imagens" << std::endl;
+    }
+
+    al_set_display_icon(display, icon);
+    
+
+    //FONTES
+    ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 80, 0);
+    ALLEGRO_FONT* score_font = al_load_font("assets/fonts/game_over.ttf", 160, 0);
+
+    if (!menu_font || !score_font) {
+        std::cerr << "Erro fatal: Falha ao carregar uma ou mais fontes" << std::endl;
+    }
+
+
+    //SONS
+    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound.wav");
+    ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover_sound.wav");
+    ALLEGRO_SAMPLE* music = al_load_sample("assets/sounds/background-music.ogg");
+
+    if (!som_pulo || !som_gameover || !music) {
+        std::cerr << "Erro fatal: Falha ao carregar um ou mais audios" << std::endl;
     }
 }
 
