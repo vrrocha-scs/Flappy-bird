@@ -4,12 +4,24 @@ INCLUDE_DIR = include
 SRC_DIR = src
 OBJ_DIR = obj
 #OBJETOS A SEREM LINKADOS NO MAIN (COLOQUE TODOS OS .o DAS CLASSES)
-OBJS = $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/randomizador.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o $(OBJ_DIR)/coletavel.o
+OBJS = $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/randomizador.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o $(OBJ_DIR)/coletavel.o $(OBJ_DIR)/icone.o $(OBJ_DIR)/interfaces.o
 LIBS = -I/X/allegro/5.2.10.1_1/include -L/X/allegro/5.2.10.1_1/lib
 all: main 
 
 #$(OBJ_DIR)/nova_classe.o : $(INCLUDE_DIR)/nova_classe.hpp $(SRC_DIR)/nova_classe.cpp $(INCLUDE_DIR)/classe_dependente.hpp (se houver)
 #	${CC} ${CFLAGS} -c $(SRC_DIR)/nova_classe.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/nova_classe.o
+
+# So compila o icon se for no windows
+ifeq ($(OS),Windows_NT)
+$(OBJ_DIR)/icone.o: icone.rc assets/images/meu_icone.ico
+	windres -I assets/images icone.rc -o $(OBJ_DIR)/icone.o
+else
+$(OBJ_DIR)/icone.o:
+	touch $(OBJ_DIR)/icone.o
+endif
+
+$(OBJ_DIR)/interfaces.o : $(INCLUDE_DIR)/interfaces.hpp $(SRC_DIR)/interfaces.cpp
+	${CC} ${CFLAGS} -c $(SRC_DIR)/interfaces.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/interfaces.o
 
 $(OBJ_DIR)/coletavel.o : $(INCLUDE_DIR)/coletavel.hpp $(SRC_DIR)/coletavel.cpp $(INCLUDE_DIR)/hitbox.hpp $(INCLUDE_DIR)/objetorenderizavel.hpp $(INCLUDE_DIR)/gamestate.hpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/coletavel.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/coletavel.o
@@ -42,7 +54,7 @@ $(OBJ_DIR)/personagem.o : $(INCLUDE_DIR)/personagem.hpp $(INCLUDE_DIR)/objetoren
 $(OBJ_DIR)/main.o : $(INCLUDE_DIR)/personagem.hpp $(SRC_DIR)/main.cpp $(INCLUDE_DIR)/obstaculo.hpp $(INCLUDE_DIR)/cadastro.hpp $(INCLUDE_DIR)/randomizador.hpp $(INCLUDE_DIR)/gamestate.hpp $(INCLUDE_DIR)/coletavel.hpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/main.cpp ${LIBS} -o $(OBJ_DIR)/main.o
 
-main: $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/randomizador.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o $(OBJ_DIR)/coletavel.o
+main: $(OBJ_DIR)/main.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/cadastro.o $(OBJ_DIR)/randomizador.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/leaderboard.o $(OBJ_DIR)/coletavel.o $(OBJ_DIR)/icone.o $(OBJ_DIR)/interfaces.o
 	${CC} ${CFLAGS} $(OBJS) $(pkg-config --libs --cflags allegro-5 allegro_main-5 allegro_audio-5 allegro_image-5 allegro_primitives-5 allegro_ttf-5 allegro_font-5) -lallegro_audio -lallegro_acodec -lallegro_main -lallegro_font -lallegro_ttf -lallegro_primitives -lallegro_image -lallegro -o bin/main.exe 
 
 OBJS_TEST = $(OBJ_DIR)/testes.o $(OBJ_DIR)/personagem.o $(OBJ_DIR)/objetorenderizavel.o $(OBJ_DIR)/obstaculo.o $(OBJ_DIR)/hitbox.o $(OBJ_DIR)/randomizador.o

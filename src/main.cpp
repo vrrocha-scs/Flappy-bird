@@ -19,25 +19,33 @@
 #include "../include/leaderboard.hpp"
 #include "../include/gamestate.hpp"
 #include "../include/utils.hpp"
+#include "../include/interfaces.hpp"
+
 
 // Constantes da tela e tempo
 const float FPS = 60;
 const float SECONDS_PER_UPDATE = 1.0f / FPS;
 double ultimo_spawn_canos = 0;
 double ultimo_spawn_coletavel = 0;
+double inicio_efeito_invencivel = 10;
 
 
 // Função de reinício do jogo
-void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos) {
+void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis){
     character->reset_position(SCREEN_W / 2 - 250, SCREEN_H / 2);
     
     for (auto c : canos) {
         delete c;
     }
+
+    for(auto p : coletaveis){
+        delete p;
+    }
     
     canos.clear();
+    coletaveis.clear();
     ultimo_spawn_canos = 0;
-    double ultimo_spawn_coletavel = 0;
+    ultimo_spawn_coletavel = 0;
 }
 
 int main() {
@@ -81,22 +89,41 @@ int main() {
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
     ALLEGRO_BITMAP* mountains_background = al_load_bitmap("assets/images/montanhas.png");
     ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
+    ALLEGRO_BITMAP* icon = al_load_bitmap("assets/images/character_jumping.png");
+    ALLEGRO_BITMAP* splash_img = al_load_bitmap("assets/images/splash.png");
+    ALLEGRO_BITMAP* green_ball_sprite = al_load_bitmap("assets/images/bolaverde.png");
+
+    if (!character_sprite || !jumping_sprite || !ground_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !mountains_background||
+         !hills_background || !icon  || !splash_img || !green_ball_sprite) {
+        std::cerr << "Erro fatal: Falha ao carregar uma ou mais imagens" << std::endl;
+        return -1;
+    }
+
+    al_set_display_icon(display, icon);
+    
 
     //FONTES
-    ALLEGRO_BITMAP* green_ball_sprite = al_load_bitmap("assets/images/bolaverde.png");
     ALLEGRO_FONT* menu_font = al_load_font("assets/fonts/game_over.ttf", 80, 0);
     ALLEGRO_FONT* score_font = al_load_font("assets/fonts/game_over.ttf", 160, 0);
+
+    if (!menu_font || !score_font) {
+        std::cerr << "Erro fatal: Falha ao carregar uma ou mais fontes" << std::endl;
+        return -1;
+    }
+
 
     //SONS
     ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound.wav");
     ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover_sound.wav");
     ALLEGRO_SAMPLE* music = al_load_sample("assets/sounds/background-music.ogg");
 
-    if (!character_sprite || !jumping_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !mountains_background|| !hills_background ||
-         !menu_font || !score_font || !som_pulo || !som_gameover || !music) {
-        std::cerr << "Erro fatal: Falha ao carregar um ou mais assets." << std::endl;
+    if (!som_pulo || !som_gameover || !music) {
+        std::cerr << "Erro fatal: Falha ao carregar um ou mais audios" << std::endl;
         return -1;
     }
+
+
+
 
     //BACKGROUND SOUND
     ALLEGRO_VOICE* voice = al_create_voice(44100, ALLEGRO_AUDIO_DEPTH_INT16, ALLEGRO_CHANNEL_CONF_2);
@@ -108,11 +135,16 @@ int main() {
     al_set_sample_instance_gain(music_instance, 0.3); // volume ajustável [0,1]
     al_play_sample_instance(music_instance); 
 
+    //SLASH
+    al_rest(0.3); 
+    Interfaces interfaces(display, event_queue, menu_font);
+    interfaces.mostrarSplash(splash_img);
+
     //================================================================================
     // Bloco de Variáveis e Objetos do Jogo
     //================================================================================
     int multiplicador_espaco_canos = 3.0;
-    int velocidade_canos = 1.5;
+    float velocidade_canos = 1.5;
     int tamanho_gap = definir_tamanho_gap(multiplicador_espaco_canos, character_sprite);
     GameState current_state = GameState::START;
     Cadastro* jogador_atual = nullptr;
@@ -139,7 +171,7 @@ int main() {
     // Constantes de gameplay para fácil ajuste
     const float JUMP_COOLDOWN_SECONDS = 0.25f;
     const float intervalo_spawn_canos = 5.0;
-    const float intervalo_spawn_coletavel = 7.0;
+    const float intervalo_spawn_coletavel = 10;
 
     //================================================================================
     // Loop Principal do Jogo
@@ -189,7 +221,7 @@ int main() {
 
             //Colisão com obstáculos
             for (auto c : canos) {
-                if (character->checkCollision(c->get_hitbox())) {
+                if ((character->checkCollision(c->get_hitbox())) && (character->get_invincible() == false)) {
                     al_play_sample(som_gameover, 0.8, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     current_state = GameState::GAMEOVER;
                     score_da_partida = character->get_score();
@@ -200,14 +232,14 @@ int main() {
 
             //Colisão com coletáveis
             for (auto p : coletaveis){
-                if(character->checkCollision(p->get_hitbox())){
+                if(p->checkCollision(character->get_hitbox())){
                     p->set_coletado(true);
-                    std::cout << "encostou";
-                    current_state = GameState::INVENCIBLE;
-                    delete p;
-                    break;
-                }
+                    character->set_invincible(true);
+                    //current_state = GameState::INVINCIBLE;
+                };
             }
+
+
             
 
             // Lógica de atualização baseada em tempo fixo
@@ -225,24 +257,33 @@ int main() {
                 }
                 for (auto p : coletaveis)
                 {
-                    if (p->get_coletado() == false)
-                         p->on_tick();
+                    p->on_tick();
                 }
                 
                 // Lógica de Spawn
                 ultimo_spawn_canos += SECONDS_PER_UPDATE;
+                ultimo_spawn_coletavel += SECONDS_PER_UPDATE;
                 if (ultimo_spawn_canos >= intervalo_spawn_canos) {
                     //ultimo_spawn = current_time;
                     int altura_buraco = definir_altura_superior(rando);
                     adicionando_canos(canos, altura_buraco, tamanho_gap, upper_pipe_sprite, lower_pipe_sprite, velocidade_canos);
                     ultimo_spawn_canos -= intervalo_spawn_canos;
+                    if (ultimo_spawn_coletavel >= intervalo_spawn_coletavel)
+                    {
+                        coletaveis.push_back(new Coletavel(altura_buraco + (tamanho_gap/2), green_ball_sprite, velocidade_canos));
+                        ultimo_spawn_coletavel -= intervalo_spawn_coletavel; 
+                    }
                 }
 
-                ultimo_spawn_coletavel += SECONDS_PER_UPDATE;
-                if (ultimo_spawn_coletavel>= intervalo_spawn_coletavel)
+                inicio_efeito_invencivel -= SECONDS_PER_UPDATE;
+                if(character->get_invincible() == true)
                 {
-                    coletaveis.push_back(new Coletavel(SCREEN_H/2, SCREEN_W/2, green_ball_sprite, 5));
-                    ultimo_spawn_coletavel -= intervalo_spawn_coletavel;
+                    //std::cout << "estou invencivel" << std::endl;
+                    if(inicio_efeito_invencivel <= 0)
+                    {
+                        character->set_invincible(false);
+                        inicio_efeito_invencivel = 10;
+                    }
                 }
             
                 lag -= SECONDS_PER_UPDATE;
@@ -255,8 +296,12 @@ int main() {
 
         }
 
+
         // // --- Seção de Lógica de MENUS (Bloqueante) ---
         if (current_state == GameState::START || current_state == GameState::PAUSED || current_state == GameState::GAMEOVER) {
+            if (current_state == GameState::GAMEOVER) {
+                interfaces.mostrarGameOver(score_font, score_da_partida);
+             }
         // Determina o tipo de menu a ser criado com base no estado atual
             MenuType menu_type_to_show = MenuType::START;
                 if (current_state == GameState::PAUSED) menu_type_to_show = MenuType::PAUSE;
@@ -273,8 +318,12 @@ int main() {
             canos,
             display,
             background_items,
+            coletaveis,
             previous_time,
-            ultimo_spawn_canos
+            ultimo_spawn_canos,
+            lag,
+            velocidade_canos,
+            multiplicador_espaco_canos
             );
 }
         // --- Seção de Renderização ---
@@ -285,15 +334,18 @@ int main() {
             i->render_object();
         }
         if(current_state == GameState::PLAYING){
-        character->render_object();
+        
         for (auto c : canos) {
             c->render_object();
         }
         for (auto p : coletaveis)
         {
-            if (p->get_coletado() == false)
+            if(p->get_coletado() == false)
+            {
                 p->render_object();
+            }
         }
+        character->render_object();
         al_draw_textf(score_font, al_map_rgb(255, 255, 255), SCREEN_W/2, 20, ALLEGRO_ALIGN_CENTRE,"%i", character->get_score());
         }
         al_flip_display();
@@ -317,15 +369,9 @@ int main() {
     al_destroy_bitmap(ground_sprite);
     al_destroy_bitmap(upper_pipe_sprite);
     al_destroy_bitmap(lower_pipe_sprite);
-    al_destroy_bitmap(mountains_background);
-    al_destroy_bitmap(hills_background);
+    al_destroy_bitmap(icon);
 
     // Destruindo as FONTES
-    al_destroy_bitmap(green_ball_sprite);
-    al_destroy_bitmap(ground_sprite);
-    al_destroy_bitmap(hills_background);
-    al_destroy_bitmap(mountains_background);
-    al_destroy_bitmap(jumping_sprite);
     al_destroy_font(menu_font);
     al_destroy_font(score_font);
 

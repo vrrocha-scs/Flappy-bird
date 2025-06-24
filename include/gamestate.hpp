@@ -7,7 +7,7 @@ enum class GameState {
     PAUSED,
     GAMEOVER,
     EXITING,
-    INVENCIBLE
+    INVINCIBLE
 };
 
 #endif
