@@ -38,7 +38,8 @@ enum class MenuResult {
     OPEN_DIFFICULTY_MENU,
     SET_DIFFICULTY_EASY,
     SET_DIFFICULTY_MEDIUM,
-    SET_DIFFICULTY_HARD
+    SET_DIFFICULTY_HARD,
+    RETURN_TO_MAIN_MENU
 };
 // Pega o nome do jogador no login
 std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std::vector<ObjetoRenderizavel*>& background_items);

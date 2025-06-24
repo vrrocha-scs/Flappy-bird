@@ -29,7 +29,7 @@ double ultimo_spawn_canos = 0;
 double ultimo_spawn_coletavel = 0;
 double inicio_efeito_invencivel = 10;
 const float DISTANCIA_ENTRE_CANOS = 450.0f;
-int multiplicador_pontuacao=1;
+int multiplicador_pontuacao=2;
 
 // Função de reinício do jogo
 void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis){
@@ -145,7 +145,7 @@ int main() {
     // Bloco de Variáveis e Objetos do Jogo
     //================================================================================
     int multiplicador_espaco_canos = 3.0;
-    float velocidade_canos = 1.5;
+    float velocidade_canos = 2.0;
     int tamanho_gap = definir_tamanho_gap(multiplicador_espaco_canos, character_sprite);
     GameState current_state = GameState::LOGIN;
     Cadastro* jogador_atual = nullptr;
@@ -218,6 +218,7 @@ int main() {
                 current_state = GameState::GAMEOVER;
                 score_da_partida = character->get_score();
                 jogador_atual->modificar_dados(score_da_partida);
+                interfaces.mostrarGameOver(score_font, score_da_partida);
             }
 
             //Colisão com obstáculos
@@ -227,6 +228,7 @@ int main() {
                     current_state = GameState::GAMEOVER;
                     score_da_partida = character->get_score();
                     jogador_atual->modificar_dados(score_da_partida);
+                    interfaces.mostrarGameOver(score_font, score_da_partida);
                     break;
                 }
             }
@@ -316,21 +318,17 @@ int main() {
 
         // // --- Seção de Lógica de MENUS (Bloqueante) ---
         if (current_state == GameState::LOGIN || current_state == GameState::MAIN_MENU || current_state == GameState::PAUSED || current_state == GameState::GAMEOVER) {
-        // Exibe tela de GAMEOVERS
-            if (current_state == GameState::GAMEOVER) {
-                interfaces.mostrarGameOver(score_font, score_da_partida);
-             }
-        // Determina o tipo de menu a ser criado com base no estado atual
+
         MenuType menu_type_to_show;
         if (current_state == GameState::LOGIN) {
             menu_type_to_show = MenuType::LOGIN;
         } else if (current_state == GameState::MAIN_MENU) {
             menu_type_to_show = MenuType::MAIN_MENU;
-    } else if (current_state == GameState::PAUSED) {
+        } else if (current_state == GameState::PAUSED) {
             menu_type_to_show = MenuType::PAUSE;
-    } else { // GAMEOVER
+        } else { // GAMEOVER
             menu_type_to_show = MenuType::END;
-    }
+        }
             // Cria o menu
             Menu active_menu(event_queue, menu_font, menu_type_to_show);
     
