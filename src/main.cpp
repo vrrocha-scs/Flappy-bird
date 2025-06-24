@@ -113,8 +113,8 @@ int main() {
 
 
     //SONS
-    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound.wav");
-    ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover_sound.wav");
+    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump-sfx.wav");
+    ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover-sfx.wav");
     ALLEGRO_SAMPLE* music = al_load_sample("assets/sounds/background-music.ogg");
 
     if (!som_pulo || !som_gameover || !music) {
@@ -315,6 +315,10 @@ int main() {
 
         // // --- Seção de Lógica de MENUS (Bloqueante) ---
         if (current_state == GameState::LOGIN || current_state == GameState::MAIN_MENU || current_state == GameState::PAUSED || current_state == GameState::GAMEOVER) {
+        // Exibe tela de GAMEOVERS
+            if (current_state == GameState::GAMEOVER) {
+                interfaces.mostrarGameOver(score_font, score_da_partida);
+             }
         // Determina o tipo de menu a ser criado com base no estado atual
         MenuType menu_type_to_show;
         if (current_state == GameState::LOGIN) {
