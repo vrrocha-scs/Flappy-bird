@@ -16,8 +16,8 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
     select_sound(nullptr)
 {
 
-    select_sound = al_load_sample("assets/sounds/select_sound.ogg");
-    confirm_sound = al_load_sample("assets/sounds/confirm_sound.ogg");
+    select_sound = al_load_sample("assets/sounds/select-sfx.ogg");
+    confirm_sound = al_load_sample("assets/sounds/confirm-sfx.ogg");
     if (!select_sound || !confirm_sound) {
         std::cerr << "Erro ao carregar som de selecao ou de confirmação" << std::endl;
     }
@@ -329,7 +329,7 @@ void Menu::process_state_logic(
             MenuResult difficulty_result = difficulty_menu.show(background_items, character, canos, coletaveis);
 
             if (difficulty_result == MenuResult::SET_DIFFICULTY_EASY) {
-                velocidade_canos = 1.5f;
+                velocidade_canos = 1.0f;
                 multiplicador_espaco_canos = 4;
                 multiplicador_pontuacao=1;
             } else if (difficulty_result == MenuResult::SET_DIFFICULTY_MEDIUM) {
@@ -337,7 +337,7 @@ void Menu::process_state_logic(
                 multiplicador_espaco_canos = 3;
                 multiplicador_pontuacao=2;
             } else if (difficulty_result == MenuResult::SET_DIFFICULTY_HARD) {
-                velocidade_canos = 2.5f;
+                velocidade_canos = 3.0f;
                 multiplicador_espaco_canos = 2;
                 multiplicador_pontuacao=3;
             }

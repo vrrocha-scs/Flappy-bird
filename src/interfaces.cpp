@@ -45,7 +45,7 @@ void Interfaces::mostrarGameOver(ALLEGRO_FONT* font, int pontuacao) {
     std::string score_text = "Pontuacao: " + std::to_string(pontuacao);
     std::string dica = "Pressione qualquer tecla para continuar";
 
-    al_clear_to_color(al_map_rgb(0, 0, 0));
+    al_draw_filled_rectangle(0, 0, SCREEN_W, SCREEN_H, al_map_rgba(0, 0, 0, 150)); // escurece um pouco o fundo
 
     // Fonte maior para o "GAME OVER"
     ALLEGRO_FONT* font_maior = al_load_font("assets/fonts/game_over.ttf", 150, 0);

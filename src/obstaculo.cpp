@@ -66,7 +66,7 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap
     }
     bool Obstaculo::remover_obstaculo()
     {
-        if (this->get_posX() < -55)
+        if (this->get_posX() < -al_get_bitmap_width(this->get_bitmap()))
         {
             delete this;
             return true;
@@ -98,10 +98,6 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap
         canos.push_back(new Obstaculo(altura_buraco - (al_get_bitmap_height(upper_pipe_sprite)), upper_pipe_sprite, velocidade_canos, altura_buraco));
         canos.push_back(new Obstaculo(altura_buraco + tamanho_gap, lower_pipe_sprite, velocidade_canos, (al_get_bitmap_height(lower_pipe_sprite) - (altura_buraco))));  
         return;
-    }
-    int definir_altura_superior(Randomizador* rando)
-    {
-        return rando->valor_aleatorio();
     }
     int definir_tamanho_gap(int multiplicador, ALLEGRO_BITMAP* sprite_personagem)
     {
