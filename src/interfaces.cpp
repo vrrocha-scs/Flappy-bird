@@ -7,11 +7,18 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro.h>
 
+
+Interfaces::Interfaces(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font) {
+    this->queue = queue;
+    this->menu_font = font;
+}
+
 Interfaces::Interfaces(ALLEGRO_DISPLAY* display, ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font) {
     this->display = display;
     this->queue = queue;
     this->menu_font = font;
 }
+
 
 void Interfaces::mostrarSplash(ALLEGRO_BITMAP* splash_img) {
     // Primeira "chamada forçada" de render
@@ -72,7 +79,8 @@ void Interfaces::mostrarGameOver(ALLEGRO_FONT* font, int pontuacao) {
             break;
     }
 }
-void mostrarTutorial(ALLEGRO_DISPLAY* display) {
+// mostra o tutorial e a cada tecla que eu apertar passa para a proxima imagem
+void Interfaces::mostrarTutorial(ALLEGRO_DISPLAY* display, ALLEGRO_EVENT_QUEUE* queue) {
     std::vector<const char*> imagens = {
         "assets/images/tutorial1.png",
         "assets/images/tutorial2.png",
@@ -83,26 +91,23 @@ void mostrarTutorial(ALLEGRO_DISPLAY* display) {
         ALLEGRO_BITMAP* imagem = al_load_bitmap(caminho);
         if (!imagem) continue;
 
-        bool proximo = false;
-        ALLEGRO_EVENT_QUEUE* fila_eventos = al_create_event_queue();
-        al_register_event_source(fila_eventos, al_get_keyboard_event_source());
+        ALLEGRO_EVENT ev;
+        while(al_get_next_event(queue, &ev));
 
-        al_clear_to_color(al_map_rgb(0, 0, 0));
-        al_draw_bitmap(imagem,
+        bool proximo = false;
+        while (!proximo) {
+            al_clear_to_color(al_map_rgb(0, 0, 0));
+            al_draw_bitmap(imagem,
             (al_get_display_width(display) - al_get_bitmap_width(imagem)) / 2,
             (al_get_display_height(display) - al_get_bitmap_height(imagem)) / 2,
             0);
-        al_flip_display();
+            al_flip_display();
 
-        while (!proximo) {
-            ALLEGRO_EVENT ev;
-            al_wait_for_event(fila_eventos, &ev);
+            al_wait_for_event(queue, &ev);
             if (ev.type == ALLEGRO_EVENT_KEY_DOWN || ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
                 proximo = true;
             }
         }
-
         al_destroy_bitmap(imagem);
-        al_destroy_event_queue(fila_eventos);
     }
 }

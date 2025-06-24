@@ -29,6 +29,7 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
         m_options.push_back("Jogar");
         m_options.push_back("Dificuldade");
         m_options.push_back("Estatisticas");
+        m_options.push_back("Tutorial");
         m_options.push_back("Sair");
     }
     else if(menu_type == MenuType::DIFFICULTY) {
@@ -138,7 +139,9 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
                         case 0: return MenuResult::START_NEW_GAME;
                         case 1: return MenuResult::OPEN_DIFFICULTY_MENU;
                         case 2: return MenuResult::SHOW_STATISTICS;
-                        case 3: return MenuResult::EXIT_GAME;
+                        case 3: return MenuResult::TUTORIAL;
+                        case 4: return MenuResult::EXIT_GAME;
+                        default: return MenuResult::NO_ACTION;
                     }
                 } else if (menu_type == MenuType::DIFFICULTY) {
                     switch (selected_option) {
@@ -343,6 +346,10 @@ void Menu::process_state_logic(
             if(jogador_atual) {
                 jogador_atual->display_estatisticas(display, this->menu_font, "Suas Estatisticas");
             }
+        }
+        else if (result == MenuResult::TUTORIAL) {
+            Interfaces interfaces(this->event_queue, this->menu_font);
+            interfaces.mostrarTutorial(display, this->event_queue);
         } 
         else if (result == MenuResult::EXIT_GAME) {
             current_state = GameState::EXITING;
