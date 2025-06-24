@@ -34,7 +34,7 @@ class Obstaculo  : public ObjetoRenderizavel{
     //Remove obstáculos
     bool remover_obstaculo();
     //Checka se o passaro passou pelo cano
-    void check_passagem(Personagem* personagem);
+    void check_passagem(Personagem* personagem,int multiplicador_pontuacao);
 };
 
 //Adiciona um par de canos ao vetor

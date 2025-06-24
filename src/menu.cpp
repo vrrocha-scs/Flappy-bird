@@ -281,7 +281,8 @@ void Menu::process_state_logic(
     double& lag,
     float& velocidade_canos,
     int& multiplicador_espaco_canos,
-    float& intervalo_spawn_canos
+    float& intervalo_spawn_canos,
+    int& multiplicador_pontuacao
 ) {
     MenuResult result = this->show(background_items, character, canos, coletaveis);
 
@@ -330,12 +331,15 @@ void Menu::process_state_logic(
             if (difficulty_result == MenuResult::SET_DIFFICULTY_EASY) {
                 velocidade_canos = 1.5f;
                 multiplicador_espaco_canos = 4;
+                multiplicador_pontuacao=1;
             } else if (difficulty_result == MenuResult::SET_DIFFICULTY_MEDIUM) {
                 velocidade_canos = 2.0f;
                 multiplicador_espaco_canos = 3;
+                multiplicador_pontuacao=2;
             } else if (difficulty_result == MenuResult::SET_DIFFICULTY_HARD) {
                 velocidade_canos = 2.5f;
                 multiplicador_espaco_canos = 2;
+                multiplicador_pontuacao=3;
             }
             if (difficulty_result != MenuResult::NO_ACTION) {
                 intervalo_spawn_canos = DISTANCIA_ENTRE_CANOS / (velocidade_canos * FPS);

@@ -87,7 +87,8 @@ class Menu {
         double& lag,
         float& velocidade_canos,
         int& multiplicador_espaco_canos,
-        float& intervalo_spawn_canos
+        float& intervalo_spawn_canos,
+        int& multiplicador_pontuacao
     );
 
     

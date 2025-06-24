@@ -74,12 +74,12 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap
         else    
             return false;
     }
-    void Obstaculo::check_passagem(Personagem* personagem)
+    void Obstaculo::check_passagem(Personagem* personagem, int multiplicador_pontuacao)
     {
         if ((personagem->get_posX() > ((this->get_hitbox()).get_posX() + this->get_larguraObs()) && !this->get_passou()))
         {
             this->set_passou(true);
-            personagem->gain_score(1);
+            personagem->gain_score(multiplicador_pontuacao);
         }
         return;
     }

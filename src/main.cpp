@@ -29,6 +29,7 @@ double ultimo_spawn_canos = 0;
 double ultimo_spawn_coletavel = 0;
 double inicio_efeito_invencivel = 10;
 const float DISTANCIA_ENTRE_CANOS = 450.0f;
+int multiplicador_pontuacao=1;
 
 // Função de reinício do jogo
 void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis){
@@ -253,7 +254,7 @@ int main() {
                 }
                 for (auto c : canos) {
                     c->on_tick();
-                    c->check_passagem(character);
+                    c->check_passagem(character, multiplicador_pontuacao);
                 }
                 for (auto p : coletaveis)
                 {
@@ -331,7 +332,8 @@ int main() {
             lag,
             velocidade_canos,
             multiplicador_espaco_canos,
-            intervalo_spawn_canos
+            intervalo_spawn_canos,
+            multiplicador_pontuacao
             );
 }
         // --- Seção de Renderização ---
