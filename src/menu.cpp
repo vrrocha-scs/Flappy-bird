@@ -16,8 +16,8 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
     select_sound(nullptr)
 {
 
-    select_sound = al_load_sample("assets/sounds/select_sound.ogg");
-    confirm_sound = al_load_sample("assets/sounds/confirm_sound.ogg");
+    select_sound = al_load_sample("assets/sounds/select-sfx.ogg");
+    confirm_sound = al_load_sample("assets/sounds/confirm-sfx.ogg");
     if (!select_sound || !confirm_sound) {
         std::cerr << "Erro ao carregar som de selecao ou de confirmação" << std::endl;
     }

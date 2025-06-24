@@ -113,8 +113,8 @@ int main() {
 
 
     //SONS
-    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound.wav");
-    ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover_sound.wav");
+    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump-sfx.wav");
+    ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover-sfx.wav");
     ALLEGRO_SAMPLE* music = al_load_sample("assets/sounds/background-music.ogg");
 
     if (!som_pulo || !som_gameover || !music) {
