@@ -42,6 +42,7 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
     else if(menu_type == MenuType::END) {
         m_options.push_back("Jogar Novamente");
         m_options.push_back("Leaderboard");
+        m_options.push_back("Voltar ao Menu Principal");
         m_options.push_back("Sair");
     }
     else if(menu_type == MenuType::PAUSE) {
@@ -159,7 +160,8 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
                     switch (selected_option) {
                         case 0: return MenuResult::RESTART_GAME;
                         case 1: return MenuResult::SHOW_LEADERBOARD;
-                        case 2: return MenuResult::EXIT_GAME;
+                        case 2: return MenuResult::RETURN_TO_MAIN_MENU;
+                        case 3: return MenuResult::EXIT_GAME;
                     }
                 }
                 break;
@@ -380,6 +382,8 @@ void Menu::process_state_logic(
         } else if (result == MenuResult::SHOW_LEADERBOARD) {
             Leaderboard leaderboard;
             leaderboard.display_tabela(display, this->menu_font, "Melhores Pontuacoes");
+        } else if(result == MenuResult::RETURN_TO_MAIN_MENU) {
+            current_state = GameState::MAIN_MENU;
         } else if (result == MenuResult::EXIT_GAME) {
             current_state = GameState::EXITING;
         }
