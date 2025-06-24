@@ -242,7 +242,7 @@ int main() {
                     else if (p->get_tipo() == TiposColetaveis::PLUS_SCORE && p->get_coletado() == false)
                     {
                         p->set_coletado(true);
-                        character->gain_score(2);
+                        character->gain_score(2 * multiplicador_pontuacao);
                     }
                     //current_state = GameState::INVINCIBLE;
                 };
