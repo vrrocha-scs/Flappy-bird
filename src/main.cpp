@@ -121,7 +121,7 @@ int main() {
     // Bloco de Variáveis e Objetos do Jogo
     //================================================================================
     int multiplicador_espaco_canos = 3.0;
-    int velocidade_canos = 1.5;
+    float velocidade_canos = 1.5;
     int tamanho_gap = definir_tamanho_gap(multiplicador_espaco_canos, character_sprite);
     GameState current_state = GameState::START;
     Cadastro* jogador_atual = nullptr;
@@ -294,7 +294,9 @@ int main() {
             coletaveis,
             previous_time,
             ultimo_spawn_canos,
-            lag
+            lag,
+            velocidade_canos,
+            multiplicador_espaco_canos
             );
 }
         // --- Seção de Renderização ---

@@ -23,7 +23,15 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
 
     if (menu_type == MenuType::START) {
         m_options.push_back("Cadastro");
+        m_options.push_back("Dificuldade");
         m_options.push_back("Sair");
+    }
+    else if(menu_type == MenuType::DIFFICULTY) {
+        m_options.push_back("Selecione a Dificuldade:");
+        m_options.push_back("Facil");
+        m_options.push_back("Medio");
+        m_options.push_back("Dificil");
+        selected_option = 1;
     }
     else if(menu_type == MenuType::END) {
         m_options.push_back("Jogar Novamente");
@@ -96,82 +104,64 @@ void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* 
 // Função para lidar com a entrada no menu
 MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
     if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+        int start_index = (menu_type == MenuType::PAUSE || menu_type == MenuType::DIFFICULTY) ? 1 : 0;
+        size_t num_options = m_options.size();
+
         switch (ev.keyboard.keycode) {
-            case ALLEGRO_KEY_UP: // Mexer nas opções usando a seta para cima
+            case ALLEGRO_KEY_UP:
+                if (select_sound) al_play_sample(select_sound, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL); //Toca o som ao selecionar uma opcao
                 selected_option--;
-                // Toca o som de seleção ao pressionar para cima
-                if (select_sound)
-                    al_play_sample(select_sound, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-
-                if (menu_type == MenuType::PAUSE) { 
-                    if (selected_option <= 0) { 
-                        selected_option = m_options.size() - 1; 
-                    }
-                } else {
-                    if (selected_option < 0) {
-                        selected_option = m_options.size() - 1; 
-                    }
-                }
+                if (selected_option < start_index) selected_option = num_options - 1;
                 break;
 
-            case ALLEGRO_KEY_DOWN: // Mexer nas opções usando a seta para baixo
+            case ALLEGRO_KEY_DOWN:
+                if (select_sound) al_play_sample(select_sound, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL); // Toca o som ao selecionar uma opcao
                 selected_option++;
-                // Toca o som de seleção ao pressionar para baixo
-                if (select_sound)
-                    al_play_sample(select_sound, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-
-                if (menu_type == MenuType::PAUSE) {
-                    if (selected_option >= m_options.size()) {
-                        selected_option = 1;
-                    }
-                } else {
-                    if (selected_option >= m_options.size()) {
-                        selected_option = 0;
-                    }
-                }
+                if (selected_option >= num_options) selected_option = start_index;
                 break;
-            
-            case ALLEGRO_KEY_ENTER: // Selecionar a opção com enter em cada menu
-                // Toca o som de confirmação ao pressionar ENTER
-                if (confirm_sound)
-                    al_play_sample(confirm_sound, 0.8, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-                    al_rest(0.2); // Espera 100ms só para testar se o som toca antes de sair
-                   
-                is_active = false; 
-                if(menu_type == MenuType::START) {
-                    return (selected_option == 0) ? MenuResult::START_NEW_GAME : MenuResult::EXIT_GAME;
-                }
-                if(menu_type == MenuType::PAUSE){
-                     switch(selected_option) {
+
+            case ALLEGRO_KEY_ENTER:
+                if (confirm_sound) al_play_sample(confirm_sound, 0.8, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL); // Toca o som de confirmacao
+                al_rest(0.2);
+                is_active = false;
+            // Fala o que cada opcao retorna de acordo com o que esta selecionado e de acordo com o menu
+                if (menu_type == MenuType::START) { 
+                    switch (selected_option) {
+                        case 0: return MenuResult::START_NEW_GAME;
+                        case 1: return MenuResult::OPEN_DIFFICULTY_MENU;
+                        case 2: return MenuResult::EXIT_GAME;
+                    }
+                } else if (menu_type == MenuType::DIFFICULTY) {
+                    switch (selected_option) {
+                        case 1: return MenuResult::SET_DIFFICULTY_EASY;
+                        case 2: return MenuResult::SET_DIFFICULTY_MEDIUM;
+                        case 3: return MenuResult::SET_DIFFICULTY_HARD;
+                    }
+                } else if (menu_type == MenuType::PAUSE) {
+                    switch (selected_option) {
                         case 1: return MenuResult::CONTINUE_GAME;
                         case 2: return MenuResult::RESTART_GAME;
                         case 3: return MenuResult::EXIT_GAME;
-                        default: return MenuResult::CONTINUE_GAME;
                     }
-                }
-                else if(menu_type == MenuType::END) {
-                    switch(selected_option) {
+                } else if (menu_type == MenuType::END) {
+                    switch (selected_option) {
                         case 0: return MenuResult::RESTART_GAME;
                         case 1: return MenuResult::SHOW_LEADERBOARD;
                         case 2: return MenuResult::EXIT_GAME;
-                        default: return MenuResult::EXIT_GAME;
                     }
                 }
                 break;
-            
-            case ALLEGRO_KEY_ESCAPE:
+
+            case ALLEGRO_KEY_ESCAPE: // Apertar esc so vai fechar o jogo se estiver no Inicio ou no Final
                 is_active = false;
-                if (menu_type == MenuType::PAUSE) {
-                    return MenuResult::CONTINUE_GAME;
-                }
+                if (menu_type == MenuType::PAUSE) return MenuResult::CONTINUE_GAME;
+                if (menu_type == MenuType::DIFFICULTY) return MenuResult::NO_ACTION;
                 return MenuResult::EXIT_GAME;
         }
-    }
-    else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+    } else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
         is_active = false;
         return MenuResult::EXIT_GAME;
     }
-
     return MenuResult::NO_ACTION;
 }
 
@@ -273,44 +263,65 @@ void Menu::process_state_logic(
     std::vector<Coletavel*>& coletaveis,
     double& previous_time,
     double& ultimo_spawn_canos,
-    double& lag
+    double& lag,
+    float& velocidade_canos,
+    int& multiplicador_espaco_canos
 ) {
     MenuResult result = this->show(background_items, character, canos, coletaveis);
-    MenuType type = this->menu_type;
-    
+
     // Lógica para START
-    if (type == MenuType::START) {
-    try {
+    if (this->menu_type == MenuType::START) {
         if (result == MenuResult::START_NEW_GAME) {
-            std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
-
-            if (!nome_digitado.empty()) {
-                jogador_atual = Cadastro::verificar_dados(nome_digitado);
-
-                if (jogador_atual != nullptr) {
-                    current_state = GameState::PLAYING;
-                    previous_time = al_get_time();
-                    ultimo_spawn_canos = 0;
-                    lag = 0.0;
+            try {
+                std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
+                if (!nome_digitado.empty()) {
+                    jogador_atual = Cadastro::verificar_dados(nome_digitado);
+                    if (jogador_atual != nullptr) {
+                        restart_game(character, canos, coletaveis);
+                        current_state = GameState::PLAYING;
+                        previous_time = al_get_time();
+                        lag = 0.0;
+                        ultimo_spawn_canos = 0;
+                    }
                 }
+            } 
+            catch (const std::invalid_argument& e) {
+                std::string texto = e.what();
+
+                this->draw(background_items, character, canos, coletaveis);
+
+                al_draw_text(this->menu_font, al_map_rgb(255, 0, 0),
+                al_get_display_width(display) / 2,
+                al_get_display_height(display) / 2 + 150,
+                ALLEGRO_ALIGN_CENTRE, texto.c_str());
+                
+                al_flip_display();
+                al_rest(2.0);
             }
-        }
+        } 
+        else if (result == MenuResult::OPEN_DIFFICULTY_MENU) {
+            Menu difficulty_menu(this->event_queue, this->menu_font, MenuType::DIFFICULTY);
+            MenuResult difficulty_result = difficulty_menu.show(background_items, character, canos, coletaveis);
+
+            if (difficulty_result == MenuResult::SET_DIFFICULTY_EASY) {
+                velocidade_canos = 1.5f;
+                multiplicador_espaco_canos = 4;
+            } else if (difficulty_result == MenuResult::SET_DIFFICULTY_MEDIUM) {
+                velocidade_canos = 2.0f;
+                multiplicador_espaco_canos = 3;
+            } else if (difficulty_result == MenuResult::SET_DIFFICULTY_HARD) {
+                velocidade_canos = 2.5f;
+                multiplicador_espaco_canos = 2;
+            }
+        } 
         else if (result == MenuResult::EXIT_GAME) {
             current_state = GameState::EXITING;
         }
-    }
-    catch (const std::invalid_argument& e) {
-        std::string texto = e.what();
-        al_draw_text(this->menu_font, al_map_rgb(255, 0, 0),
-        al_get_display_width(display) / 2,
-        al_get_display_height(display) / 2 + 60,
-        ALLEGRO_ALIGN_CENTRE, texto.c_str());
-        al_flip_display();
-        al_rest(1.5);
-    }
-}
+    } 
+
+
     // Lógica para PAUSE
-    else if (type == MenuType::PAUSE) {
+    else if (this->menu_type == MenuType::PAUSE) {
         if (result == MenuResult::CONTINUE_GAME) {
             current_state = GameState::PLAYING;
             previous_time = al_get_time();
@@ -322,7 +333,7 @@ void Menu::process_state_logic(
         }
     }
     // Lógica para GAMEOVER
-    else if (type == MenuType::END) {
+    else if (this->menu_type == MenuType::END) {
         if (result == MenuResult::RESTART_GAME) {
             restart_game(character, canos, coletaveis);
             current_state = GameState::PLAYING;
