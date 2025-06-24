@@ -299,6 +299,10 @@ int main() {
 
         // // --- Seção de Lógica de MENUS (Bloqueante) ---
         if (current_state == GameState::LOGIN || current_state == GameState::MAIN_MENU || current_state == GameState::PAUSED || current_state == GameState::GAMEOVER) {
+        // Exibi tela de GAMEOVERS
+            if (current_state == GameState::GAMEOVER) {
+                interfaces.mostrarGameOver(score_font, score_da_partida);
+             }
         // Determina o tipo de menu a ser criado com base no estado atual
         MenuType menu_type_to_show;
         if (current_state == GameState::LOGIN) {
