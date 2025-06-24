@@ -10,8 +10,16 @@ all: main
 
 #$(OBJ_DIR)/nova_classe.o : $(INCLUDE_DIR)/nova_classe.hpp $(SRC_DIR)/nova_classe.cpp $(INCLUDE_DIR)/classe_dependente.hpp (se houver)
 #	${CC} ${CFLAGS} -c $(SRC_DIR)/nova_classe.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/nova_classe.o
+
+# So compila o icon se for no windows
+ifeq ($(OS),Windows_NT)
 $(OBJ_DIR)/icone.o: icone.rc assets/images/meu_icone.ico
 	windres -I assets/images icone.rc -o $(OBJ_DIR)/icone.o
+else
+$(OBJ_DIR)/icone.o:
+	touch $(OBJ_DIR)/icone.o
+endif
+
 
 $(OBJ_DIR)/coletavel.o : $(INCLUDE_DIR)/coletavel.hpp $(SRC_DIR)/coletavel.cpp $(INCLUDE_DIR)/hitbox.hpp $(INCLUDE_DIR)/objetorenderizavel.hpp $(INCLUDE_DIR)/gamestate.hpp
 	${CC} ${CFLAGS} -c $(SRC_DIR)/coletavel.cpp ${LIBS} -I$(INCLUDE_DIR) -o $(OBJ_DIR)/coletavel.o
