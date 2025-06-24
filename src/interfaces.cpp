@@ -35,7 +35,7 @@ void Interfaces::mostrarSplash(ALLEGRO_BITMAP* splash_img) {
 
 void Interfaces::mostrarGameOver(ALLEGRO_FONT* font, int pontuacao) {
     std::string texto = "GAME OVER!";
-    std::string score_text = "Pontuação: " + std::to_string(pontuacao);
+    std::string score_text = "Pontuacao: " + std::to_string(pontuacao);
     std::string dica = "Pressione qualquer tecla para continuar";
 
     al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -70,5 +70,39 @@ void Interfaces::mostrarGameOver(ALLEGRO_FONT* font, int pontuacao) {
         al_wait_for_event(this->queue, &evento);
         if (evento.type == ALLEGRO_EVENT_KEY_DOWN || evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
             break;
+    }
+}
+void mostrarTutorial(ALLEGRO_DISPLAY* display) {
+    std::vector<const char*> imagens = {
+        "assets/images/tutorial1.png",
+        "assets/images/tutorial2.png",
+        "assets/images/tutorial3.png"
+    };
+
+    for (const char* caminho : imagens) {
+        ALLEGRO_BITMAP* imagem = al_load_bitmap(caminho);
+        if (!imagem) continue;
+
+        bool proximo = false;
+        ALLEGRO_EVENT_QUEUE* fila_eventos = al_create_event_queue();
+        al_register_event_source(fila_eventos, al_get_keyboard_event_source());
+
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        al_draw_bitmap(imagem,
+            (al_get_display_width(display) - al_get_bitmap_width(imagem)) / 2,
+            (al_get_display_height(display) - al_get_bitmap_height(imagem)) / 2,
+            0);
+        al_flip_display();
+
+        while (!proximo) {
+            ALLEGRO_EVENT ev;
+            al_wait_for_event(fila_eventos, &ev);
+            if (ev.type == ALLEGRO_EVENT_KEY_DOWN || ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+                proximo = true;
+            }
+        }
+
+        al_destroy_bitmap(imagem);
+        al_destroy_event_queue(fila_eventos);
     }
 }
