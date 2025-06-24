@@ -216,8 +216,15 @@ std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std:
         for (auto& item : background_items) {
             item->render_object();
         }
-        al_draw_filled_rectangle(0, 0, SCREEN_W, SCREEN_H, overlay_color);
-        al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 - 50, ALLEGRO_ALIGN_CENTER, "Digite seu nome e pressione enter:");
+        float panel_width = 600;
+        float panel_height = 200;
+        float panel_x = (SCREEN_W - panel_width) / 2.0;
+        float panel_y = (SCREEN_H - panel_height) / 2.0;
+
+        al_draw_filled_rectangle(panel_x, panel_y, panel_x + panel_width, panel_y + panel_height, al_map_rgba(0, 0, 0, 150));
+        al_draw_rectangle(panel_x, panel_y, panel_x + panel_width, panel_y + panel_height, al_map_rgb(255, 255, 255), 2.0);
+
+        al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, panel_y + 40, ALLEGRO_ALIGN_CENTER, "Digite seu nome e pressione enter:");
 
         if (al_get_time() - cursor_time > 0.5) {
             show_cursor = !show_cursor;
@@ -226,7 +233,11 @@ std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std:
         std::string text_to_draw = name + (show_cursor ? "|" : "");
 
         // Desenha o texto
-        al_draw_text(font, al_map_rgb(255, 255, 0), start_x, SCREEN_H / 2, ALLEGRO_ALIGN_LEFT, text_to_draw.c_str());
+        const float INPUT_BOX_WIDTH = 500;
+        const float start_x = (SCREEN_W - INPUT_BOX_WIDTH) / 2.0;
+        const float text_y = panel_y + 100;
+        
+        al_draw_text(font, al_map_rgb(255, 255, 0), start_x, text_y, ALLEGRO_ALIGN_LEFT, text_to_draw.c_str());
 
         al_flip_display();
 
