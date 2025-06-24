@@ -18,14 +18,14 @@ void Interfaces::mostrarSplash(ALLEGRO_BITMAP* splash_img) {
     al_clear_to_color(al_map_rgb(0, 0, 0));
     al_draw_bitmap(splash_img, 0, 0, 0);
     al_flip_display();
-    al_rest(0.05); // pequeno delay ajuda a garantir que o render aconteça
+    al_rest(0.05);
 
-    // Segunda chamada (real)
     al_clear_to_color(al_map_rgb(0, 0, 0));
     al_draw_bitmap(splash_img, 0, 0, 0);
     al_flip_display();
 
-    // Espera por tecla
+    al_rest(1);
+
     ALLEGRO_EVENT ev;
     while (true) {
         al_wait_for_event(this->queue, &ev);
@@ -63,11 +63,9 @@ void Interfaces::mostrarGameOver(ALLEGRO_FONT* font, int pontuacao) {
 
     al_flip_display();
 
-    // Espera 2 segundos antes de aceitar o input
     al_rest(1);
 
     ALLEGRO_EVENT evento;
-    // Espera por qualquer tecla
     while (true) {
         al_wait_for_event(this->queue, &evento);
         if (evento.type == ALLEGRO_EVENT_KEY_DOWN || evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
