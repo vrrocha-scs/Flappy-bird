@@ -136,6 +136,7 @@ int main() {
     al_play_sample_instance(music_instance); 
 
     //SLASH
+    al_rest(0.3); 
     Interfaces interfaces(display, event_queue, menu_font);
     interfaces.mostrarSplash(splash_img);
 
@@ -295,8 +296,12 @@ int main() {
 
         }
 
+
         // // --- Seção de Lógica de MENUS (Bloqueante) ---
         if (current_state == GameState::START || current_state == GameState::PAUSED || current_state == GameState::GAMEOVER) {
+            if (current_state == GameState::GAMEOVER) {
+                interfaces.mostrarGameOver(score_font, score_da_partida);
+             }
         // Determina o tipo de menu a ser criado com base no estado atual
             MenuType menu_type_to_show = MenuType::START;
                 if (current_state == GameState::PAUSED) menu_type_to_show = MenuType::PAUSE;

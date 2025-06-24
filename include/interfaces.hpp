@@ -12,7 +12,7 @@ public:
     Interfaces(ALLEGRO_DISPLAY* display, ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font);
 
     void mostrarSplash(ALLEGRO_BITMAP* imagem);
-    void mostrarGameOver(int pontuacao);
+   void mostrarGameOver(ALLEGRO_FONT* font, int pontuacao);
 
 private:
     ALLEGRO_DISPLAY* display;

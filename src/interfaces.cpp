@@ -13,31 +13,64 @@ Interfaces::Interfaces(ALLEGRO_DISPLAY* display, ALLEGRO_EVENT_QUEUE* queue, ALL
     this->menu_font = font;
 }
 
-void Interfaces::mostrarSplash(ALLEGRO_BITMAP* splash) {
-    if (!splash) return;
+void Interfaces::mostrarSplash(ALLEGRO_BITMAP* splash_img) {
+    // Primeira "chamada forçada" de render
+    al_clear_to_color(al_map_rgb(0, 0, 0));
+    al_draw_bitmap(splash_img, 0, 0, 0);
+    al_flip_display();
+    al_rest(0.05); // pequeno delay ajuda a garantir que o render aconteça
 
-    al_draw_bitmap(splash, 0, 0, 0);
+    // Segunda chamada (real)
+    al_clear_to_color(al_map_rgb(0, 0, 0));
+    al_draw_bitmap(splash_img, 0, 0, 0);
     al_flip_display();
 
+    // Espera por tecla
     ALLEGRO_EVENT ev;
     while (true) {
-        al_wait_for_event(queue, &ev);
-        if (ev.type == ALLEGRO_EVENT_KEY_DOWN ||
-            ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN ||
-            ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-            break;
-        }
+        al_wait_for_event(this->queue, &ev);
+        if (ev.type == ALLEGRO_EVENT_KEY_DOWN || ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) break;
     }
 }
 
-void Interfaces::mostrarGameOver(int pontuacao) {
-    int largura = al_get_display_width(display);
-    int altura = al_get_display_height(display);
+void Interfaces::mostrarGameOver(ALLEGRO_FONT* font, int pontuacao) {
+    std::string texto = "GAME OVER!";
+    std::string score_text = "Pontuação: " + std::to_string(pontuacao);
+    std::string dica = "Pressione qualquer tecla para continuar";
 
-    std::string texto = "Game Over! Pontuacao: " + std::to_string(pontuacao);
+    al_clear_to_color(al_map_rgb(0, 0, 0));
 
-    al_draw_text(menu_font, al_map_rgb(255, 0, 0), largura / 2, altura / 2 - 40, ALLEGRO_ALIGN_CENTER, texto.c_str());
+    // Fonte maior para o "GAME OVER"
+    ALLEGRO_FONT* font_maior = al_load_font("assets/fonts/game_over.ttf", 150, 0);
+    if (font_maior) {
+        al_draw_text(font_maior, al_map_rgb(255, 50, 50), SCREEN_W / 2, SCREEN_H / 2 - 150, ALLEGRO_ALIGN_CENTER, texto.c_str());
+        al_destroy_font(font_maior);
+    }
+
+    // Fonte menor para a pontuação
+    ALLEGRO_FONT* font_menor = al_load_font("assets/fonts/game_over.ttf", 70, 0);
+    if (font_menor) {
+        al_draw_text(font_menor, al_map_rgb(255, 255, 255), SCREEN_W / 2 + 4, SCREEN_H / 2 - 50, ALLEGRO_ALIGN_CENTER, score_text.c_str());
+        al_destroy_font(font_menor);
+    }
+
+    // Fonte pequena para a dica
+    ALLEGRO_FONT* dica_font = al_load_font("assets/fonts/game_over.ttf", 60, 0);
+    if (dica_font) {
+        al_draw_text(dica_font, al_map_rgb(180, 180, 180), SCREEN_W / 2, SCREEN_H / 2 + 70, ALLEGRO_ALIGN_CENTER, dica.c_str());
+        al_destroy_font(dica_font);
+    }
 
     al_flip_display();
-    al_rest(2.5);  // Mostra por 2.5 segundos antes de continuar
+
+    // Espera 2 segundos antes de aceitar o input
+    al_rest(1);
+
+    ALLEGRO_EVENT evento;
+    // Espera por qualquer tecla
+    while (true) {
+        al_wait_for_event(this->queue, &evento);
+        if (evento.type == ALLEGRO_EVENT_KEY_DOWN || evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+            break;
+    }
 }
