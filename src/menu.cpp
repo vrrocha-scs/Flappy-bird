@@ -72,7 +72,7 @@ Menu::~Menu() {
 
 // desenhar o menu
 void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis) {
-    al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
+    al_clear_to_color(al_map_rgba_f(0, 0, 0, 0));
     for (auto i : background_items) {
         i->render_object();
     }
@@ -211,7 +211,7 @@ std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std:
     const float start_x = (SCREEN_W - INPUT_BOX_WIDTH) / 2.0;
 
     while (editing) {
-        al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
+        al_clear_to_color(al_map_rgba_f(0, 0, 0, 0));
         ALLEGRO_EVENT ev;
 
         // Desenha a cena

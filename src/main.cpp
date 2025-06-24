@@ -88,14 +88,15 @@ int main() {
     ALLEGRO_BITMAP* ground_sprite = al_load_bitmap("assets/images/chao.png");
     ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
     ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
-    ALLEGRO_BITMAP* mountains_background = al_load_bitmap("assets/images/montanhas.png");
-    ALLEGRO_BITMAP* hills_background = al_load_bitmap("assets/images/morros.png");
+    ALLEGRO_BITMAP* galaxia_sprite = al_load_bitmap("assets/images/galaxia.png");
+    ALLEGRO_BITMAP* estrelas1_sprite = al_load_bitmap("assets/images/estrelas1.png");
+    ALLEGRO_BITMAP* estrelas2_sprite = al_load_bitmap("assets/images/estrelas2.png");
     ALLEGRO_BITMAP* icon = al_load_bitmap("assets/images/character_jumping.png");
     ALLEGRO_BITMAP* splash_img = al_load_bitmap("assets/images/splash.png");
     ALLEGRO_BITMAP* green_ball_sprite = al_load_bitmap("assets/images/bolaverde.png");
 
-    if (!character_sprite || !jumping_sprite || !ground_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !mountains_background||
-         !hills_background || !icon  || !splash_img || !green_ball_sprite) {
+    if (!character_sprite || !jumping_sprite || !ground_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !galaxia_sprite||
+         !estrelas1_sprite || !estrelas2_sprite || !icon  || !splash_img || !green_ball_sprite) {
         std::cerr << "Erro fatal: Falha ao carregar uma ou mais imagens" << std::endl;
         return -1;
     }
@@ -158,12 +159,16 @@ int main() {
     std::vector<Coletavel*> coletaveis;
     Personagem* character = new Personagem(SCREEN_W / 2 - 250, SCREEN_H / 2, character_sprite,jumping_sprite);
     ObjetoRenderizavel* Chao = new ObjetoRenderizavel(0,SCREEN_H - 90, ground_sprite,1);
-    ObjetoRenderizavel* Morros = new ObjetoRenderizavel(0,650,hills_background);
-    ObjetoRenderizavel* Montanhas = new ObjetoRenderizavel(0,0,mountains_background);
-    Montanhas->set_velocityX(-velocidade_canos*0.4);
-    Morros->set_velocityX(-velocidade_canos*0.8);
+    ObjetoRenderizavel* Galaxia = new ObjetoRenderizavel(1000,0,galaxia_sprite);
+    ObjetoRenderizavel* Estrelas1 = new ObjetoRenderizavel(0,0,estrelas1_sprite);
+    ObjetoRenderizavel* Estrelas2 = new ObjetoRenderizavel(0,0,estrelas2_sprite);
+
+    Galaxia->set_velocityX(-velocidade_canos*0.2);
+    Estrelas1->set_velocityX(-velocidade_canos*0.4);
+    Estrelas2->set_velocityX(-velocidade_canos*0.6);
+
     Chao->set_velocityX(-velocidade_canos);
-    vector<ObjetoRenderizavel*> background_items = {Montanhas,Morros,Chao};
+    vector<ObjetoRenderizavel*> background_items = {Estrelas1,Estrelas2,Chao};
     // Controle de tempo
     double previous_time = al_get_time();
     double lag = 0;
@@ -254,9 +259,13 @@ int main() {
             // Lógica de atualização baseada em tempo fixo
             while (lag >= SECONDS_PER_UPDATE) {
                 character->on_tick();
+                Galaxia->on_tick();
+                if(Galaxia->get_posX() < -1000){
+                    Galaxia->set_posX(1000);
+                }
                 for (auto i : background_items) {
                     i->on_tick();
-                    if(i->get_posX() < -2000){
+                    if(i->get_posX() < -1000){
                         i->set_posX(0);
                     }
                 }
@@ -355,7 +364,8 @@ int main() {
         // --- Seção de Renderização ---
         
 
-        al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
+        al_clear_to_color(al_map_rgba_f(0, 0, 0, 0));
+        Galaxia->render_object();
         for (auto i : background_items) {
             i->render_object();
         }
