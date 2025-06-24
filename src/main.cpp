@@ -28,7 +28,8 @@ const float SECONDS_PER_UPDATE = 1.0f / FPS;
 double ultimo_spawn_canos = 0;
 double ultimo_spawn_coletavel = 0;
 double inicio_efeito_invencivel = 10;
-
+const float DISTANCIA_ENTRE_CANOS = 450.0f;
+int multiplicador_pontuacao=1;
 
 // Função de reinício do jogo
 void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis){
@@ -113,8 +114,8 @@ int main() {
 
 
     //SONS
-    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump_sound.wav");
-    ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover_sound.wav");
+    ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump-sfx.wav");
+    ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover-sfx.wav");
     ALLEGRO_SAMPLE* music = al_load_sample("assets/sounds/background-music.ogg");
 
     if (!som_pulo || !som_gameover || !music) {
@@ -135,7 +136,7 @@ int main() {
     al_set_sample_instance_gain(music_instance, 0.3); // volume ajustável [0,1]
     al_play_sample_instance(music_instance); 
 
-    //SLASH
+    //SPLASH
     al_rest(0.3); 
     Interfaces interfaces(display, event_queue, menu_font);
     interfaces.mostrarSplash(splash_img);
@@ -146,7 +147,7 @@ int main() {
     int multiplicador_espaco_canos = 3.0;
     float velocidade_canos = 1.5;
     int tamanho_gap = definir_tamanho_gap(multiplicador_espaco_canos, character_sprite);
-    GameState current_state = GameState::START;
+    GameState current_state = GameState::LOGIN;
     Cadastro* jogador_atual = nullptr;
     int score_da_partida = 0;
     int minimo = 100;
@@ -170,8 +171,8 @@ int main() {
 
     // Constantes de gameplay para fácil ajuste
     const float JUMP_COOLDOWN_SECONDS = 0.25f;
-    const float intervalo_spawn_canos = 5.0;
-    const float intervalo_spawn_coletavel = 10;
+    float intervalo_spawn_canos = DISTANCIA_ENTRE_CANOS / (velocidade_canos * FPS);
+    const float intervalo_spawn_coletavel = 5;
 
     //================================================================================
     // Loop Principal do Jogo
@@ -233,8 +234,16 @@ int main() {
             //Colisão com coletáveis
             for (auto p : coletaveis){
                 if(p->checkCollision(character->get_hitbox())){
-                    p->set_coletado(true);
-                    character->set_invincible(true);
+                    if (p->get_tipo() == TiposColetaveis::INVINCIBLE && p->get_coletado() == false)
+                    {
+                        p->set_coletado(true);
+                        character->set_invincible(true);
+                    }
+                    else if (p->get_tipo() == TiposColetaveis::PLUS_SCORE && p->get_coletado() == false)
+                    {
+                        p->set_coletado(true);
+                        character->gain_score(2 * multiplicador_pontuacao);
+                    }
                     //current_state = GameState::INVINCIBLE;
                 };
             }
@@ -253,7 +262,7 @@ int main() {
                 }
                 for (auto c : canos) {
                     c->on_tick();
-                    c->check_passagem(character);
+                    c->check_passagem(character, multiplicador_pontuacao);
                 }
                 for (auto p : coletaveis)
                 {
@@ -265,15 +274,19 @@ int main() {
                 ultimo_spawn_coletavel += SECONDS_PER_UPDATE;
                 if (ultimo_spawn_canos >= intervalo_spawn_canos) {
                     //ultimo_spawn = current_time;
-                    int altura_buraco = definir_altura_superior(rando);
+                    int altura_buraco = definir_altura(rando);
                     adicionando_canos(canos, altura_buraco, tamanho_gap, upper_pipe_sprite, lower_pipe_sprite, velocidade_canos);
                     ultimo_spawn_canos -= intervalo_spawn_canos;
                     if (ultimo_spawn_coletavel >= intervalo_spawn_coletavel)
                     {
-                        coletaveis.push_back(new Coletavel(altura_buraco + (tamanho_gap/2), green_ball_sprite, velocidade_canos));
+                        int altura_coletavel = definir_altura(rando);
+                        coletaveis.push_back(new Coletavel(0, altura_coletavel, green_ball_sprite, velocidade_canos, TiposColetaveis::PLUS_SCORE, ultimo_spawn_canos * (FPS * velocidade_canos)));
                         ultimo_spawn_coletavel -= intervalo_spawn_coletavel; 
                     }
                 }
+
+                
+                
 
                 inicio_efeito_invencivel -= SECONDS_PER_UPDATE;
                 if(character->get_invincible() == true)
@@ -292,21 +305,32 @@ int main() {
             {
                 limpando_obstaculos(canos);
             }
+            if (!coletaveis.empty())
+            {
+                limpando_coletaveis(coletaveis);
+            }
             
 
         }
 
 
         // // --- Seção de Lógica de MENUS (Bloqueante) ---
-        if (current_state == GameState::START || current_state == GameState::PAUSED || current_state == GameState::GAMEOVER) {
+        if (current_state == GameState::LOGIN || current_state == GameState::MAIN_MENU || current_state == GameState::PAUSED || current_state == GameState::GAMEOVER) {
+        // Exibe tela de GAMEOVERS
             if (current_state == GameState::GAMEOVER) {
                 interfaces.mostrarGameOver(score_font, score_da_partida);
              }
         // Determina o tipo de menu a ser criado com base no estado atual
-            MenuType menu_type_to_show = MenuType::START;
-                if (current_state == GameState::PAUSED) menu_type_to_show = MenuType::PAUSE;
-                if (current_state == GameState::GAMEOVER) menu_type_to_show = MenuType::END;
-
+        MenuType menu_type_to_show;
+        if (current_state == GameState::LOGIN) {
+            menu_type_to_show = MenuType::LOGIN;
+        } else if (current_state == GameState::MAIN_MENU) {
+            menu_type_to_show = MenuType::MAIN_MENU;
+    } else if (current_state == GameState::PAUSED) {
+            menu_type_to_show = MenuType::PAUSE;
+    } else { // GAMEOVER
+            menu_type_to_show = MenuType::END;
+    }
             // Cria o menu
             Menu active_menu(event_queue, menu_font, menu_type_to_show);
     
@@ -323,7 +347,9 @@ int main() {
             ultimo_spawn_canos,
             lag,
             velocidade_canos,
-            multiplicador_espaco_canos
+            multiplicador_espaco_canos,
+            intervalo_spawn_canos,
+            multiplicador_pontuacao
             );
 }
         // --- Seção de Renderização ---

@@ -34,7 +34,7 @@ class Obstaculo  : public ObjetoRenderizavel{
     //Remove obstáculos
     bool remover_obstaculo();
     //Checka se o passaro passou pelo cano
-    void check_passagem(Personagem* personagem);
+    void check_passagem(Personagem* personagem,int multiplicador_pontuacao);
 };
 
 //Adiciona um par de canos ao vetor
@@ -42,10 +42,6 @@ void adicionando_canos(vector<Obstaculo*>& canos, int altura_buraco, int tamanho
 //Limpa os canos que estão fora da tela
 void limpando_obstaculos(vector<Obstaculo*>& canos);
 //Define até onde chega o sprite/hitbox do cano superior
-int definir_altura_superior(Randomizador* rando);
-//Define o tamanho do espaço entre os canos
 int definir_tamanho_gap(int multiplicador, ALLEGRO_BITMAP* sprite_personagem);
-//Define a pontuaação do player
-void definir_pontuacao(vector<Obstaculo*>& canos, Personagem* character);
 
 #endif

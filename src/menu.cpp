@@ -4,7 +4,7 @@
 #include <allegro5/allegro_audio.h>
 #include <iostream>
 
-
+extern const float FPS;
 extern void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis); // Falando para o menu que existe uma funcao no main para que nao haja erro de compilacao
 
 Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type): 
@@ -16,15 +16,20 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
     select_sound(nullptr)
 {
 
-    select_sound = al_load_sample("assets/sounds/select_sound.ogg");
-    confirm_sound = al_load_sample("assets/sounds/confirm_sound.ogg");
+    select_sound = al_load_sample("assets/sounds/select-sfx.ogg");
+    confirm_sound = al_load_sample("assets/sounds/confirm-sfx.ogg");
     if (!select_sound || !confirm_sound) {
         std::cerr << "Erro ao carregar som de selecao ou de confirmação" << std::endl;
     }
-
-    if (menu_type == MenuType::START) {
-        m_options.push_back("Cadastro");
+    if (menu_type == MenuType::LOGIN) {
+        m_options.push_back("Cadastro / Login");
+        m_options.push_back("Sair");
+    }
+    else if (menu_type == MenuType::MAIN_MENU) {
+        m_options.push_back("Jogar");
         m_options.push_back("Dificuldade");
+        m_options.push_back("Estatisticas");
+        m_options.push_back("Tutorial");
         m_options.push_back("Sair");
     }
     else if(menu_type == MenuType::DIFFICULTY) {
@@ -126,11 +131,17 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
                 al_rest(0.2);
                 is_active = false;
             // Fala o que cada opcao retorna de acordo com o que esta selecionado e de acordo com o menu
-                if (menu_type == MenuType::START) { 
+                if (menu_type == MenuType::LOGIN)
+                {
+                    return (selected_option == 0) ? MenuResult::PROCESS_LOGIN : MenuResult::EXIT_GAME;
+                } else if (menu_type == MenuType::MAIN_MENU) { 
                     switch (selected_option) {
                         case 0: return MenuResult::START_NEW_GAME;
                         case 1: return MenuResult::OPEN_DIFFICULTY_MENU;
-                        case 2: return MenuResult::EXIT_GAME;
+                        case 2: return MenuResult::SHOW_STATISTICS;
+                        case 3: return MenuResult::TUTORIAL;
+                        case 4: return MenuResult::EXIT_GAME;
+                        default: return MenuResult::NO_ACTION;
                     }
                 } else if (menu_type == MenuType::DIFFICULTY) {
                     switch (selected_option) {
@@ -254,6 +265,9 @@ std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std:
     return name;
 }
 
+const float DISTANCIA_ENTRE_CANOS = 450.0f;
+const float FPS = 60;
+
 void Menu::process_state_logic(
     GameState& current_state,
     Cadastro*& jogador_atual,
@@ -266,23 +280,21 @@ void Menu::process_state_logic(
     double& ultimo_spawn_canos,
     double& lag,
     float& velocidade_canos,
-    int& multiplicador_espaco_canos
+    int& multiplicador_espaco_canos,
+    float& intervalo_spawn_canos,
+    int& multiplicador_pontuacao
 ) {
     MenuResult result = this->show(background_items, character, canos, coletaveis);
 
     // Lógica para START
-    if (this->menu_type == MenuType::START) {
-        if (result == MenuResult::START_NEW_GAME) {
+    if (this->menu_type == MenuType::LOGIN) {
+        if (result == MenuResult::PROCESS_LOGIN) {
             try {
                 std::string nome_digitado = get_player_name(this->event_queue, this->menu_font, background_items);
                 if (!nome_digitado.empty()) {
                     jogador_atual = Cadastro::verificar_dados(nome_digitado);
                     if (jogador_atual != nullptr) {
-                        restart_game(character, canos, coletaveis);
-                        current_state = GameState::PLAYING;
-                        previous_time = al_get_time();
-                        lag = 0.0;
-                        ultimo_spawn_canos = 0;
+                        current_state = GameState::MAIN_MENU;
                     }
                 }
             } 
@@ -299,21 +311,48 @@ void Menu::process_state_logic(
                 al_flip_display();
                 al_rest(2.0);
             }
-        } 
-        else if (result == MenuResult::OPEN_DIFFICULTY_MENU) {
+        }
+        else if (result == MenuResult::EXIT_GAME) {
+            current_state = GameState::EXITING;
+        }
+    } 
+        else if (this->menu_type == MenuType::MAIN_MENU) {
+            if (result == MenuResult::START_NEW_GAME) { 
+            restart_game(character, canos, coletaveis);
+            current_state = GameState::PLAYING;
+            previous_time = al_get_time();
+            lag = 0.0;
+            ultimo_spawn_canos = 0;
+            
+        } else if (result == MenuResult::OPEN_DIFFICULTY_MENU) {
             Menu difficulty_menu(this->event_queue, this->menu_font, MenuType::DIFFICULTY);
             MenuResult difficulty_result = difficulty_menu.show(background_items, character, canos, coletaveis);
 
             if (difficulty_result == MenuResult::SET_DIFFICULTY_EASY) {
-                velocidade_canos = 1.5f;
+                velocidade_canos = 1.0f;
                 multiplicador_espaco_canos = 4;
+                multiplicador_pontuacao=1;
             } else if (difficulty_result == MenuResult::SET_DIFFICULTY_MEDIUM) {
                 velocidade_canos = 2.0f;
                 multiplicador_espaco_canos = 3;
+                multiplicador_pontuacao=2;
             } else if (difficulty_result == MenuResult::SET_DIFFICULTY_HARD) {
-                velocidade_canos = 2.5f;
+                velocidade_canos = 3.0f;
                 multiplicador_espaco_canos = 2;
+                multiplicador_pontuacao=3;
             }
+            if (difficulty_result != MenuResult::NO_ACTION) {
+                intervalo_spawn_canos = DISTANCIA_ENTRE_CANOS / (velocidade_canos * FPS);
+        }
+        }
+        else if (result == MenuResult::SHOW_STATISTICS) {
+            if(jogador_atual) {
+                jogador_atual->display_estatisticas(display, this->menu_font, "Suas Estatisticas");
+            }
+        }
+        else if (result == MenuResult::TUTORIAL) {
+            Interfaces interfaces(this->event_queue, this->menu_font);
+            interfaces.mostrarTutorial(display, this->event_queue);
         } 
         else if (result == MenuResult::EXIT_GAME) {
             current_state = GameState::EXITING;
