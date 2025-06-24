@@ -328,13 +328,13 @@ void Menu::process_state_logic(
             MenuResult difficulty_result = difficulty_menu.show(background_items, character, canos, coletaveis);
 
             if (difficulty_result == MenuResult::SET_DIFFICULTY_EASY) {
-                velocidade_canos = 1.5f;
+                velocidade_canos = 1.0f;
                 multiplicador_espaco_canos = 4;
             } else if (difficulty_result == MenuResult::SET_DIFFICULTY_MEDIUM) {
                 velocidade_canos = 2.0f;
                 multiplicador_espaco_canos = 3;
             } else if (difficulty_result == MenuResult::SET_DIFFICULTY_HARD) {
-                velocidade_canos = 2.5f;
+                velocidade_canos = 3.0f;
                 multiplicador_espaco_canos = 2;
             }
             if (difficulty_result != MenuResult::NO_ACTION) {

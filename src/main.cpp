@@ -171,7 +171,7 @@ int main() {
     // Constantes de gameplay para fácil ajuste
     const float JUMP_COOLDOWN_SECONDS = 0.25f;
     float intervalo_spawn_canos = DISTANCIA_ENTRE_CANOS / (velocidade_canos * FPS);
-    const float intervalo_spawn_coletavel = 10;
+    const float intervalo_spawn_coletavel = 5;
 
     //================================================================================
     // Loop Principal do Jogo
@@ -233,8 +233,16 @@ int main() {
             //Colisão com coletáveis
             for (auto p : coletaveis){
                 if(p->checkCollision(character->get_hitbox())){
-                    p->set_coletado(true);
-                    character->set_invincible(true);
+                    if (p->get_tipo() == TiposColetaveis::INVINCIBLE && p->get_coletado() == false)
+                    {
+                        p->set_coletado(true);
+                        character->set_invincible(true);
+                    }
+                    else if (p->get_tipo() == TiposColetaveis::PLUS_SCORE && p->get_coletado() == false)
+                    {
+                        p->set_coletado(true);
+                        character->gain_score(2);
+                    }
                     //current_state = GameState::INVINCIBLE;
                 };
             }
@@ -265,15 +273,19 @@ int main() {
                 ultimo_spawn_coletavel += SECONDS_PER_UPDATE;
                 if (ultimo_spawn_canos >= intervalo_spawn_canos) {
                     //ultimo_spawn = current_time;
-                    int altura_buraco = definir_altura_superior(rando);
+                    int altura_buraco = definir_altura(rando);
                     adicionando_canos(canos, altura_buraco, tamanho_gap, upper_pipe_sprite, lower_pipe_sprite, velocidade_canos);
                     ultimo_spawn_canos -= intervalo_spawn_canos;
                     if (ultimo_spawn_coletavel >= intervalo_spawn_coletavel)
                     {
-                        coletaveis.push_back(new Coletavel(altura_buraco + (tamanho_gap/2), green_ball_sprite, velocidade_canos));
+                        int altura_coletavel = definir_altura(rando);
+                        coletaveis.push_back(new Coletavel(0, altura_coletavel, green_ball_sprite, velocidade_canos, TiposColetaveis::PLUS_SCORE, ultimo_spawn_canos * (FPS * velocidade_canos)));
                         ultimo_spawn_coletavel -= intervalo_spawn_coletavel; 
                     }
                 }
+
+                
+                
 
                 inicio_efeito_invencivel -= SECONDS_PER_UPDATE;
                 if(character->get_invincible() == true)
@@ -291,6 +303,10 @@ int main() {
             if (!canos.empty())
             {
                 limpando_obstaculos(canos);
+            }
+            if (!coletaveis.empty())
+            {
+                limpando_coletaveis(coletaveis);
             }
             
 

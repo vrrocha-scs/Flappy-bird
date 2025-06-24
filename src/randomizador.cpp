@@ -33,3 +33,8 @@ float Randomizador::get_max()
     return this->max;
 }
 
+int definir_altura(Randomizador* rando)
+{
+    return rando->valor_aleatorio();
+}
+

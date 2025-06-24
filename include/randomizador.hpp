@@ -25,4 +25,6 @@ class Randomizador
 
 };
 
+int definir_altura(Randomizador* rando);
+
 #endif
