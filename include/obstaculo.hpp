@@ -31,14 +31,13 @@ class Obstaculo  : public ObjetoRenderizavel{
     void mover_obstaculos();
     //Renderiza os canos e(ou) desenha os hitbox
     void on_tick() override;
-    //Remove obstáculos
-    bool remover_obstaculo();
     //Checka se o passaro passou pelo cano
     void check_passagem(Personagem* personagem,int multiplicador_pontuacao);
 };
 
 //Adiciona um par de canos ao vetor
-void adicionando_canos(vector<Obstaculo*>& canos, int altura_buraco, int tamanho_gap, ALLEGRO_BITMAP* sprite_cano_cima, ALLEGRO_BITMAP* sprite_cano_baixo, int velocidade);
+void adicionando_canos(vector<Obstaculo*>& canos, int altura_buraco, int tamanho_gap, ALLEGRO_BITMAP* sprite_cano_cima,
+     ALLEGRO_BITMAP* sprite_cano_baixo, int velocidade);
 //Limpa os canos que estão fora da tela
 void limpando_obstaculos(vector<Obstaculo*>& canos);
 //Define até onde chega o sprite/hitbox do cano superior

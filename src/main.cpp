@@ -28,7 +28,7 @@ const float SECONDS_PER_UPDATE = 1.0f / FPS;
 double ultimo_spawn_canos = 0;
 double ultimo_spawn_coletavel = 0;
 double inicio_efeito_invencivel = 10;
-const float DISTANCIA_ENTRE_CANOS = 450.0f;
+const float distancia_entre_canos = 450.0f;
 int multiplicador_pontuacao=1;
 
 // Função de reinício do jogo
@@ -93,6 +93,7 @@ int main() {
     ALLEGRO_BITMAP* icon = al_load_bitmap("assets/images/character_jumping.png");
     ALLEGRO_BITMAP* splash_img = al_load_bitmap("assets/images/splash.png");
     ALLEGRO_BITMAP* green_ball_sprite = al_load_bitmap("assets/images/bolaverde.png");
+    ALLEGRO_BITMAP* yellow_ball_sprite = al_load_bitmap("assets/images/bola_amarela.png");
 
     if (!character_sprite || !jumping_sprite || !ground_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !mountains_background||
          !hills_background || !icon  || !splash_img || !green_ball_sprite) {
@@ -171,7 +172,7 @@ int main() {
 
     // Constantes de gameplay para fácil ajuste
     const float JUMP_COOLDOWN_SECONDS = 0.25f;
-    float intervalo_spawn_canos = DISTANCIA_ENTRE_CANOS / (velocidade_canos * FPS);
+    float intervalo_spawn_canos = distancia_entre_canos / (velocidade_canos * FPS);
     const float intervalo_spawn_coletavel = 5;
 
     //================================================================================
@@ -234,7 +235,7 @@ int main() {
             //Colisão com coletáveis
             for (auto p : coletaveis){
                 if(p->checkCollision(character->get_hitbox())){
-                    if (p->get_tipo() == TiposColetaveis::INVINCIBLE && p->get_coletado() == false)
+                    if (p->get_tipo() == TiposColetaveis::INVINCIBLE)
                     {
                         p->set_coletado(true);
                         character->set_invincible(true);
@@ -268,19 +269,21 @@ int main() {
                 {
                     p->on_tick();
                 }
-                
-                // Lógica de Spawn
                 ultimo_spawn_canos += SECONDS_PER_UPDATE;
                 ultimo_spawn_coletavel += SECONDS_PER_UPDATE;
+                float intervalo_spawn_canos = distancia_entre_canos / (velocidade_canos * FPS);
+                
+                // Lógica de Spawn
+                
                 if (ultimo_spawn_canos >= intervalo_spawn_canos) {
                     //ultimo_spawn = current_time;
                     int altura_buraco = definir_altura(rando);
                     adicionando_canos(canos, altura_buraco, tamanho_gap, upper_pipe_sprite, lower_pipe_sprite, velocidade_canos);
-                    ultimo_spawn_canos -= intervalo_spawn_canos;
+                    ultimo_spawn_canos = 0;
                     if (ultimo_spawn_coletavel >= intervalo_spawn_coletavel)
                     {
                         int altura_coletavel = definir_altura(rando);
-                        coletaveis.push_back(new Coletavel(0, altura_coletavel, green_ball_sprite, velocidade_canos, TiposColetaveis::PLUS_SCORE, ultimo_spawn_canos * (FPS * velocidade_canos)));
+                        construir_coletavel(coletaveis, SCREEN_W + distancia_entre_canos/2, altura_coletavel, velocidade_canos,green_ball_sprite, yellow_ball_sprite);
                         ultimo_spawn_coletavel -= intervalo_spawn_coletavel; 
                     }
                 }
@@ -291,6 +294,8 @@ int main() {
                 inicio_efeito_invencivel -= SECONDS_PER_UPDATE;
                 if(character->get_invincible() == true)
                 {
+                    al_draw_textf(score_font, al_map_rgb(255, 255, 255), SCREEN_H/2, SCREEN_W/2, ALLEGRO_ALIGN_CENTRE,"%i", inicio_efeito_invencivel);
+
                     //std::cout << "estou invencivel" << std::endl;
                     if(inicio_efeito_invencivel <= 0)
                     {
@@ -301,6 +306,7 @@ int main() {
             
                 lag -= SECONDS_PER_UPDATE;
             }
+            
             if (!canos.empty())
             {
                 limpando_obstaculos(canos);
@@ -309,8 +315,6 @@ int main() {
             {
                 limpando_coletaveis(coletaveis);
             }
-            
-
         }
 
 
@@ -389,6 +393,11 @@ int main() {
     }
     canos.clear();
 
+    for (auto p : coletaveis)
+    {
+        delete p;
+    }
+
     // Destruindo as IMAGENS (Bitmaps)
     al_destroy_bitmap(character_sprite);
     al_destroy_bitmap(jumping_sprite);
@@ -396,6 +405,8 @@ int main() {
     al_destroy_bitmap(upper_pipe_sprite);
     al_destroy_bitmap(lower_pipe_sprite);
     al_destroy_bitmap(icon);
+    //al_destroy_bitmap(green_ball_sprite);
+    al_destroy_bitmap(yellow_ball_sprite);
 
     // Destruindo as FONTES
     al_destroy_font(menu_font);

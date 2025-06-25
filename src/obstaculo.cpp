@@ -64,16 +64,6 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap
         this->mover_obstaculos();
         get_hitbox().on_tick();
     }
-    bool Obstaculo::remover_obstaculo()
-    {
-        if (this->get_posX() < -al_get_bitmap_width(this->get_bitmap()))
-        {
-            delete this;
-            return true;
-        }
-        else    
-            return false;
-    }
     void Obstaculo::check_passagem(Personagem* personagem, int multiplicador_pontuacao)
     {
         if ((personagem->get_posX() > ((this->get_hitbox()).get_posX() + this->get_larguraObs()) && !this->get_passou()))
@@ -85,15 +75,17 @@ ObjetoRenderizavel(posX, posY, bitmap,1), _larguraObs(al_get_bitmap_width(bitmap
     }
     void limpando_obstaculos(vector<Obstaculo*>& canos)
     {
-        for (vector<Obstaculo*>::iterator it = canos.begin(); it != canos.end(); it++)
+        for (vector<Obstaculo*>::iterator it = canos.begin(); it != canos.end();)
             {
-                if ((*it)->remover_obstaculo())
+                if ((*it)->get_posX() < -100)
                 {
-                    canos.erase(it);
-                }
+                    delete *it;
+                    it = canos.erase(it);
+                } else it++;
             }      
     }
-    void adicionando_canos(vector<Obstaculo*>& canos, int altura_buraco, int tamanho_gap, ALLEGRO_BITMAP* upper_pipe_sprite, ALLEGRO_BITMAP* lower_pipe_sprite, int velocidade_canos)
+    void adicionando_canos(vector<Obstaculo*>& canos, int altura_buraco, int tamanho_gap,
+         ALLEGRO_BITMAP* upper_pipe_sprite, ALLEGRO_BITMAP* lower_pipe_sprite, int velocidade_canos)
     {
         canos.push_back(new Obstaculo(altura_buraco - (al_get_bitmap_height(upper_pipe_sprite)), upper_pipe_sprite, velocidade_canos, altura_buraco));
         canos.push_back(new Obstaculo(altura_buraco + tamanho_gap, lower_pipe_sprite, velocidade_canos, (al_get_bitmap_height(lower_pipe_sprite) - (altura_buraco))));  

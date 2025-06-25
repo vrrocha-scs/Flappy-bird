@@ -3,6 +3,7 @@
 #include "hitbox.hpp"
 #include "gamestate.hpp"
 #include "randomizador.hpp"
+#include <stdlib.h>
 
 using namespace std;
 
@@ -10,8 +11,13 @@ const int SCREEN_W = 1000;
 const int SCREEN_H = 1000;
 const float DISTANCIA_ENTRE_CANOS = 450;
 
-Coletavel::Coletavel(int posX, int posY, ALLEGRO_BITMAP* sprite, int velocidadeX, TiposColetaveis tipo, float referencia) :
-ObjetoRenderizavel(SCREEN_W + 50 + referencia/2, posY, sprite, true)
+//Probabilidades de vir o PowerUp
+int chance_invincible = 10; //Isso significa que existe 10% de vir (invencibilidade)
+int chance_plus_score = 40 + chance_invincible; // Isso vai ser o range entre 11 - 50, ou seja, 40% de chance de vir (plus_score)
+// O resto, vai ser nulo, ou futuros power_ups
+
+Coletavel::Coletavel(int posX, int posY, ALLEGRO_BITMAP* sprite, int velocidadeX, TiposColetaveis tipo) :
+ObjetoRenderizavel(posX+50, posY, sprite, true)
 {
     this->tipo = tipo;
     this->set_velocityX(velocidadeX);
@@ -49,25 +55,48 @@ bool Coletavel::checkCollision(Hitbox other_hitbox){
     return false;
 }
 
-bool Coletavel::remover_coletavel()
-{
-    if (this->get_posX() < -al_get_bitmap_width(this->get_bitmap()))
-    {
-        delete this;
-        return true;
-    }
-    else    
-        return false;
-}
 void limpando_coletaveis(vector<Coletavel*>& coletaveis)
 {
-    for (vector<Coletavel*>::iterator it = coletaveis.begin(); it != coletaveis.end(); it++)
+    for (vector<Coletavel*>::iterator it = coletaveis.begin(); it != coletaveis.end();)
     {
-        if ((*it)->remover_coletavel())
+        if ((*it)->get_posX() < -100)
         {
-            coletaveis.erase(it);
-        }
+            delete *it;
+            it = coletaveis.erase(it);
+        }else it++;
     }      
+}
+TiposColetaveis sortear_powerup()
+{
+    int chance = rand() % 100 + 1;
+
+    if (chance <= chance_invincible)
+    {
+        return TiposColetaveis::INVINCIBLE;
+    }
+    else if (chance <= chance_plus_score)
+    {
+        return TiposColetaveis::PLUS_SCORE;
+    }
+    else
+        return TiposColetaveis::NONE;
+}
+
+void construir_coletavel(vector<Coletavel*>& coletaveis, int posX, int posY, int velocidadeX,
+    ALLEGRO_BITMAP* sprite_invincible, ALLEGRO_BITMAP* sprite_plus_score)
+{
+    TiposColetaveis tipo_power_up = sortear_powerup();
+    if (tipo_power_up == TiposColetaveis::INVINCIBLE)
+    {
+        coletaveis.push_back(new Coletavel(posX, posY, sprite_invincible, velocidadeX, TiposColetaveis::INVINCIBLE));
+        return;
+    }
+    else if (tipo_power_up == TiposColetaveis::PLUS_SCORE)
+    {
+        coletaveis.push_back(new Coletavel(posX, posY, sprite_plus_score, velocidadeX, TiposColetaveis::PLUS_SCORE));
+        return;
+    }
+    else return;
 }
 
 //void 
