@@ -29,7 +29,7 @@ double ultimo_spawn_canos = 0;
 double ultimo_spawn_coletavel = 0;
 double inicio_efeito_invencivel = 10;
 const float distancia_entre_canos = 450.0f;
-int multiplicador_pontuacao=2;
+int multiplicador_pontuacao = 2;
 
 // Função de reinício do jogo
 void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis){
@@ -86,18 +86,18 @@ int main() {
     ALLEGRO_BITMAP* character_sprite = al_load_bitmap("assets/images/character.png");
     ALLEGRO_BITMAP* jumping_sprite = al_load_bitmap("assets/images/character_jumping.png");
     ALLEGRO_BITMAP* ground_sprite = al_load_bitmap("assets/images/chao.png");
-    ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocima.png");
-    ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixo.png");
+    ALLEGRO_BITMAP* upper_pipe_sprite = al_load_bitmap("assets/images/canocimaofc.png");
+    ALLEGRO_BITMAP* lower_pipe_sprite = al_load_bitmap("assets/images/canobaixoofc.png");
     ALLEGRO_BITMAP* galaxia_sprite = al_load_bitmap("assets/images/galaxia.png");
     ALLEGRO_BITMAP* estrelas1_sprite = al_load_bitmap("assets/images/estrelas1.png");
     ALLEGRO_BITMAP* estrelas2_sprite = al_load_bitmap("assets/images/estrelas2.png");
     ALLEGRO_BITMAP* icon = al_load_bitmap("assets/images/character_jumping.png");
     ALLEGRO_BITMAP* splash_img = al_load_bitmap("assets/images/splash.png");
+    ALLEGRO_BITMAP* star_ball_sprite = al_load_bitmap("assets/images/estrela.png");
     ALLEGRO_BITMAP* green_ball_sprite = al_load_bitmap("assets/images/bolaverde.png");
-    ALLEGRO_BITMAP* yellow_ball_sprite = al_load_bitmap("assets/images/bola_amarela.png");
 
     if (!character_sprite || !jumping_sprite || !ground_sprite || !upper_pipe_sprite || !lower_pipe_sprite || !galaxia_sprite||
-         !estrelas1_sprite || !estrelas2_sprite || !icon  || !splash_img || !green_ball_sprite) {
+         !estrelas1_sprite || !estrelas2_sprite || !icon  || !splash_img || !green_ball_sprite || !star_ball_sprite) {
         std::cerr << "Erro fatal: Falha ao carregar uma ou mais imagens" << std::endl;
         return -1;
     }
@@ -178,7 +178,7 @@ int main() {
     // Constantes de gameplay para fácil ajuste
     const float JUMP_COOLDOWN_SECONDS = 0.25f;
     float intervalo_spawn_canos = distancia_entre_canos / (velocidade_canos * FPS);
-    const float intervalo_spawn_coletavel = 5;
+    const float intervalo_spawn_coletavel = 10;
 
     //================================================================================
     // Loop Principal do Jogo
@@ -283,17 +283,15 @@ int main() {
                 // Lógica de Spawn
                 ultimo_spawn_canos += SECONDS_PER_UPDATE;
                 ultimo_spawn_coletavel += SECONDS_PER_UPDATE;
-                float intervalo_spawn_canos = distancia_entre_canos / (velocidade_canos * FPS);
                 
                 if (ultimo_spawn_canos >= intervalo_spawn_canos) {
-                    //ultimo_spawn = current_time;
                     int altura_buraco = definir_altura(rando);
                     adicionando_canos(canos, altura_buraco, tamanho_gap, upper_pipe_sprite, lower_pipe_sprite, velocidade_canos);
                     ultimo_spawn_canos = 0;
                     if (ultimo_spawn_coletavel >= intervalo_spawn_coletavel)
                     {
                         int altura_coletavel = definir_altura(rando);
-                        construir_coletavel(coletaveis, SCREEN_W + distancia_entre_canos/2, altura_coletavel, velocidade_canos,green_ball_sprite, yellow_ball_sprite);
+                        construir_coletavel(coletaveis, SCREEN_W + distancia_entre_canos/2, altura_coletavel, velocidade_canos,star_ball_sprite, green_ball_sprite);
                         ultimo_spawn_coletavel -= intervalo_spawn_coletavel; 
                     }
                 }
@@ -412,8 +410,8 @@ int main() {
     al_destroy_bitmap(upper_pipe_sprite);
     al_destroy_bitmap(lower_pipe_sprite);
     al_destroy_bitmap(icon);
-    //al_destroy_bitmap(green_ball_sprite);
-    al_destroy_bitmap(yellow_ball_sprite);
+    al_destroy_bitmap(green_ball_sprite);
+    al_destroy_bitmap(star_ball_sprite);
 
     // Destruindo as FONTES
     al_destroy_font(menu_font);

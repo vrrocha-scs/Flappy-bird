@@ -22,6 +22,7 @@ class Coletavel : public ObjetoRenderizavel{
     Coletavel(int posX, int posY, ALLEGRO_BITMAP* sprite, int velocidadeX, TiposColetaveis tipo);
     void set_coletado(bool aux);
     bool get_coletado();
+    //Retorna qual o tipo de coletável
     TiposColetaveis get_tipo();
     //Move o coletável
     void mover_coletavel();
