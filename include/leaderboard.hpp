@@ -7,7 +7,13 @@
 
 class Leaderboard{
     public:
+    /**
+    * @brief  recebe os dados da partida e verifica se ela entrara na leaderboard
+    */ 
     void cadastro_tabela(std::string,int);
+    /**
+    * @brief  desenha o Leaderboard
+    */ 
     void display_tabela(ALLEGRO_DISPLAY*, ALLEGRO_FONT*, const char*);//a fazer
 };
 #endif
