@@ -119,6 +119,7 @@ int main() {
     ALLEGRO_SAMPLE* som_pulo = al_load_sample("assets/sounds/jump-sfx.wav");
     ALLEGRO_SAMPLE* som_gameover = al_load_sample("assets/sounds/gameover-sfx.wav");
     ALLEGRO_SAMPLE* music = al_load_sample("assets/sounds/background-music.ogg");
+    ALLEGRO_SAMPLE* som_coin = al_load_sample("assets/sounds/coin-sfx.wav");
 
     if (!som_pulo || !som_gameover || !music) {
         std::cerr << "Erro fatal: Falha ao carregar um ou mais audios" << std::endl;
@@ -242,6 +243,7 @@ int main() {
             //Colisão com coletáveis
             for (auto p : coletaveis){
                 if(p->checkCollision(character->get_hitbox())){
+                    al_play_sample(som_coin, 0.5, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
                     if (p->get_tipo() == TiposColetaveis::INVINCIBLE)
                     {
                         p->set_coletado(true);
