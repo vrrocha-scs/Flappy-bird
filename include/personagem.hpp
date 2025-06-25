@@ -13,25 +13,49 @@ class Personagem : public ObjetoRenderizavel{
         ALLEGRO_BITMAP* jumping_sprite;
         bool invincible;
     public:
-        //Construtor padrão
+        /**
+         * @brief  Construtor padrão
+         */
         Personagem(float posX, float posY,ALLEGRO_BITMAP* bitmap1,ALLEGRO_BITMAP* bitmap2);
-        //Move o personagem de acordo com a velocidadeY
+        /**
+         * @brief  Move o personagem de acordo com a velocidadeY
+         */
         void move_character();
-        //Retorna pontuação do personagem
+        /**
+         * @brief  Retorna pontuação do personagem
+         */ 
         int get_score();
-        //Adiciona à pontuação
+        /**
+         * @brief  Adiciona à pontuação o valor x
+         */ 
         void gain_score(int x);
-        //Comportamento por tick do personagem
+        /**
+         * @brief  Comportamento por tick do personagem
+         */ 
         void on_tick() override;
-        //Comando do pulo
+        /**
+         * @brief  Comando do pulo
+         */       
         void jump();
-        //Checador de colisão
+        /**
+         * @brief  Checa se houve colisão com hitbox passada
+         */       
         bool checkCollision(Hitbox other_hitbox);
-        //Renderizador especial do personagem
+        /**
+         * @brief  Renderizador especial do personagem
+         */        
         void render_object() override;
-        //reset do personagem
+        /**
+         * @brief  reset do personagem
+         */        
         void reset_position(float start_x, float start_y);
+        /**
+         * @brief  Retorna se o personavel está invencível
+         */        
         bool get_invincible();
+        /**
+         * @brief  Determina se o personagem está ou não invencível
+         */
         void set_invincible(bool aux);
 };
 

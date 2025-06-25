@@ -12,18 +12,37 @@ class Hitbox{
         float offsetX,offsetY;
 
     public:
+        /**
+         * @brief  Constroi a partir de coordenadas passadas por valor, indo do ponto (x1,y1) ate o ponto (x2,y2) em formato retangular
+         */    
         Hitbox(const float& posX,const float& posY,float x1,float y1,float x2,float y2);
-        //Constroi a partir do objeto renderizavel em que se conecta
+        /**
+         * @brief  Constroi a partir do objeto renderizavel em que se conecta
+         */        
         Hitbox(const float& posX,const float& posY, float width,float height);
-        //Checa se houve colisao com a hitbox enviada
+        /**
+         * @brief  Checa se houve colisao com a hitbox enviada
+         */        
         bool has_collision(Hitbox hitbox);
-        //Muda alinhamento da hitbox em relação ao objeto renderizável
+        /**
+         * @brief  Muda alinhamento da hitbox em relação ao objeto renderizável
+         */        
         void set_offset(float x,float y);
-        //Desenha o retangulo que representa a hitbox
+        /**
+         * @brief  Desenha o retangulo que representa a hitbox
+         */        
         void draw_hitbox();
-        //Comportamento a cada tick da Hitbox (acompanha o ObjetoRenderizavel associado)
+        /**
+         * @brief  Comportamento a cada tick da Hitbox (acompanha o ObjetoRenderizavel associado)
+         */        
         void on_tick();
+        /**
+         * @brief  Retorna posição X da Hitox
+         */        
         float get_posX();
+        /**
+         * @brief  Retorna posição Y da Hitbox
+         */       
         float get_posY();
 
 };

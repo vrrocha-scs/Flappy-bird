@@ -15,45 +15,86 @@ class ObjetoRenderizavel{
         Hitbox hitbox;
 
     public:
-        //Construtor padrão com coordenadas e BITMAP associados, sem hitbox
-        ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap);
-        //Construtor padrão com coordenadas e BITMAP associados, com hitbox construida sobre BITMAP
-        ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap,bool hasHitbox);
-        //Construtor padrão com coordenadas e BITMAP associados, com hitbox de dimensões especificadas
-        ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap,bool hasHitbox,float width,float height);
 
+        /**
+         * @brief  Construtor padrão com coordenadas e BITMAP associados, sem hitbox
+         */    
+        ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap);
+        /**
+         * @brief  Construtor padrão com coordenadas e BITMAP associados, com hitbox construida sobre BITMAP
+         */
+        ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap,bool hasHitbox);
+        /**
+         * @brief  Construtor padrão com coordenadas e BITMAP associados, com hitbox de dimensões especificadas
+         */
+        ObjetoRenderizavel(float x,float y,ALLEGRO_BITMAP* bitmap,bool hasHitbox,float width,float height);
+        /**
+         * @brief  Destrutor padrão do Objeto Renderizável
+         */
         virtual ~ObjetoRenderizavel(){};
-        //Retorna posição de X
+        /**
+         * @brief  Retorna posição de X
+         */        
         float get_posX();
-        //Retorna posição de Y
+        /**
+         * @brief  Retorna posição de Y
+         */        
         float get_posY();
-        //Retorna velocidade no eixo X
+        /**
+         * @brief  Retorna velocidade no eixo X
+         */        
         float get_velocityX();
-        //Retorna velocidade no eixo Y
+        /**
+         * @brief  Retorna velocidade no eixo Y
+         */        
         float get_velocityY();
-        //Retorna posição de X do centro da imagem, relativo ao bitmap
+        /**
+         * @brief  Retorna posição de X do centro da imagem, relativo ao bitmap
+         */        
         float get_centerX();
-        //Retorna posição de Y do centro da imagem, relativo ao bitmap
+        /**
+         * @brief  Retorna posição de Y do centro da imagem, relativo ao bitmap
+         */        
         float get_centerY();
-        //Retorna a hitbox associada ao Objeto
+        /**
+         * @brief  Retorna a hitbox associada ao Objeto
+         */        
         Hitbox& get_hitbox();
-        //Retorna o bitmap associado ao Objeto
+        /**
+         * @brief  Retorna o bitmap associado ao Objeto
+         */        
         ALLEGRO_BITMAP* get_bitmap();
-        //Define a posição X
+        /**
+         * @brief  Define a posição X
+         */        
         void set_posX(float x);
-        //Define a posição Y
+        /**
+         * @brief  Define a posição Y
+         */       
         void set_posY(float y);
-        //Define velocidade no eixo X
+        /**
+         * @brief  Define velocidade no eixo X
+         */        
         void set_velocityX(float x);
-        //Define velocidade no eixo Y
+        /**
+         * @brief  Define velocidade no eixo Y
+         */        
         void set_velocityY(float y);
-        //Define um novo bitmap para o Objeto;
+        /**
+         * @brief  Define um novo bitmap para o Objeto;
+         */        
         void set_bitmap(ALLEGRO_BITMAP* bitmap);
-        //Renderiza a imagsem nas coordenadas (x,y)
+        /**
+         * @brief  Renderiza a imagsem nas coordenadas (x,y)
+         */        
         virtual void render_object();
-        //Comportamento a cada tick padrão
+        /**
+         * @brief  Comportamento a cada tick padrão
+         */        
         virtual void on_tick();
-        //Move o Objeto de acordo com a velocidade
+        /**
+         * @brief  Move o Objeto de acordo com a velocidade
+         */     
         virtual void move_object();
 };
 
