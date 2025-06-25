@@ -15,6 +15,7 @@
 #include "gamestate.hpp"
 #include "cadastro.hpp"
 #include "menu.hpp"
+#include "coletavel.hpp"
 
 class MainGame{
     private:
@@ -34,7 +35,7 @@ class MainGame{
         GameState current_state;
 
         static float SCREEN_W,SCREEN_H;
-        double game_speed, ultimo_spawn, tamanho_gap;
+        double game_speed, ultimo_spawn_canos,ultimo_spawn_coletaveis, tamanho_gap;
 
         const float JUMP_COOLDOWN_SECONDS = 0.25f;
         const float PIPE_SPAWN_INTERVAL = 6.0f;
@@ -47,6 +48,7 @@ class MainGame{
     void load_assets();
     void render_screen();
     void create_menu(double& previous_time);
+    void restart_game();
 
     float get_game_speed();
     GameState get_game_state();

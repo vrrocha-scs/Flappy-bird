@@ -42,6 +42,7 @@ Menu::Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type):
     else if(menu_type == MenuType::END) {
         m_options.push_back("Jogar Novamente");
         m_options.push_back("Leaderboard");
+        m_options.push_back("Voltar ao Menu Principal");
         m_options.push_back("Sair");
     }
     else if(menu_type == MenuType::PAUSE) {
@@ -72,7 +73,7 @@ Menu::~Menu() {
 
 // desenhar o menu
 void Menu::draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis) {
-    al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
+    al_clear_to_color(al_map_rgba_f(0, 0, 0, 0));
     for (auto i : background_items) {
         i->render_object();
     }
@@ -159,7 +160,8 @@ MenuResult Menu::handle_input(ALLEGRO_EVENT ev) {
                     switch (selected_option) {
                         case 0: return MenuResult::RESTART_GAME;
                         case 1: return MenuResult::SHOW_LEADERBOARD;
-                        case 2: return MenuResult::EXIT_GAME;
+                        case 2: return MenuResult::RETURN_TO_MAIN_MENU;
+                        case 3: return MenuResult::EXIT_GAME;
                     }
                 }
                 break;
@@ -211,7 +213,7 @@ std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std:
     const float start_x = (SCREEN_W - INPUT_BOX_WIDTH) / 2.0;
 
     while (editing) {
-        al_clear_to_color(al_map_rgba_f(0, 0, 1, 0));
+        al_clear_to_color(al_map_rgba_f(0, 0, 0, 0));
         ALLEGRO_EVENT ev;
 
         // Desenha a cena
@@ -380,6 +382,8 @@ void Menu::process_state_logic(
         } else if (result == MenuResult::SHOW_LEADERBOARD) {
             Leaderboard leaderboard;
             leaderboard.display_tabela(display, this->menu_font, "Melhores Pontuacoes");
+        } else if(result == MenuResult::RETURN_TO_MAIN_MENU) {
+            current_state = GameState::MAIN_MENU;
         } else if (result == MenuResult::EXIT_GAME) {
             current_state = GameState::EXITING;
         }
