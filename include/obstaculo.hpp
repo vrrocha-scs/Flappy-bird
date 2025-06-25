@@ -16,9 +16,7 @@ class Obstaculo  : public ObjetoRenderizavel{
 
     public:
     Obstaculo(float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float altura);
-    //Construtor de canos
     Obstaculo(float posX, float posY, ALLEGRO_BITMAP* bitmap, float velocidade, float altura);
-    //Construtor de outros obstáculos
 
 
     float get_larguraObs();
@@ -27,20 +25,32 @@ class Obstaculo  : public ObjetoRenderizavel{
     void set_alturaObs(float);
     bool get_passou();
     void set_passou(bool);
-    //Move o obstáculo no eixo X
+    /**
+     * @brief Move o obstáculo no eixo X
+     */
     void mover_obstaculos();
-    //Renderiza os canos e(ou) desenha os hitbox
+    /**
+     * @brief A cada tick, atualiza a posição
+     */
     void on_tick() override;
-    //Checka se o passaro passou pelo cano
+    /**
+     * @brief Checka se o passaro passou pelo cano
+     */
     void check_passagem(Personagem* personagem,int multiplicador_pontuacao);
 };
 
-//Adiciona um par de canos ao vetor
+/**
+ * @brief Adiciona um par de canos ao vetor
+ */
 void adicionando_canos(vector<Obstaculo*>& canos, int altura_buraco, int tamanho_gap, ALLEGRO_BITMAP* sprite_cano_cima,
      ALLEGRO_BITMAP* sprite_cano_baixo, int velocidade);
-//Limpa os canos que estão fora da tela
+/**
+ * @brief Limpa os canos que estão fora da tela
+ */
 void limpando_obstaculos(vector<Obstaculo*>& canos);
-//Define até onde chega o sprite/hitbox do cano superior
+/**
+ * @brief Define até onde chega o sprite/hitbox do cano superior
+ */
 int definir_tamanho_gap(int multiplicador, ALLEGRO_BITMAP* sprite_personagem);
 
 #endif
