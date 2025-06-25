@@ -41,7 +41,7 @@ class Randomizador
 };
 
 /**
- * @briefDefine um inteiro aleatório, recebendo uma distribuição já definida, com máximos e mínimos.
+ * @brief Define um inteiro aleatório, recebendo uma distribuição já definida, com máximos e mínimos.
 Usado para calcular alturas de spawn
  */
 int definir_altura(Randomizador* rando);
