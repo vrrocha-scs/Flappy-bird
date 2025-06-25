@@ -82,6 +82,7 @@ void Cadastro::modificar_dados(int score_partida){
   std::vector<Cadastro> cadastros_jogadores;
   std::string linha;
 
+  //coloca os dados de todos os players em um vetor e modifica os dados do player atual
   if(arq_armazenagem.is_open()){
     while(getline(arq_armazenagem,linha)){
       std::stringstream ss(linha);
@@ -107,6 +108,7 @@ void Cadastro::modificar_dados(int score_partida){
     return;
   }
 
+  //modfica no arquivo os dados do player
   std::ofstream arq_escrita("assets/datas/dados.csv");
   if(arq_escrita.is_open()){
     for(const auto& j:cadastros_jogadores){

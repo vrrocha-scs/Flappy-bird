@@ -46,7 +46,7 @@ void Leaderboard::cadastro_tabela(std::string nome_jogador, int score_partida) {
     }
     arq_tabela_leit.close();
     
-    // verifica se o player ja esta na tabela, caso exista modifico e saio do for
+    // verifica se o player ja esta na tabela, caso exista modifica e dou break
     bool jogador_existia = false;
     for (auto& entrada : tabelados) {
         if (entrada.nome == nome_jogador) {
@@ -57,7 +57,7 @@ void Leaderboard::cadastro_tabela(std::string nome_jogador, int score_partida) {
             break;
         }
     }
-    // se nao existe eu insiro ele
+    // se nao existir, ele e inserido
     if (!jogador_existia) {
         tabelados.emplace_back(nome_jogador, score_partida);
     }
@@ -89,7 +89,9 @@ void Leaderboard::cadastro_tabela(std::string nome_jogador, int score_partida) {
 }
 
 
+//desenha o Leaderboard
   void Leaderboard::display_tabela(ALLEGRO_DISPLAY* display, ALLEGRO_FONT* font, const char* titulo) {
+    //recebe os dados dos players que estao na tabela
     std::ifstream arq_tabela("assets/datas/tabela.csv");
     if (!arq_tabela.is_open()) {
         std::cerr << "Erro ao abrir tabela.csv" << std::endl;

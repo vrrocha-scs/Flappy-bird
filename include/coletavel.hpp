@@ -6,7 +6,8 @@
 
 enum class TiposColetaveis {
     INVINCIBLE,
-    PLUS_SCORE
+    PLUS_SCORE,
+    NONE
 };
 
 
@@ -18,7 +19,7 @@ class Coletavel : public ObjetoRenderizavel{
     TiposColetaveis tipo;
 
     public:
-    Coletavel(int posX, int posY, ALLEGRO_BITMAP* sprite, int velocidadeX, TiposColetaveis tipo, float referencia);
+    Coletavel(int posX, int posY, ALLEGRO_BITMAP* sprite, int velocidadeX, TiposColetaveis tipo);
     void set_coletado(bool aux);
     bool get_coletado();
     TiposColetaveis get_tipo();
@@ -31,7 +32,12 @@ class Coletavel : public ObjetoRenderizavel{
     //Verifica se o coletável está apto a ser deletado
     bool remover_coletavel();
 };
-
+//Limpa o vetor que contém os coletáveis, seja porque saíram da tela ou já foram coletados
 void limpando_coletaveis(vector<Coletavel*>& coletaveis);
+//Decide qual será o coletável a ser spawnado, com a chance de ser Nenhum
+TiposColetaveis sortear_powerup();
+//Realiza a construção do coletável, dada as opções que temos
+void construir_coletavel(vector<Coletavel*>& coletaveis, int posX, int posY, int velocidadeX,
+    ALLEGRO_BITMAP* sprite_invincible, ALLEGRO_BITMAP* sprite_plus_score);
 
 #endif
