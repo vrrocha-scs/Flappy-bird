@@ -13,7 +13,9 @@
 #include"../include/cadastro.hpp"
 #include"../include/leaderboard.hpp"
 
-// Clase para dizer quais os tipos de menus existentes
+/**
+ * @brief Define os diferentes tipos de menus que existem no jogo.
+ */
 enum class MenuType {
     LOGIN,
     MAIN_MENU,
@@ -23,7 +25,9 @@ enum class MenuType {
     PAUSE,
     REGISTER
 };
-// Classe para listar os resultados ao selecionar uma opcao no menu
+/**
+ * @brief Define os possíveis resultados de uma interação com o menu, representando a escolha do jogador.
+ */
 enum class MenuResult {
     NO_ACTION,
     START_NEW_GAME,
@@ -41,17 +45,22 @@ enum class MenuResult {
     SET_DIFFICULTY_HARD,
     RETURN_TO_MAIN_MENU
 };
-// Pega o nome do jogador no login
+/**
+ * @brief Exibe uma tela bloqueante para que o jogador digite seu nome.
+ */
 std::string get_player_name(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT* font, std::vector<ObjetoRenderizavel*>& background_items);
 
 const int SCREEN_W = 1000;
 const int SCREEN_H = 1000;
 
+/**
+ * @brief Exibe uma tela bloqueante para que o jogador digite seu nome.
+ */
 class Menu {
     private:
-    // Desenha o menu
+    /// @brief Desenha o quadro atual do menu na tela.
     void draw(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis);
-    // Lida com a entrada de teclas
+    /// @brief Processa um evento do Allegro (ex: teclado) e determina a ação do menu.
     MenuResult handle_input(ALLEGRO_EVENT ev);
     ALLEGRO_EVENT_QUEUE* event_queue;
     ALLEGRO_FONT *menu_font;
@@ -69,12 +78,21 @@ class Menu {
     ALLEGRO_COLOR color_title;
 
     public:
-    //Construtor do Menu usando a queue principal
+    /**
+     * @brief Construtor da classe Menu.
+     */
     Menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_FONT *font, MenuType type);
+    /**
+     * @brief Destrutor da classe Menu. Libera os recursos de áudio.
+     */
     ~Menu();
-    // Funcao para mostrar o menu e esperar um evento
+    /**
+     * @brief Mostra o menu na tela e entra em um loop bloqueante até que o jogador faça uma escolha.
+     */
     MenuResult show(std::vector<ObjetoRenderizavel*>& background_items, Personagem* character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis);
-    // Abre o Menu de acordo com o estado e lida com a selecao de opcoes
+    /**
+     * @brief Orquestra a lógica de um estado de menu, desde mostrar até processar o resultado.
+     */
     void process_state_logic(
         GameState& current_state,
         Cadastro*& jogador_atual,
