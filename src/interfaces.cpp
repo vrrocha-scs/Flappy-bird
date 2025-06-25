@@ -85,6 +85,9 @@ void Interfaces::mostrarTutorial(ALLEGRO_DISPLAY* display, ALLEGRO_EVENT_QUEUE* 
         "assets/images/tutorial1.png",
         "assets/images/tutorial2.png",
         "assets/images/tutorial3.png"
+        "assets/images/tutorial4.png",
+        "assets/images/tutorial5.png",
+        "assets/images/tutorial6.png"
     };
 
     for (const char* caminho : imagens) {
