@@ -302,9 +302,6 @@ int main() {
                 inicio_efeito_invencivel -= SECONDS_PER_UPDATE;
                 if(character->get_invincible() == true)
                 {
-                    al_draw_textf(score_font, al_map_rgb(255, 255, 255), SCREEN_H/2, SCREEN_W/2, ALLEGRO_ALIGN_CENTRE,"%i", (int)inicio_efeito_invencivel);
-
-                    //std::cout << "estou invencivel" << std::endl;
                     if(inicio_efeito_invencivel <= 0)
                     {
                         character->set_invincible(false);
