@@ -53,6 +53,7 @@ class ObjetoRenderizavel{
         virtual void render_object();
         //Comportamento a cada tick padrão
         virtual void on_tick();
+        //Move o Objeto de acordo com a velocidade
         virtual void move_object();
 };
 
