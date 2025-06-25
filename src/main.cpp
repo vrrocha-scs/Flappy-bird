@@ -29,7 +29,7 @@ double ultimo_spawn_canos = 0;
 double ultimo_spawn_coletavel = 0;
 double inicio_efeito_invencivel = 10;
 const float distancia_entre_canos = 450.0f;
-int multiplicador_pontuacao=1;
+int multiplicador_pontuacao=2;
 
 // Função de reinício do jogo
 void restart_game(Personagem*& character, std::vector<Obstaculo*>& canos, std::vector<Coletavel*>& coletaveis){
